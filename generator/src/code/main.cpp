@@ -36,7 +36,7 @@ void changeSize(int w, int h) {
 
 
 
-void drawPlane(float l, float d) {
+void drawPlane(float l, int d) {
     
     float x = l/2;
     float z = -l/2;
@@ -82,7 +82,7 @@ void renderScene(void) {
 		      0.0,0.0,0.0,
 			  0.0f,1.0f,0.0f);
 
-    drawPlane(9, 3);
+    drawPlane(3, 9);
 
     glBegin(GL_LINES);
 	// X axis in red
