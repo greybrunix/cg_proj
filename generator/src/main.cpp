@@ -43,6 +43,7 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 
 			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", tmp.x, tmp.z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
+			
 
 			curr.x = tmp.x - div_len;
 			curr.z = tmp.z;
