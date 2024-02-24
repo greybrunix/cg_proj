@@ -14,42 +14,34 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 	FILE* output = fopen(file, "w+"); 
 	char buff[512];
 	size_t b_read;
-
-	struct pair curr, tmp;
-	int32_t err = 0, i,j;
-	    /*tot = (divs+1)*(divs+1);*/
-	float div_len = full_size / divs,
-	      off = !(divs % 2) ? 0 : div_len/divs,
-	      x,z;
+	float x = full_size/2, z = -x, off=full_size/divs;
+	int i,j, err = 0;
 
 	for (i=0; i < divs; i++) {
 		for (j=0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
-			curr.x = x = i * div_len + off;
-			curr.z = z = j * div_len - div_len + off;
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", curr.x, curr.z);
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z+off);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			curr.x = tmp.x = x;
-			curr.z = tmp.z = z + div_len;
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", curr.x, curr.z);
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			
-			curr.x = x - div_len;
-			curr.z = z;
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", curr.x, curr.z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z+off);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", tmp.x, tmp.z);
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			
-
-			curr.x = tmp.x - div_len;
-			curr.z = tmp.z;
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n\n", curr.x, curr.z);
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n\n", x-off, z+off);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			x -= off;
 		}
+		x = full_size/ 2;
+		z += off;
 	}
 
 	fclose(output);
