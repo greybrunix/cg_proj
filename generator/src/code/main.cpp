@@ -41,9 +41,6 @@ void drawPlane(float l, int d) {
     float x = l/2;
     float z = -l/2;
     float diff = l/d;
-    float xc = 0.02;
-    float yc = 0.02;
-    float zc = 0.02;
 
     glBegin(GL_TRIANGLES);
     for (int i=0; i<d; i++){
@@ -59,9 +56,6 @@ void drawPlane(float l, int d) {
             glVertex3f(x-diff, 0, z+diff);
 
             x -= diff;
-            xc += 0.01;
-            yc += 0.01;
-            zc += 0.01;
         }
         x = l/2;
         z += diff;
