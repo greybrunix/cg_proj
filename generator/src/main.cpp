@@ -1,5 +1,5 @@
 /* Output a 3d model file*/
-#include <cstddef>
+#include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,40 +21,40 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) {
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cos(beta - M_PI_2) * cos(alpha),
-					  radius * sin(beta - M_PI_2),
-					  radius*cos(beta+M_PI_2)*sin(alpha));
+					  radius * cosf(beta - M_PI_2) * cosf(alpha),
+					  radius * sinf(beta - M_PI_2),
+					  radius*cosf(beta+M_PI_2)*sinf(alpha));
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cos(beta - M_PI_2 + beta_diff)
-					  	* cos(alpha + alpha_diff),
-					  radius * sin(beta - M_PI_2 + beta_diff),
-					  radius*cos(beta+M_PI_2+beta_diff)*
-					  	sin(alpha + alpha_diff));
+					  radius * cosf(beta - M_PI_2 + beta_diff)
+					  	* cosf(alpha + alpha_diff),
+					  radius * sinf(beta - M_PI_2 + beta_diff),
+					  radius*cosf(beta+M_PI_2+beta_diff)*
+					  	sinf(alpha + alpha_diff));
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cos(beta - M_PI_2)
-					  	* cos(alpha + alpha_diff),
-					  radius * sin(beta - M_PI_2),
-					  radius*cos(beta+M_PI_2)
-					  	*sin(alpha + alpha_diff));
+					  radius * cosf(beta - M_PI_2)
+					  	* cosf(alpha + alpha_diff),
+					  radius * sinf(beta - M_PI_2),
+					  radius*cosf(beta+M_PI_2)
+					  	*sinf(alpha + alpha_diff));
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cos(beta - M_PI_2) * cos(alpha),
-					  radius * sin(beta - M_PI_2),
-					  radius*cos(beta+M_PI_2)*sin(alpha));
+					  radius * cosf(beta - M_PI_2) * cosf(alpha),
+					  radius * sinf(beta - M_PI_2),
+					  radius*cosf(beta+M_PI_2)*sinf(alpha));
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cos(beta - M_PI_2 + beta_diff) * cos(alpha),
-					  radius * sin(beta - M_PI_2 + beta_diff),
-					  radius*cos(beta+M_PI_2 + beta_diff)*sin(alpha));
+					  radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha),
+					  radius * sinf(beta - M_PI_2 + beta_diff),
+					  radius*cosf(beta+M_PI_2 + beta_diff)*sinf(alpha));
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cos(beta - M_PI_2 + beta_diff)
-					  	* cos(alpha + alpha_diff),
-					  radius * sin(beta - M_PI_2 + beta_diff),
-					  radius*cos(beta+M_PI_2+beta_diff)*
-					  	sin(alpha + alpha_diff));
+					  radius * cosf(beta - M_PI_2 + beta_diff)
+					  	* cosf(alpha + alpha_diff),
+					  radius * sinf(beta - M_PI_2 + beta_diff),
+					  radius*cosf(beta+M_PI_2+beta_diff)*
+					  	sinf(alpha + alpha_diff));
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			beta += beta_diff;
 		}
@@ -82,41 +82,41 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 		for(j=0; j<slices; j++) {
             // Bottom face
 			if (i==0) {
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sin(angle+angle_diff), 0.f, cur_rad*cos(angle+angle_diff));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), 0.f, cur_rad*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", 0.f, 0.f, 0.f);
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sin(angle), 0.f, cur_rad*cos(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), 0.f, cur_rad*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
            
 			if (i==stacks-1){              
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sin(angle+angle_diff), y, cur_rad*cos(angle+angle_diff));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), y, cur_rad*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", 0.f, height, 0.f);
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n\n", cur_rad*sin(angle), y, cur_rad*cos(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n\n", cur_rad*sinf(angle), y, cur_rad*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
 			else {
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sin(angle+angle_diff), y+y_diff,
-						  (cur_rad-xz_diff)*cos(angle+angle_diff));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sinf(angle+angle_diff), y+y_diff,
+						  (cur_rad-xz_diff)*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sin(angle), y+y_diff,
-						  (cur_rad-xz_diff)*cos(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sinf(angle), y+y_diff,
+						  (cur_rad-xz_diff)*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sin(angle+angle_diff), y,
-						  cur_rad*cos(angle+angle_diff));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), y,
+						  cur_rad*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sin(angle), y+y_diff,
-						  (cur_rad-xz_diff)*cos(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sinf(angle), y+y_diff,
+						  (cur_rad-xz_diff)*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sin(angle), y,
-						  cur_rad*cos(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), y,
+						  cur_rad*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n\n", cur_rad*sin(angle+angle_diff), y,
-						  cur_rad*cos(angle+angle_diff));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n\n", cur_rad*sinf(angle+angle_diff), y,
+						  cur_rad*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
 			angle += angle_diff;
