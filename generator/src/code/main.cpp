@@ -226,30 +226,34 @@ void drawSphere(float radius, int slices, int stacks) {
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) {
-			px = radius * cos(beta - M_PI_2) * cos(alfa);
-			py = radius * sin(beta - M_PI_2);
-			pz = radius * cos(beta - M_PI_2) * sin(alfa);
-			glVertex3f(px, py, pz);
-			px = radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa + alfa_diff);
-			py = radius * sin(beta - M_PI_2 + beta_diff);
-			pz = radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa + alfa_diff);
-			glVertex3f(px, py, pz);
-			px = radius * cos(beta - M_PI_2) * cos(alfa + alfa_diff);
-			py = radius * sin(beta - M_PI_2);
-			pz = radius * cos(beta - M_PI_2) * sin(alfa + alfa_diff);
-			glVertex3f(px, py, pz);
-			px = radius * cos(beta - M_PI_2) * cos(alfa);
-			py = radius * sin(beta - M_PI_2);
-			pz = radius * cos(beta - M_PI_2) * sin(alfa);
-			glVertex3f(px, py, pz);
-			px = radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa);
-			py = radius * sin(beta - M_PI_2 + beta_diff);
-			pz = radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa);
-			glVertex3f(px, py, pz);
-			px = radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa + alfa_diff);
-			py = radius * sin(beta - M_PI_2 + beta_diff);
-			pz = radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa + alfa_diff);
-			glVertex3f(px, py, pz);
+			if (j != 0) {
+				px = radius * cos(beta - M_PI_2) * cos(alfa);
+				py = radius * sin(beta - M_PI_2);
+				pz = radius * cos(beta - M_PI_2) * sin(alfa);
+				glVertex3f(px, py, pz);
+				px = radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa + alfa_diff);
+				py = radius * sin(beta - M_PI_2 + beta_diff);
+				pz = radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa + alfa_diff);
+				glVertex3f(px, py, pz);
+				px = radius * cos(beta - M_PI_2) * cos(alfa + alfa_diff);
+				py = radius * sin(beta - M_PI_2);
+				pz = radius * cos(beta - M_PI_2) * sin(alfa + alfa_diff);
+				glVertex3f(px, py, pz);
+			}
+			if (j != stacks - 1) {
+				px = radius * cos(beta - M_PI_2) * cos(alfa);
+				py = radius * sin(beta - M_PI_2);
+				pz = radius * cos(beta - M_PI_2) * sin(alfa);
+				glVertex3f(px, py, pz);
+				px = radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa);
+				py = radius * sin(beta - M_PI_2 + beta_diff);
+				pz = radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa);
+				glVertex3f(px, py, pz);
+				px = radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa + alfa_diff);
+				py = radius * sin(beta - M_PI_2 + beta_diff);
+				pz = radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa + alfa_diff);
+				glVertex3f(px, py, pz);
+			}
 			beta += beta_diff;
 		}
 		beta = 0;
@@ -261,53 +265,47 @@ void drawSphere(float radius, int slices, int stacks) {
 
 void drawTorus(float inner_radius, float outer_radius, int slices, int stacks) {
 
-    float alfa = 0.0f, beta = 0.0f;
-    float alfa_diff = 2*M_PI/slices;
-    float beta_diff = 2*M_PI/stacks;
-    float dist = inner_radius+outer_radius;
-    float px=0.0f;
-    float py=0.0f;
-    float pz=0.0f;
+	float alfa = 0, beta = 0;
+	float alfa_diff = 2 * M_PI / slices;
+	float beta_diff = 2*M_PI / stacks;
+	float px, py, pz;
 
-    glBegin(GL_TRIANGLES);
-    for(int i=0; i<slices; i++) {
-        for(int j=0; j<stacks; j++) {
-            px = (dist+inner_radius*cos(beta))*cos(alfa+alfa_diff);
-            py = (dist+inner_radius*cos(beta))*sin(alfa+alfa_diff);
-            pz = inner_radius*sin(alfa+alfa_diff);
-            glVertex3f(px, py, pz);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glBegin(GL_TRIANGLES);
+	for (int i = 0; i < slices; i++) {
+		for (int j = 0; j < stacks; j++) {
 
-            px = (dist+inner_radius*cos(beta+beta_diff))*cos(alfa+alfa_diff);
-            py = (dist+inner_radius*cos(beta+beta_diff))*sin(alfa+alfa_diff);
-            pz = inner_radius*sin(alfa+alfa_diff);
-            glVertex3f(px, py, pz);
+			px = (inner_radius + outer_radius * cos(beta -M_PI_2)) * cos(alfa);
+			py = outer_radius * sin(beta - M_PI_2);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa);
+			glVertex3f(px, py, pz);
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
+			py = outer_radius * sin(beta - M_PI_2+ beta_diff);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
+			glVertex3f(px, py, pz);
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 )) * cos(alfa+alfa_diff);
+			py =  outer_radius * sin(beta - M_PI_2);
+			pz= (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa+alfa_diff);
+			glVertex3f(px, py, pz);
 
-            px = (dist+inner_radius*cos(beta+beta_diff))*cos(alfa);
-            py = (dist+inner_radius*cos(beta+beta_diff))*sin(alfa);
-            pz = inner_radius*sin(alfa);
-            glVertex3f(px, py, pz);
-            
-            px = (dist+inner_radius*cos(beta+beta_diff))*cos(alfa);
-            py = (dist+inner_radius*cos(beta+beta_diff))*sin(alfa);
-            pz = inner_radius*sin(alfa);
-            glVertex3f(px, py, pz);
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
+			py =  outer_radius * sin(beta - M_PI_2 + beta_diff);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
+			glVertex3f(px, py, pz);
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa + alfa_diff);
+			py =  outer_radius * sin(beta - M_PI_2 + alfa_diff);
+			pz = (inner_radius +outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa + alfa_diff);
+			glVertex3f(px, py, pz);
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2)) * cos(alfa + alfa_diff);
+			py = outer_radius * sin(beta - M_PI_2);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa + alfa_diff);
+			glVertex3f(px, py, pz);
 
-            px = (dist+inner_radius*cos(beta))*cos(alfa);
-            py = (dist+inner_radius*cos(beta))*sin(alfa);
-            pz = inner_radius*sin(alfa);
-            glVertex3f(px, py, pz);
-            
-            px = (dist+inner_radius*cos(beta))*cos(alfa+alfa_diff);
-            py = (dist+inner_radius*cos(beta))*sin(alfa+alfa_diff);
-            pz = inner_radius*sin(alfa+alfa_diff);
-            glVertex3f(px, py, pz);
-
-            beta += beta_diff;
-        }
-        beta = 0;
-        alfa += alfa_diff;
-    }
-    glEnd();
+			beta += beta_diff;
+		}
+		beta = 0;
+		alfa += alfa_diff;
+	}
 }
 
 void processSpecialKeys(int key, int xx, int yy) {
