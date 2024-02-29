@@ -1,0 +1,3 @@
+/home/pereirics/Documents/2023-2024/2 Semestre/ComputacaoGrafica/TP/cg_proj/generator/src/code/build/CMakeFiles/class2.dir
+/home/pereirics/Documents/2023-2024/2 Semestre/ComputacaoGrafica/TP/cg_proj/generator/src/code/build/CMakeFiles/edit_cache.dir
+/home/pereirics/Documents/2023-2024/2 Semestre/ComputacaoGrafica/TP/cg_proj/generator/src/code/build/CMakeFiles/rebuild_cache.dir
