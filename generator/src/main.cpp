@@ -1,4 +1,5 @@
 /* Output a 3d model file*/
+#include <bits/types/FILE.h>
 #include <stddef.h>
 #include <string.h>
 #include <stdio.h>
@@ -19,7 +20,7 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 	      beta_diff = M_PI / stacks, alpha = 0, beta = 0;
 	size_t b_read;
 	for (int i = 0; i < slices; i++) {
-		for (int j = 0; j < stacks; j++) {
+		for (int j = 0; j < stacks; j++) { /* ifs */
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
 					  radius * cosf(beta - M_PI_2) * cosf(alpha),
 					  radius * sinf(beta - M_PI_2),
@@ -305,6 +306,68 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 
 	fclose(output);
 	return err;
+}
+
+
+int32_t gen_torus(float inner_radius, float outer_radius,
+		  int32_t slices, int32_t stacks, char* file)
+{
+	FILE* output = fopen(file, "w+");
+	float alfa = 0, beta = 0;
+	float alfa_diff = 2 * M_PI / slices;
+	float beta_diff = 2*M_PI / stacks;
+	float px, py, pz;
+	char buff[512];
+	size_t b_read;
+	int32_t rr = 0;
+
+	for (int i = 0; i < slices; i++) {
+		for (int j = 0; j < stacks; j++) {
+
+			px = (inner_radius + outer_radius * cos(beta -M_PI_2)) * cos(alfa);
+			py = outer_radius * sin(beta - M_PI_2);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa);
+			b_read = sprintf(buff, "%.3f %.3f %.3f\n", px, py, pz);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
+			py = outer_radius * sin(beta - M_PI_2+ beta_diff);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
+			b_read = sprintf(buff, "%.3f %.3f %.3f\n", px, py, pz);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 )) * cos(alfa+alfa_diff);
+			py =  outer_radius * sin(beta - M_PI_2);
+			pz= (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa+alfa_diff);
+			b_read = sprintf(buff, "%.3f %.3f %.3f\n", px, py, pz);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
+			py =  outer_radius * sin(beta - M_PI_2 + beta_diff);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
+			b_read = sprintf(buff, "%.3f %.3f %.3f\n", px, py, pz);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa + alfa_diff);
+			py =  outer_radius * sin(beta - M_PI_2 + alfa_diff);
+			pz = (inner_radius +outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa + alfa_diff);
+			b_read = sprintf(buff, "%.3f %.3f %.3f\n", px, py, pz);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			px = (inner_radius + outer_radius * cos(beta - M_PI_2)) * cos(alfa + alfa_diff);
+			py = outer_radius * sin(beta - M_PI_2);
+			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa + alfa_diff);
+			b_read = sprintf(buff, "%.3f %.3f %.3f\n", px, py, pz);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			beta += beta_diff;
+		}
+		beta = 0;
+		alfa += alfa_diff;
+	
+	}
+	fclose(output);
+	return rr;
 }
 
 int32_t main(int32_t argc, char**argv)
