@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <sys/cdefs.h>
 #include <vector>
 #include <tinyxml2.h>
 using namespace tinyxml2;
@@ -24,7 +25,7 @@ struct triple {
 };
 struct {
 	struct {
-		float h,w,sx,sy;
+		int h,w,sx,sy;
 		char* title;
 	} win;
 	struct {
@@ -71,6 +72,9 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void drawfigs() {
+
+}
 
 void renderScene(void) {
 
@@ -87,6 +91,7 @@ void renderScene(void) {
 
 
 
+	drawfigs();
 	frames++;
 	time = glutGet(GLUT_ELAPSED_TIME);
 	if (time - timebase > 1000) {
@@ -190,10 +195,68 @@ void xml_init(char* xml_file)
 	XMLDocument doc;
 	doc.LoadFile(xml_file);
 
-	world.win.w= atof(doc.FirstChildElement("world")
-			->FirstChildElement("window")
-			->Attribute("width"));
-	printf("%.3f\n", world.win.w);
+	XMLElement*world_l = doc.RootElement();
+	if (world_l) {
+		XMLElement*window = world_l->FirstChildElement("window");
+		if (window) {
+			world.win.w = window->IntAttribute("width");
+			world.win.h = window->IntAttribute("height");
+			world.win.sx = window->IntAttribute("x");
+			world.win.sy = window->IntAttribute("y");
+			strcpy(world.win.title, window->Attribute("title"));
+		}
+		XMLElement*cam = world_l->FirstChildElement("camera");
+		if (cam) {
+			XMLElement*posi = cam->FirstChildElement("position");
+			if (posi) {
+				world.cam.pos.x = posi->FloatAttribute("x");
+				world.cam.pos.y = posi->FloatAttribute("y");
+				world.cam.pos.z = posi->FloatAttribute("z");
+			}
+			XMLElement*lookAt = cam->FirstChildElement("lookAt");
+			if (lookAt) {
+				world.cam.lookAt.x = posi->FloatAttribute("x");
+				world.cam.lookAt.y = posi->FloatAttribute("y");
+				world.cam.lookAt.z = posi->FloatAttribute("z");
+			}
+			XMLElement*up = cam->FirstChildElement("up");
+			if (up) {
+				world.cam.up.x = posi->FloatAttribute("x");
+				world.cam.up.y = posi->FloatAttribute("y");
+				world.cam.up.z = posi->FloatAttribute("z");
+			}
+			else {
+				world.cam.up.x = 0.f;
+				world.cam.up.y = 1.f;
+				world.cam.up.z = 0.f;
+			}
+			XMLElement*proj = cam->FirstChildElement("projection");
+			if (proj) {
+				world.cam.proj.x = posi->FloatAttribute("x");
+				world.cam.proj.y = posi->FloatAttribute("y");
+				world.cam.proj.z = posi->FloatAttribute("z");
+			}
+			else {
+				world.cam.proj.x = 60.f;
+				world.cam.proj.y = 1.f;
+				world.cam.proj.z = 1000.f;
+			}
+		}
+		XMLElement*group_R = world_l->FirstChildElement("group");
+		if (group_R){
+			XMLElement*models = group_R->FirstChildElement("models");
+			if (models) {
+				XMLElement*mod=models->FirstChildElement("model");
+				if (mod){
+				}
+			}
+
+		}
+	}
+}
+
+void read_3d_files()
+{
 
 
 }
@@ -203,14 +266,16 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		return 0;
 	}
-	xml_init(argv[2]);
+	xml_init(argv[1]);
+	read_3d_files();
+	return 0;
 
 // init GLUT and the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
-	glutInitWindowPosition(100,100);
-	glutInitWindowSize(800,800);
-	glutCreateWindow("CG@DI-UM");
+	glutInitWindowPosition(world.win.sx,world.win.sy);
+	glutInitWindowSize(world.win.w,world.win.h);
+	glutCreateWindow(world.win.title);
 	timebase = glutGet(GLUT_ELAPSED_TIME);
 		
 // Required callback registry 
