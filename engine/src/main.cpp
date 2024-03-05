@@ -1,1 +1,247 @@
-/* glut code */
+#include <stdio.h>
+#include <vector>
+#include <tinyxml2.h>
+using namespace tinyxml2;
+
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
+float camX, camY, camZ;
+int timebase, frames;
+int cur_mode = GL_LINE, cur_face = GL_FRONT;
+GLuint vertex_count, vertices;
+
+struct triple {
+	float x,y,z;
+};
+struct {
+	struct {
+		float h,w,sx,sy;
+		char* title;
+	} win;
+	struct {
+		struct triple pos;
+		struct triple lookAt;
+		struct triple up; /* 0 1 0 */
+		struct triple proj; /* 60 1 1000*/
+	} cam;
+	int* primitives;
+} world;
+
+typedef struct triple* Primitive_Coords;
+
+void spherical2Cartesian() {
+
+	camX = radius * cos(beta) * sin(alfa);
+	camY = radius * sin(beta);
+	camZ = radius * cos(beta) * cos(alfa);
+}
+
+
+void changeSize(int w, int h) {
+
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window with zero width).
+	if(h == 0)
+		h = 1;
+
+	// compute window's aspect ratio 
+	float ratio = w * 1.0 / h;
+
+	// Set the projection matrix as current
+	glMatrixMode(GL_PROJECTION);
+	// Load Identity Matrix
+	glLoadIdentity();
+	
+	// Set the viewport to be the entire window
+	glViewport(0, 0, w, h);
+
+	// Set perspective
+	gluPerspective(45.0f ,ratio, 1.0f ,1000.0f);
+
+	// return to the model view matrix mode
+	glMatrixMode(GL_MODELVIEW);
+}
+
+
+void renderScene(void) {
+
+	// clear buffers
+	int time; float fps; int frame = 0;
+	char blah[64];
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// set the camera
+	glLoadIdentity();
+	gluLookAt(camX, camY, camZ,
+		0.0, 0.0, 0.0,
+		0.0f, 1.0f, 0.0f);
+
+
+
+	frames++;
+	time = glutGet(GLUT_ELAPSED_TIME);
+	if (time - timebase > 1000) {
+		fps = (frames * 1000.f) / (time - timebase);
+		timebase = time;
+		frames = 0;
+	}
+	sprintf(blah, "CG@DI-UM-%.3f", fps);
+	glutSetWindowTitle(blah);
+
+	// End of frame
+	glutSwapBuffers();
+}
+
+
+void processKeys(unsigned char c, int xx, int yy) {
+
+// put code to process regular keys in here
+	switch (c) {
+	case 'w':
+		break;
+	case 's':
+		break;
+	case '1':
+		cur_face = GL_FRONT;
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		break;
+	case '2':
+		cur_face = GL_BACK;
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		break;
+	case '3':
+		cur_face = GL_FRONT_AND_BACK;
+		glDisable(GL_CULL_FACE);
+		break;
+	case '4':
+		cur_mode = GL_LINE;
+		break;
+	case '5':
+		cur_mode = GL_POINT;
+		break;
+	case '6':
+		cur_mode = GL_FILL;
+		break;
+	}
+	glPolygonMode(cur_face,cur_mode);
+	spherical2Cartesian();
+}
+
+
+void processSpecialKeys(int key, int xx, int yy) {
+
+	switch (key) {
+
+	case GLUT_KEY_RIGHT:
+		alfa -= 0.1; break;
+
+	case GLUT_KEY_LEFT:
+		alfa += 0.1; break;
+
+	case GLUT_KEY_UP:
+		beta += 0.1f;
+		if (beta > 1.5f)
+			beta = 1.5f;
+		break;
+
+	case GLUT_KEY_DOWN:
+		beta -= 0.1f;
+		if (beta < -1.5f)
+			beta = -1.5f;
+		break;
+
+	case GLUT_KEY_PAGE_DOWN:
+		radius -= 0.1f;
+		if (radius < 0.1f)
+			radius = 0.1f;
+		break;
+
+	case GLUT_KEY_PAGE_UP:
+		radius += 0.1f; break;
+	}
+	spherical2Cartesian();
+
+}
+
+
+void printInfo() {
+
+	printf("Vendor: %s\n", glGetString(GL_VENDOR));
+	printf("Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("Version: %s\n", glGetString(GL_VERSION));
+
+	printf("\nUse Arrows to move the camera up/down and left/right\n\
+Page Up and Page Down control the distance from the camera to the origin\n");
+}
+
+void xml_init(char* xml_file)
+{
+	XMLDocument doc;
+	doc.LoadFile(xml_file);
+
+	world.win.w= atof(doc.FirstChildElement("world")
+			->FirstChildElement("window")
+			->Attribute("width"));
+	printf("%.3f\n", world.win.w);
+
+
+}
+
+int main(int argc, char **argv)
+{
+	if (argc < 2) {
+		return 0;
+	}
+	xml_init(argv[2]);
+
+// init GLUT and the window
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
+	glutInitWindowPosition(100,100);
+	glutInitWindowSize(800,800);
+	glutCreateWindow("CG@DI-UM");
+	timebase = glutGet(GLUT_ELAPSED_TIME);
+		
+// Required callback registry 
+	glutDisplayFunc(renderScene);
+	glutIdleFunc(renderScene);
+	glutReshapeFunc(changeSize);
+	
+// Callback registration for keyboard processing
+	glutKeyboardFunc(processKeys);
+	glutSpecialFunc(processSpecialKeys);
+
+
+	// init GLEW
+#ifndef __APPLE__
+	glewInit();
+#endif
+
+
+//  OpenGL settings
+	/*glEnableClientState(GL_VERTEX_ARRAY);
+	glGenBuffers(1, &vertices);*/
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glPolygonMode(cur_face, cur_mode);
+
+	spherical2Cartesian();
+
+	printInfo();
+
+// enter GLUT's main cycle
+	glutMainLoop();
+	
+	return 1;
+}
