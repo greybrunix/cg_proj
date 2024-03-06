@@ -26,12 +26,27 @@ struct triple {
 };
 struct prims {
 	int count;
-	char* name;
+	int group;
+	char name[64];
 };
+/* { {.count=2, .group=0, .name="sphere.3d"},
+ *   {.count=1, .group=0, .name="plane.3d"},
+ *   {.count=1, .group=1, .name="plane.3d"}
+ * }*/
+/* { 
+ *   { {.count=2, .name="sphere.3d"},
+ *     {.count=1, .name="plane.3d"}
+ *   },
+ *   { {.count=1, .name="plane.3d"}
+ *   }
+ * }*/
+/* { {.count=2, .name="sphere.3d"},
+ *   {.count=2, .name="plane.3d"},
+ * }*/
 struct {
 	struct {
 		int h,w,sx,sy;
-		char* title;
+		char title[64];
 	} win;
 	struct {
 		struct triple pos;
@@ -39,7 +54,7 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
-	struct prims primitives[1024];
+	struct prims primitives[512];
 } world;
 
 typedef struct triple* Primitive_Coords;
@@ -51,11 +66,15 @@ void spherical2Cartesian() {
 	camZ = radius * cos(beta) * cos(alfa);
 }
 
-static int not_in_prims(const char* f, int* i)
+static int not_in_prims_g(const char* f, int* i, int g, int N)
 {
-
-
-	return 0;
+	int r = 1;
+	for (*i=0; *i< N && r; *i+=1) {
+		if (!strcmp(f, world.primitives[*i].name) &&
+		    world.primitives[*i].group == g)
+		    r = 0;
+	}
+	return r;
 }
 
 void changeSize(int w, int h) {
@@ -201,103 +220,117 @@ void printInfo() {
 Page Up and Page Down control the distance from the camera to the origin\n");
 }
 
-void xml_init(char* xml_file)
+int xml_init(char* xml_file)
 {
 	XMLDocument doc;
-	int i = 0;
+	XMLElement* world_l, *window, *cam, *posi, *lookAt, *up, *proj,
+		*group_R, *gr, *mod, *models;
+	int i = 0, g, j, rs = 0;
+	const char* f;
 	doc.LoadFile(xml_file);
 
-	XMLElement*world_l = doc.RootElement();
+	world_l = doc.RootElement();
 	if (world_l) {
-		XMLElement*window = world_l->FirstChildElement("window");
-		if (window) {
-			world.win.w = window->IntAttribute("width");
-			world.win.h = window->IntAttribute("height");
-			world.win.sx = window->IntAttribute("x");
-			world.win.sy = window->IntAttribute("y");
-			printf("%d%d%d%d\n", world.win.w, world.win.h,world.win.sx,world.win.sy);
+		window = world_l->FirstChildElement("window");
+		if (!window) {
+			return -1;
 		}
-		XMLElement*cam = world_l->FirstChildElement("camera");
-		if (cam) {
-			XMLElement*posi = cam->FirstChildElement("position");
-			if (posi) {
-				world.cam.pos.x = posi->FloatAttribute("x");
-				world.cam.pos.y = posi->FloatAttribute("y");
-				world.cam.pos.z = posi->FloatAttribute("z");
-				printf("%.2f%.2f%.2f\n", world.cam.pos.x, world.cam.pos.y,world.cam.pos.z);
-			}
-			XMLElement*lookAt = cam->FirstChildElement("lookAt");
-			if (lookAt) {
-				world.cam.lookAt.x = posi->FloatAttribute("x");
-				world.cam.lookAt.y = posi->FloatAttribute("y");
-				world.cam.lookAt.z = posi->FloatAttribute("z");
-				printf("%.2f%.2f%.2f\n", world.cam.lookAt.x, world.cam.lookAt.y,world.cam.lookAt.z);
-			}
-			XMLElement*up = cam->FirstChildElement("up");
-			if (up) {
-				world.cam.up.x = posi->FloatAttribute("x");
-				world.cam.up.y = posi->FloatAttribute("y");
-				world.cam.up.z = posi->FloatAttribute("z");
-				printf("%.2f%.2f%.2f\n", world.cam.up.x, world.cam.up.y,world.cam.up.z);
-			}
-			else {
-				world.cam.up.x = 0.f;
-				world.cam.up.y = 1.f;
-				world.cam.up.z = 0.f;
-				printf("%.2f%.2f%.2f\n", world.cam.up.x, world.cam.up.y,world.cam.up.z);
-			}
-			XMLElement*proj = cam->FirstChildElement("projection");
-			if (proj) {
-				world.cam.proj.x = posi->FloatAttribute("x");
-				world.cam.proj.y = posi->FloatAttribute("y");
-				world.cam.proj.z = posi->FloatAttribute("z");
-				printf("%.2f%.2f%.2f\n", world.cam.proj.x, world.cam.proj.y,world.cam.proj.z);
-			}
-			else {
-				world.cam.proj.x = 60.f;
-				world.cam.proj.y = 1.f;
-				world.cam.proj.z = 1000.f;
-				printf("%.2f%.2f%.2f\n", world.cam.proj.x, world.cam.proj.y,world.cam.proj.z);
-			}
+		world.win.w = window->IntAttribute("width");
+		world.win.h = window->IntAttribute("height");
+		world.win.sx = window->IntAttribute("x");
+		world.win.sy = window->IntAttribute("y");
+		strcpy(world.win.title, window->Attribute("title"));
+		cam = world_l->FirstChildElement("camera");
+		if (!cam) {
+			return -2;
 		}
-		XMLElement*group_R = world_l->FirstChildElement("group");
-		XMLElement*gr;
+		posi = cam->FirstChildElement("position");
+		if (!posi) {
+			return -3;
+		}
+		world.cam.pos.x = posi->FloatAttribute("x");
+		world.cam.pos.y = posi->FloatAttribute("y");
+		world.cam.pos.z = posi->FloatAttribute("z");
+		lookAt = cam->FirstChildElement("lookAt");
+		if (!lookAt) {
+			return -4;
+		}
+		world.cam.lookAt.x = posi->FloatAttribute("x");
+		world.cam.lookAt.y = posi->FloatAttribute("y");
+		world.cam.lookAt.z = posi->FloatAttribute("z");
+		up = cam->FirstChildElement("up");
+		if (up) {
+			world.cam.up.x = posi->FloatAttribute("x");
+			world.cam.up.y = posi->FloatAttribute("y");
+			world.cam.up.z = posi->FloatAttribute("z");
+		}
+		else {
+			world.cam.up.x = 0.f;
+			world.cam.up.y = 1.f;
+			world.cam.up.z = 0.f;
+		}
+		proj = cam->FirstChildElement("projection");
+		if (proj) {
+			world.cam.proj.x = posi->FloatAttribute("x");
+			world.cam.proj.y = posi->FloatAttribute("y");
+			world.cam.proj.z = posi->FloatAttribute("z");
+		}
+		else {
+			world.cam.proj.x = 60.f;
+			world.cam.proj.y = 1.f;
+			world.cam.proj.z = 1000.f;
+		}
+		group_R = world_l->FirstChildElement("group");
 		if (group_R){
-			for (gr=group_R; gr; gr = gr->FirstChildElement("group")){
-				XMLElement*models = gr->FirstChildElement("models");
+			for (gr=group_R, g=0;
+			     gr;
+			     gr = gr->FirstChildElement("group"),
+			     g += 1) {
+
+				models = gr->FirstChildElement("models");
 				if (models) {
-					XMLElement*mod;
-					for (mod=models->FirstChildElement("model"); mod;
-					     mod=mod->NextSiblingElement("model")) {
+					for (mod=models->FirstChildElement("model");
+					     mod;
+					     mod=mod->NextSiblingElement("model")
+					     ) {
+
 						if (mod){
-							const char* f = mod->Attribute("file");
-							//int j;
-							//if ( (not_in_prims(f, &j))) {
-							strcpy(world.primitives[i].name, f);
-							world.primitives[i].count = 1;
-							//}
+							f = mod->Attribute("file");
+							if ( not_in_prims_g(f, &j, g, i)) {
+								strcpy(world.primitives[i].name, f);
+								world.primitives[i].count = 1;
+								world.primitives[i].group = g;
+								i += 1;
+							}
+							else
+								world.primitives[j].count+=1;
 						}
 					}
+
 				}
 			}
+
 		}
 	}
+	return 0;
 }
 
-void read_3d_files()
+int read_3d_files()
 {
 
-
+	return 0;
 }
 
 int main(int argc, char **argv)
 {
+	int res = 0;
 	if (argc < 2) {
-		return 0;
+		return 1;
 	}
-	xml_init(argv[1]);
-	read_3d_files();
-	return 0;
+	res = xml_init(argv[1]);
+	if (res)
+		return res;
+	res = read_3d_files();
 
 // init GLUT and the window
 	glutInit(&argc, argv);
