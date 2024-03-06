@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
 #include <sys/cdefs.h>
 #include <vector>
 #include <tinyxml2.h>
@@ -15,6 +17,7 @@ using namespace tinyxml2;
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+FILE* fd;
 float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
 float camX, camY, camZ;
 int timebase, frames;
@@ -53,7 +56,7 @@ struct {
 		struct triple lookAt;
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
-	} cam;
+  f = open()} cam;
 	struct prims primitives[512];
 } world;
 
@@ -315,9 +318,40 @@ int xml_init(char* xml_file)
 	return 0;
 }
 
-int read_3d_files()
-{
+struct Coords {
+    float x;
+    float y;
+    float z;
+};
 
+void read_words (FILE *f) {
+    char line[1024];
+    struct Coords *array = NULL;
+    int i = 0;
+    array = (struct Coords * )malloc(i*sizeof(struct Coords));
+    while (fgets(line,sizeof(line), f) != NULL) {        
+        array = (struct Coords * )realloc(i*sizeof(struct Coords));
+        char *token = strtok(line, " \t\n");
+        
+        array[i].x = atof(token);
+        token = strtok(NULL, " \t\n");
+        
+        array[i].y = atof(token);
+        token = strtok(NULL, " \t\n");
+
+        array[i].z = atof(token);
+        token = strtok(NULL, " \t\n");
+
+        i++;
+    }
+}
+
+int read_3d_files(int N)
+{
+    for (int i=0; i<N; i++) {
+        fd = fopen(world.primitives[i].name, "r");
+        read_words(fd);
+    }
 	return 0;
 }
 
