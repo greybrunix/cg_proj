@@ -22,44 +22,44 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) { /* ifs */
 			if(j!=0){
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cosf(beta - M_PI_2) * cosf(alpha),
-					  radius * sinf(beta - M_PI_2),
-					  radius*cosf(beta+M_PI_2)*sinf(alpha));
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cosf(beta - M_PI_2 + beta_diff)
-					  	* cosf(alpha + alpha_diff),
-					  radius * sinf(beta - M_PI_2 + beta_diff),
-					  radius*cosf(beta+M_PI_2+beta_diff)*
-					  	sinf(alpha + alpha_diff));
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cosf(beta - M_PI_2)
-					  	* cosf(alpha + alpha_diff),
-					  radius * sinf(beta - M_PI_2),
-					  radius*cosf(beta+M_PI_2)
-					  	*sinf(alpha + alpha_diff));
-			fwrite(buff, sizeof (int8_t),b_read, output);
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
+						  radius * cosf(beta - M_PI_2) * cosf(alpha),
+						  radius * sinf(beta - M_PI_2),
+						  radius*cosf(beta+M_PI_2)*sinf(alpha));
+				fwrite(buff, sizeof (int8_t),b_read, output);
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
+						  radius * cosf(beta - M_PI_2 + beta_diff)
+							* cosf(alpha + alpha_diff),
+						  radius * sinf(beta - M_PI_2 + beta_diff),
+						  radius*cosf(beta+M_PI_2+beta_diff)*
+							sinf(alpha + alpha_diff));
+				fwrite(buff, sizeof (int8_t),b_read, output);
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
+						  radius * cosf(beta - M_PI_2)
+							* cosf(alpha + alpha_diff),
+						  radius * sinf(beta - M_PI_2),
+						  radius*cosf(beta+M_PI_2)
+							*sinf(alpha + alpha_diff));
+				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
 			if(j!=stacks-1){
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cosf(beta - M_PI_2) * cosf(alpha),
-					  radius * sinf(beta - M_PI_2),
-					  radius*cosf(beta+M_PI_2)*sinf(alpha));
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha),
-					  radius * sinf(beta - M_PI_2 + beta_diff),
-					  radius*cosf(beta+M_PI_2 + beta_diff)*sinf(alpha));
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-					  radius * cosf(beta - M_PI_2 + beta_diff)
-					  	* cosf(alpha + alpha_diff),
-					  radius * sinf(beta - M_PI_2 + beta_diff),
-					  radius*cosf(beta+M_PI_2+beta_diff)*
-					  	sinf(alpha + alpha_diff));
-			fwrite(buff, sizeof (int8_t),b_read, output);
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
+						  radius * cosf(beta - M_PI_2) * cosf(alpha),
+						  radius * sinf(beta - M_PI_2),
+						  radius*cosf(beta+M_PI_2)*sinf(alpha));
+				fwrite(buff, sizeof (int8_t),b_read, output);
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
+						  radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha),
+						  radius * sinf(beta - M_PI_2 + beta_diff),
+						  radius*cosf(beta+M_PI_2 + beta_diff)*sinf(alpha));
+				fwrite(buff, sizeof (int8_t),b_read, output);
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
+						  radius * cosf(beta - M_PI_2 + beta_diff)
+							* cosf(alpha + alpha_diff),
+						  radius * sinf(beta - M_PI_2 + beta_diff),
+						  radius*cosf(beta+M_PI_2+beta_diff)*
+							sinf(alpha + alpha_diff));
+				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
 			beta += beta_diff;
 		}
@@ -426,8 +426,8 @@ int32_t main(int32_t argc, char**argv)
 			goto clean;
 		}
 		err = gen_torus(atof(argv[2]),
-			      atoi(argv[3]),
-			      atof(argv[4]),
+			      atof(argv[3]),
+			      atoi(argv[4]),
 			      atoi(argv[5]),
 			      argv[6]);
 	}
