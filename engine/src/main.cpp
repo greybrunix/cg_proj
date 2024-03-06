@@ -105,7 +105,13 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void drawfigs() {
+void drawfigs(int N) {
+    
+    glBegin(GL_TRIANGLES);
+    for (int i = 0; i<N; i++) {
+        glVertex3f(array[i].x, array[i].y, array[i].z);
+    }
+    glEnd;
 
 }
 
