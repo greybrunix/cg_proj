@@ -21,6 +21,7 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 	size_t b_read;
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) { /* ifs */
+			if(j!=0){
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
 					  radius * cosf(beta - M_PI_2) * cosf(alpha),
 					  radius * sinf(beta - M_PI_2),
@@ -40,6 +41,8 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 					  radius*cosf(beta+M_PI_2)
 					  	*sinf(alpha + alpha_diff));
 			fwrite(buff, sizeof (int8_t),b_read, output);
+			}
+			if(j!=stacks-1){
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
 					  radius * cosf(beta - M_PI_2) * cosf(alpha),
 					  radius * sinf(beta - M_PI_2),
@@ -57,6 +60,7 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 					  radius*cosf(beta+M_PI_2+beta_diff)*
 					  	sinf(alpha + alpha_diff));
 			fwrite(buff, sizeof (int8_t),b_read, output);
+			}
 			beta += beta_diff;
 		}
 		beta = 0;
@@ -417,11 +421,15 @@ int32_t main(int32_t argc, char**argv)
 			      argv[5]);
 	}
 	else if (!strcmp(argv[1], "torus")) {
-		if (argc != 5) {
+		if (argc != 7) {
 			err = -1;
 			goto clean;
 		}
-		err = -1;
+		err = gen_torus(atof(argv[2]),
+			      atoi(argv[3]),
+			      atof(argv[4]),
+			      atoi(argv[5]),
+			      argv[6]);;
 	}
 
 clean:
