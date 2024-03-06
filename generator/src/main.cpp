@@ -429,7 +429,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      atof(argv[4]),
 			      atoi(argv[5]),
-			      argv[6]);;
+			      argv[6]);
 	}
 
 clean:
