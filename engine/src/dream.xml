@@ -11,5 +11,11 @@
 			<model file="sphere.3d">
 			</model>
 		</models>
+		<group>
+			<models>
+				<model file="plane.3d">
+				</model>
+			</models>
+		</group>
 	</group>
 </world>

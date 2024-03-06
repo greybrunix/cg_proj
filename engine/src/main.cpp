@@ -2,6 +2,7 @@
 #include <sys/cdefs.h>
 #include <vector>
 #include <tinyxml2.h>
+#include <string.h>
 using namespace tinyxml2;
 
 #ifdef __APPLE__
@@ -23,6 +24,10 @@ GLuint vertex_count, vertices;
 struct triple {
 	float x,y,z;
 };
+struct prims {
+	int count;
+	char* name;
+};
 struct {
 	struct {
 		int h,w,sx,sy;
@@ -34,7 +39,7 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
-	int* primitives;
+	struct prims primitives[1024];
 } world;
 
 typedef struct triple* Primitive_Coords;
@@ -46,6 +51,12 @@ void spherical2Cartesian() {
 	camZ = radius * cos(beta) * cos(alfa);
 }
 
+static int not_in_prims(const char* f, int* i)
+{
+
+
+	return 0;
+}
 
 void changeSize(int w, int h) {
 
@@ -193,6 +204,7 @@ Page Up and Page Down control the distance from the camera to the origin\n");
 void xml_init(char* xml_file)
 {
 	XMLDocument doc;
+	int i = 0;
 	doc.LoadFile(xml_file);
 
 	XMLElement*world_l = doc.RootElement();
@@ -203,7 +215,7 @@ void xml_init(char* xml_file)
 			world.win.h = window->IntAttribute("height");
 			world.win.sx = window->IntAttribute("x");
 			world.win.sy = window->IntAttribute("y");
-			strcpy(world.win.title, window->Attribute("title"));
+			printf("%d%d%d%d\n", world.win.w, world.win.h,world.win.sx,world.win.sy);
 		}
 		XMLElement*cam = world_l->FirstChildElement("camera");
 		if (cam) {
@@ -212,45 +224,62 @@ void xml_init(char* xml_file)
 				world.cam.pos.x = posi->FloatAttribute("x");
 				world.cam.pos.y = posi->FloatAttribute("y");
 				world.cam.pos.z = posi->FloatAttribute("z");
+				printf("%.2f%.2f%.2f\n", world.cam.pos.x, world.cam.pos.y,world.cam.pos.z);
 			}
 			XMLElement*lookAt = cam->FirstChildElement("lookAt");
 			if (lookAt) {
 				world.cam.lookAt.x = posi->FloatAttribute("x");
 				world.cam.lookAt.y = posi->FloatAttribute("y");
 				world.cam.lookAt.z = posi->FloatAttribute("z");
+				printf("%.2f%.2f%.2f\n", world.cam.lookAt.x, world.cam.lookAt.y,world.cam.lookAt.z);
 			}
 			XMLElement*up = cam->FirstChildElement("up");
 			if (up) {
 				world.cam.up.x = posi->FloatAttribute("x");
 				world.cam.up.y = posi->FloatAttribute("y");
 				world.cam.up.z = posi->FloatAttribute("z");
+				printf("%.2f%.2f%.2f\n", world.cam.up.x, world.cam.up.y,world.cam.up.z);
 			}
 			else {
 				world.cam.up.x = 0.f;
 				world.cam.up.y = 1.f;
 				world.cam.up.z = 0.f;
+				printf("%.2f%.2f%.2f\n", world.cam.up.x, world.cam.up.y,world.cam.up.z);
 			}
 			XMLElement*proj = cam->FirstChildElement("projection");
 			if (proj) {
 				world.cam.proj.x = posi->FloatAttribute("x");
 				world.cam.proj.y = posi->FloatAttribute("y");
 				world.cam.proj.z = posi->FloatAttribute("z");
+				printf("%.2f%.2f%.2f\n", world.cam.proj.x, world.cam.proj.y,world.cam.proj.z);
 			}
 			else {
 				world.cam.proj.x = 60.f;
 				world.cam.proj.y = 1.f;
 				world.cam.proj.z = 1000.f;
+				printf("%.2f%.2f%.2f\n", world.cam.proj.x, world.cam.proj.y,world.cam.proj.z);
 			}
 		}
 		XMLElement*group_R = world_l->FirstChildElement("group");
+		XMLElement*gr;
 		if (group_R){
-			XMLElement*models = group_R->FirstChildElement("models");
-			if (models) {
-				XMLElement*mod=models->FirstChildElement("model");
-				if (mod){
+			for (gr=group_R; gr; gr = gr->FirstChildElement("group")){
+				XMLElement*models = gr->FirstChildElement("models");
+				if (models) {
+					XMLElement*mod;
+					for (mod=models->FirstChildElement("model"); mod;
+					     mod=mod->NextSiblingElement("model")) {
+						if (mod){
+							const char* f = mod->Attribute("file");
+							//int j;
+							//if ( (not_in_prims(f, &j))) {
+							strcpy(world.primitives[i].name, f);
+							world.primitives[i].count = 1;
+							//}
+						}
+					}
 				}
 			}
-
 		}
 	}
 }
