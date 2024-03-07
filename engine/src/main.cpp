@@ -80,12 +80,11 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_PROJECTION);
 	// Load Identity Matrix
 	glLoadIdentity();
-	
 	// Set the viewport to be the entire window
 	glViewport(0, 0, w, h);
 
 	// Set perspective
-	gluPerspective(45.0f ,ratio, 1.0f ,1000.0f);
+	gluPerspective(world.cam.proj.x,ratio, world.cam.proj.y ,world.cam.proj.z);
 
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -98,8 +97,8 @@ void drawfigs(void)
 	for (i = 0; i<prims.size(); i++) {
 		for (j=0; j<prims[i].size();j++) {
 			glVertex3f(prims[i][j].x,
-					   prims[i][j].y,
-					   prims[i][j].z);
+				   prims[i][j].y,
+				   prims[i][j].z);
 		}
 	}
 	glEnd();
@@ -115,10 +114,32 @@ void renderScene(void) {
 
 	// set the camera
 	glLoadIdentity();
-	gluLookAt(camX, camY, camZ,
-		0.0, 0.0, 0.0,
-		0.0f, 1.0f, 0.0f);
+	gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
+		world.cam.lookAt.x, world.cam.lookAt.y
+		, world.cam.lookAt.z,
+		world.cam.up.x, world.cam.up.y, world.cam.up.z);
+	/*gluLookAt(camX, camY,camZ,
+		  0.f,0.f,0.f,
+		  0.f,1.f,0.f);
+	*/
 
+	glPolygonMode(GL_FRONT, GL_LINE);
+
+	glBegin(GL_LINES);
+		// X axis in red
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-100.0f, 0.0f, 0.0f);
+		glVertex3f( 100.0f, 0.0f, 0.0f);
+		// Y Axis in Green
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, -100.0f, 0.0f);
+		glVertex3f(0.0f, 100.0f, 0.0f);
+		// Z Axis in Blue
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 0.0f, -100.0f);
+		glVertex3f(0.0f, 0.0f, 100.0f);
+		glColor3f(1.f,1.f,1.f);
+	glEnd();
 
 
 	drawfigs();
@@ -140,6 +161,7 @@ void renderScene(void) {
 void processKeys(unsigned char c, int xx, int yy) {
 
 // put code to process regular keys in here
+ /*
 	switch (c) {
 	case 'w':
 		break;
@@ -171,6 +193,7 @@ void processKeys(unsigned char c, int xx, int yy) {
 	}
 	glPolygonMode(cur_face,cur_mode);
 	spherical2Cartesian();
+	*/
 }
 
 
@@ -206,7 +229,6 @@ void processSpecialKeys(int key, int xx, int yy) {
 		radius += 0.1f; break;
 	}
 	spherical2Cartesian();
-
 }
 
 
@@ -227,6 +249,7 @@ int xml_init(char* xml_file)
 		*group_R, *gr, *mod, *models;
 	int i = 0, g, j, rs = 0;
 	const char* f;
+	const char* tit;
 	char tmp[1024];
 	doc.LoadFile(xml_file);
 
@@ -238,9 +261,15 @@ int xml_init(char* xml_file)
 		}
 		world.win.w = window->IntAttribute("width");
 		world.win.h = window->IntAttribute("height");
+		world.win.sx = 0;
+		world.win.sy = 0;
 		world.win.sx = window->IntAttribute("x");
 		world.win.sy = window->IntAttribute("y");
-		strcpy(world.win.title, window->Attribute("title"));
+		tit = window->Attribute("title");
+		if (tit)
+			strcpy(world.win.title, window->Attribute("title"));
+		else
+			strcpy(world.win.title, "CG-PROJ");
 		cam = world_l->FirstChildElement("camera");
 		if (!cam) {
 			return -2;
@@ -252,35 +281,47 @@ int xml_init(char* xml_file)
 		world.cam.pos.x = posi->FloatAttribute("x");
 		world.cam.pos.y = posi->FloatAttribute("y");
 		world.cam.pos.z = posi->FloatAttribute("z");
+		printf("%.3f %.3f %.3f\n", world.cam.pos.x,
+		       world.cam.pos.y,
+		       world.cam.pos.z);
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 			return -4;
 		}
-		world.cam.lookAt.x = posi->FloatAttribute("x");
-		world.cam.lookAt.y = posi->FloatAttribute("y");
-		world.cam.lookAt.z = posi->FloatAttribute("z");
+		world.cam.lookAt.x = lookAt->FloatAttribute("x");
+		world.cam.lookAt.y = lookAt->FloatAttribute("y");
+		world.cam.lookAt.z = lookAt->FloatAttribute("z");
+		printf("%.3f %.3f %.3f\n", world.cam.lookAt.x,
+		       world.cam.lookAt.y,
+		       world.cam.lookAt.z);
 		up = cam->FirstChildElement("up");
 		if (up) {
-			world.cam.up.x = posi->FloatAttribute("x");
-			world.cam.up.y = posi->FloatAttribute("y");
-			world.cam.up.z = posi->FloatAttribute("z");
+			world.cam.up.x = up->FloatAttribute("x");
+			world.cam.up.y = up->FloatAttribute("y");
+			world.cam.up.z = up->FloatAttribute("z");
 		}
 		else {
 			world.cam.up.x = 0.f;
 			world.cam.up.y = 1.f;
 			world.cam.up.z = 0.f;
 		}
+		printf("%.3f %.3f %.3f\n", world.cam.up.x,
+		       world.cam.up.y,
+		       world.cam.up.z);
 		proj = cam->FirstChildElement("projection");
 		if (proj) {
-			world.cam.proj.x = posi->FloatAttribute("x");
-			world.cam.proj.y = posi->FloatAttribute("y");
-			world.cam.proj.z = posi->FloatAttribute("z");
+			world.cam.proj.x = proj->FloatAttribute("fov");
+			world.cam.proj.y = proj->FloatAttribute("near");
+			world.cam.proj.z = proj->FloatAttribute("far");
 		}
 		else {
-			world.cam.proj.x = 60.f;
-			world.cam.proj.y = 1.f;
-			world.cam.proj.z = 1000.f;
+			world.cam.proj.x = 60.f; // fov
+			world.cam.proj.y = 1.f; // neAR
+			world.cam.proj.z = 1000.f; //far
 		}
+		printf("%.3f %.3f %.3f\n", world.cam.proj.x,
+		       world.cam.proj.y,
+		       world.cam.proj.z);
 		group_R = world_l->FirstChildElement("group");
 		if (group_R){
 			for (gr=group_R, g=0;
@@ -321,23 +362,21 @@ int xml_init(char* xml_file)
 
 void read_words (FILE *f, int top) {
 	char line[1024];
-	int i = 0;
+	char* num;
+	int i = 0, j=0;
+	int lnum = 0;
 	float x,y,z;
 	while (fgets(line,sizeof(line), f) != NULL) {
-		char *token = strtok(line, " \t\n");
-        
-		x = atof(token);
-		token = strtok(NULL, " \t\n");
-
-		y = atof(token);
-		token = strtok(NULL, " \t\n");
-
-		z = atof(token);
-		token = strtok(NULL, " \t\n");
+		num = strtok(line, " \n");
+		x = atof(num);
+		num = strtok(NULL, " \n");
+		y = atof(num);
+		num = strtok(NULL, " \n");
+		z = atof(num);
 
 		prims[top].push_back({.x=x,.y=y,.z=z});
 
-		i++;
+		lnum++;
 	}
 }
 
@@ -348,6 +387,9 @@ int read_3d_files(int N)
 	std::vector<struct triple> aux;
 	for (i=0; i<N; i++) {
 		fd = fopen(world.primitives[i].name, "r");
+		if (!fd) {
+			return -1;
+		}
 		prims.push_back(aux);
 		read_words(fd, i);
 		fclose(fd);
@@ -396,9 +438,8 @@ int main(int argc, char **argv)
 	glGenBuffers(1, &vertices);*/
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glPolygonMode(cur_face, cur_mode);
 
-	spherical2Cartesian();
+	//spherical2Cartesian();
 
 	printInfo();
 

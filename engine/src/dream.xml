@@ -8,15 +8,8 @@
 	</camera>
 	<group>
 		<models>
-			<model file="sphere.3d"/>
-			<model file="sphere.3d"/>
 			<model file="plane.3d"/>
+			<model file="sphere.3d"/>
 		</models>
-		<group>
-			<models>
-				<model file="plane.3d">
-				</model>
-			</models>
-		</group>
 	</group>
 </world>

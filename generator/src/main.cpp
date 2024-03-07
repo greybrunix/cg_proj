@@ -100,7 +100,7 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 				fwrite(buff, sizeof (int8_t),b_read, output);
 				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", 0.f, height, 0.f);
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n\n", cur_rad*sinf(angle), y, cur_rad*cosf(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), y, cur_rad*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
 			else {
@@ -120,7 +120,7 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), y,
 						  cur_rad*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n\n", cur_rad*sinf(angle+angle_diff), y,
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), y,
 						  cur_rad*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
@@ -299,7 +299,7 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n\n", x-off, z+off);
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z+off);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			x -= off;
