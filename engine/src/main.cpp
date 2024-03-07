@@ -43,7 +43,7 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
-	struct prims primitives[512];
+	std::vector<struct prims> primitives;
 } world;
 
 typedef std::vector<struct triple> Primitive_Coords;
@@ -341,12 +341,14 @@ int xml_init(char* xml_file)
 						if (mod){
 							f = mod->Attribute("file");
 							if ( not_in_prims_g(f, &j, g, i)) {
+								struct prims tmp_p;
 								strcpy(tmp, "../../prims/");
-								strcpy(world.primitives[i].name, f);
-								strcat(tmp, world.primitives[i].name);
-								strcpy(world.primitives[i].name, tmp);
-								world.primitives[i].count = 1;
-								world.primitives[i].group = g;
+								strcpy(tmp_p.name, f);
+								strcat(tmp, tmp_p.name);
+								strcpy(tmp_p.name, tmp);
+								tmp_p.count = 1;
+								tmp_p.group = g;
+								world.primitives.push_back(tmp_p);
 								i += 1;
 							}
 							else
@@ -385,16 +387,25 @@ void read_words (FILE *f, int top) {
 int read_3d_files(int N)
 {
 	FILE* fd;
-	int i;
+	int i,j;
+	int flag = 0;
 	std::vector<struct triple> aux;
+	std::vector<char*> already_read;
 	for (i=0; i<N; i++) {
-		fd = fopen(world.primitives[i].name, "r");
-		if (!fd) {
-			return -1;
+		flag = 0;
+		for (j=0; j<already_read.size() && !flag;j++)
+			if (!strcmp(world.primitives[i].name, already_read[j]))
+				flag = 1;
+		if (!flag) {
+			fd = fopen(world.primitives[i].name, "r");
+			if (!fd) {
+				return -1;
+			}
+			prims.push_back(aux);
+			read_words(fd, i);
+			fclose(fd);
+			already_read.push_back(world.primitives[i].name);
 		}
-		prims.push_back(aux);
-		read_words(fd, i);
-		fclose(fd);
 	}
 	return 0;
 }
