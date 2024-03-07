@@ -242,7 +242,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
