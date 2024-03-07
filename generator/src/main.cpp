@@ -1,5 +1,4 @@
 /* Output a 3d model file*/
-#include <bits/types/FILE.h>
 #include <stddef.h>
 #include <string.h>
 #include <stdio.h>
