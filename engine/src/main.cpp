@@ -368,7 +368,6 @@ void read_words (FILE *f, int top) {
 	char line[1024];
 	char* num;
 	int i = 0, j=0;
-	int lnum = 0;
 	float x,y,z;
 	while (fgets(line,sizeof(line), f) != NULL) {
 		num = strtok(line, " \n");
@@ -379,8 +378,6 @@ void read_words (FILE *f, int top) {
 		z = atof(num);
 
 		prims[top].push_back({.x=x,.y=y,.z=z});
-
-		lnum++;
 	}
 }
 
@@ -408,8 +405,7 @@ int read_3d_files(int N)
 			read_words(fd, i);
 			fclose(fd);
 			already_read.push_back({.g=world.primitives[i].group,
-									   .name=world.primitives[i].name});
-									   
+						   .name=world.primitives[i].name});
 		}
 	}
 	return 0;
