@@ -389,22 +389,27 @@ int read_3d_files(int N)
 	FILE* fd;
 	int i,j;
 	int flag = 0;
+	struct tmp_s { int g; char*name;};
 	std::vector<struct triple> aux;
-	std::vector<char*> already_read;
+	std::vector<struct tmp_s> already_read;
 	for (i=0; i<N; i++) {
 		flag = 0;
 		for (j=0; j<already_read.size() && !flag;j++)
-			if (!strcmp(world.primitives[i].name, already_read[j]))
+			if (!strcmp(world.primitives[i].name, already_read[j].name)&&
+				world.primitives[i].group == already_read[j].g)
 				flag = 1;
 		if (!flag) {
 			fd = fopen(world.primitives[i].name, "r");
 			if (!fd) {
 				return -1;
 			}
-			prims.push_back(aux);
+			for (j=0; j < world.primitives[i].count; j++)
+				prims.push_back(aux);
 			read_words(fd, i);
 			fclose(fd);
-			already_read.push_back(world.primitives[i].name);
+			already_read.push_back({.g=world.primitives[i].group,
+									   .name=world.primitives[i].name});
+									   
 		}
 	}
 	return 0;
