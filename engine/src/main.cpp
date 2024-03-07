@@ -150,7 +150,7 @@ void renderScene(void) {
 	}
 
 
-	sprintf(blah, "%d", (int)fps);
+	sprintf(blah, "%s-%d",world.win.title, (int)fps);
 
 	glutSetWindowTitle(blah);
 
