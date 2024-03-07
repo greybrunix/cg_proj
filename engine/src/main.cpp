@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include <sys/cdefs.h>
 #include <vector>
 #include <tinyxml2.h>
 #include <string.h>
