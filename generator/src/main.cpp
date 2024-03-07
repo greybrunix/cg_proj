@@ -135,13 +135,13 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 }
 
 
-int32_t gen_box(float l, int32_t d, char* file)
+int32_t gen_box(float l, int32_t d, char* file) 
 {
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	size_t b_read;
 	int32_t i, j, r = 0;
-	float x = l/2;
+	float x = -l/2;
 	float y = l/2;
 	float z = -l/2;
 	float diff = l/d;
@@ -151,119 +151,122 @@ int32_t gen_box(float l, int32_t d, char* file)
 		for (j=0; j<d; j++) {
 			
 
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, -y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff,-y, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, -y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+			z += diff;
+		}
+		z = - l/2;
+		x += diff;
+	}
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
+	x = -l / 2;
+	y = -l / 2;
+	z = l / 2;
+
+    // Front and Back faces
+	for (int i=0; i<d; i++){
+		for (int j=0; j<d; j++) {
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			x -= diff;
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			y += diff;
 		}
-		x = l/2;
-		z += diff;
+		y = -l/2;
+		x += diff;
 	}
-
+    
+	z = - l/2;
+	y = - l/2;
 	x = l/2;
-	z = -l/2;
 
     // Right and Left faces
 	for (int i=0; i<d; i++){
 		for (int j=0; j<d; j++) {
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y-diff, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y+diff, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y+diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y-diff, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y-diff, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y+diff, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			z += diff;
+			y += diff;
 		}
-		z = -l/2;
-		y -= diff;
-	}
-    
-	y = l/2;
-	z = l/2;
-
-    // Front and Back faces
-	for (int i=0; i<d; i++){
-		for (int j=0; j<d; j++) {
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			x -= diff;
-		}
-		x = l/2;
-		y -= diff;
+		y = -l/2;
+		z += diff;
 	}
 
 	fclose(output);
