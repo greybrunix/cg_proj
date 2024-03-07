@@ -19,7 +19,8 @@ using namespace tinyxml2;
 
 float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
 float camX, camY, camZ;
-int timebase, frames;
+int timebase, time, frames=0;
+float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
 GLuint vertex_count, vertices;
 
@@ -108,7 +109,6 @@ void drawfigs(void)
 void renderScene(void) {
 
 	// clear buffers
-	int time; float fps; int frame = 0;
 	char blah[64];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -141,18 +141,20 @@ void renderScene(void) {
 		glColor3f(1.f,1.f,1.f);
 	glEnd();
 
-
-	drawfigs();
 	frames++;
 	time = glutGet(GLUT_ELAPSED_TIME);
 	if (time - timebase > 1000) {
-		fps = (frames * 1000.f) / (time - timebase);
+		fps = frames * 1000.0 / (time - timebase);
 		timebase = time;
 		frames = 0;
 	}
-	sprintf(blah, "CG@DI-UM-%.3f", fps);
+
+
+	sprintf(blah, "%d", (int)fps);
+
 	glutSetWindowTitle(blah);
 
+	drawfigs();
 	// End of frame
 	glutSwapBuffers();
 }

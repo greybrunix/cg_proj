@@ -1,15 +1,14 @@
 <world>
 	<window width="512" height="512" x="0" y="0" title="Blah"/>
 	<camera>
-		<position x="10" y="10" z="10"/>
+		<position x="5" y="5" z="5"/>
 		<lookAt x="0" y="0" z="0"/>
 		<!---<up x y z/>
 		<projection fov near far/>-->
 	</camera>
 	<group>
 		<models>
-			<model file="plane.3d"/>
-			<model file="sphere.3d"/>
+			<model file="box.3d"/>
 		</models>
 	</group>
 </world>
