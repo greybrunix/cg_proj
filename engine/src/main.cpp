@@ -109,7 +109,7 @@ void drawfigs(void)
 void renderScene(void) {
 
 	// clear buffers
-	char blah[64];
+	char fps_c[64];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// set the camera
@@ -150,9 +150,9 @@ void renderScene(void) {
 	}
 
 
-	sprintf(blah, "%s-%d",world.win.title, (int)fps);
+	sprintf(fps_c, "%s-%d",world.win.title, (int)fps);
 
-	glutSetWindowTitle(blah);
+	glutSetWindowTitle(fps_c);
 
 	drawfigs();
 	// End of frame
