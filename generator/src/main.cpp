@@ -155,28 +155,28 @@ int32_t gen_box(float l, int32_t d, char* file)
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, -y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z+diff);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			x -= diff;
@@ -196,28 +196,28 @@ int32_t gen_box(float l, int32_t d, char* file)
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z+diff);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y-diff, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y-diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z+diff);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y-diff, z+diff);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z+diff);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			z += diff;
@@ -237,28 +237,28 @@ int32_t gen_box(float l, int32_t d, char* file)
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, z);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
 			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, -z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y-diff, -z);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x-diff, y, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y-diff, -z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			x -= diff;
@@ -290,16 +290,16 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 			
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z+off);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			
 			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+			
 			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z+off);
+			fwrite(buff, sizeof (int8_t),b_read, output);
+
+			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z+off);
 			fwrite(buff, sizeof (int8_t),b_read, output);
 
 			x -= off;
