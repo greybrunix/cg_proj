@@ -377,6 +377,8 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 int32_t main(int32_t argc, char**argv)
 {
 	int32_t err = 0;
+	char tmp[1024];
+	strcpy(tmp, "../../prims/");
 	if (argc < 2) {
 		err = -1;
 		goto clean;
@@ -386,6 +388,8 @@ int32_t main(int32_t argc, char**argv)
 			err = -1;
 			goto clean;	
 		}
+		strcat(tmp, argv[4]);
+		strcpy(argv[4], tmp);
 		err = gen_plane(atof(argv[2]),
 				atoi(argv[3]),
 				argv[4]);
@@ -395,6 +399,8 @@ int32_t main(int32_t argc, char**argv)
 			err = -1;
 			goto clean;
 		}
+		strcat(tmp, argv[4]);
+		strcpy(argv[4], tmp);
 		err = gen_box(atof(argv[2]),
 			      atoi(argv[3]),
 			      argv[4]);
@@ -404,6 +410,8 @@ int32_t main(int32_t argc, char**argv)
 			err = -1;
 			goto clean;
 		}
+		strcat(tmp, argv[6]);
+		strcpy(argv[6], tmp);
 		err = gen_cone(atof(argv[2]),
 				atof(argv[3]),
 				atoi(argv[4]),
@@ -415,6 +423,8 @@ int32_t main(int32_t argc, char**argv)
 			err = -1;
 			goto clean;
 		}
+		strcat(tmp, argv[5]);
+		strcpy(argv[5], tmp);
 		err = gen_sphere(atof(argv[2]),
 			      atoi(argv[3]),
 			      atoi(argv[4]),
@@ -425,6 +435,8 @@ int32_t main(int32_t argc, char**argv)
 			err = -1;
 			goto clean;
 		}
+		strcat(tmp, argv[6]);
+		strcpy(argv[6], tmp);
 		err = gen_torus(atof(argv[2]),
 			      atof(argv[3]),
 			      atoi(argv[4]),

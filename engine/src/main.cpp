@@ -17,7 +17,6 @@ using namespace tinyxml2;
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-FILE* fd;
 float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
 float camX, camY, camZ;
 int timebase, frames;
@@ -32,20 +31,6 @@ struct prims {
 	int group;
 	char name[64];
 };
-/* { {.count=2, .group=0, .name="sphere.3d"},
- *   {.count=1, .group=0, .name="plane.3d"},
- *   {.count=1, .group=1, .name="plane.3d"}
- * }*/
-/* { 
- *   { {.count=2, .name="sphere.3d"},
- *     {.count=1, .name="plane.3d"}
- *   },
- *   { {.count=1, .name="plane.3d"}
- *   }
- * }*/
-/* { {.count=2, .name="sphere.3d"},
- *   {.count=2, .name="plane.3d"},
- * }*/
 struct {
 	struct {
 		int h,w,sx,sy;
@@ -56,11 +41,12 @@ struct {
 		struct triple lookAt;
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
-  f = open()} cam;
+	} cam;
 	struct prims primitives[512];
 } world;
 
-typedef struct triple* Primitive_Coords;
+typedef std::vector<struct triple> Primitive_Coords;
+std::vector<Primitive_Coords> prims;
 
 void spherical2Cartesian() {
 
@@ -105,13 +91,18 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void drawfigs(int N) {
-    
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i<N; i++) {
-        glVertex3f(array[i].x, array[i].y, array[i].z);
-    }
-    glEnd;
+void drawfigs(void)
+{
+	int i, j;
+	glBegin(GL_TRIANGLES);
+	for (i = 0; i<prims.size(); i++) {
+		for (j=0; j<prims[i].size();j++) {
+			glVertex3f(prims[i][j].x,
+					   prims[i][j].y,
+					   prims[i][j].z);
+		}
+	}
+	glEnd();
 
 }
 
@@ -236,6 +227,7 @@ int xml_init(char* xml_file)
 		*group_R, *gr, *mod, *models;
 	int i = 0, g, j, rs = 0;
 	const char* f;
+	char tmp[1024];
 	doc.LoadFile(xml_file);
 
 	world_l = doc.RootElement();
@@ -306,7 +298,10 @@ int xml_init(char* xml_file)
 						if (mod){
 							f = mod->Attribute("file");
 							if ( not_in_prims_g(f, &j, g, i)) {
+								strcpy(tmp, "../../prims/");
 								strcpy(world.primitives[i].name, f);
+								strcat(tmp, world.primitives[i].name);
+								strcpy(world.primitives[i].name, tmp);
 								world.primitives[i].count = 1;
 								world.primitives[i].group = g;
 								i += 1;
@@ -321,56 +316,56 @@ int xml_init(char* xml_file)
 
 		}
 	}
-	return 0;
+	return i;
 }
 
-struct Coords {
-    float x;
-    float y;
-    float z;
-};
-
-void read_words (FILE *f) {
-    char line[1024];
-    struct Coords *array = NULL;
-    int i = 0;
-    array = (struct Coords * )malloc(i*sizeof(struct Coords));
-    while (fgets(line,sizeof(line), f) != NULL) {        
-        array = (struct Coords * )realloc(i*sizeof(struct Coords));
-        char *token = strtok(line, " \t\n");
+void read_words (FILE *f, int top) {
+	char line[1024];
+	int i = 0;
+	float x,y,z;
+	while (fgets(line,sizeof(line), f) != NULL) {
+		char *token = strtok(line, " \t\n");
         
-        array[i].x = atof(token);
-        token = strtok(NULL, " \t\n");
-        
-        array[i].y = atof(token);
-        token = strtok(NULL, " \t\n");
+		x = atof(token);
+		token = strtok(NULL, " \t\n");
 
-        array[i].z = atof(token);
-        token = strtok(NULL, " \t\n");
+		y = atof(token);
+		token = strtok(NULL, " \t\n");
 
-        i++;
-    }
+		z = atof(token);
+		token = strtok(NULL, " \t\n");
+
+		prims[top].push_back({.x=x,.y=y,.z=z});
+
+		i++;
+	}
 }
 
 int read_3d_files(int N)
 {
-    for (int i=0; i<N; i++) {
-        fd = fopen(world.primitives[i].name, "r");
-        read_words(fd);
-    }
+	FILE* fd;
+	int i;
+	std::vector<struct triple> aux;
+	for (i=0; i<N; i++) {
+		fd = fopen(world.primitives[i].name, "r");
+		prims.push_back(aux);
+		read_words(fd, i);
+		fclose(fd);
+	}
 	return 0;
 }
 
 int main(int argc, char **argv)
 {
-	int res = 0;
+	int res = 0, i;
 	if (argc < 2) {
 		return 1;
 	}
 	res = xml_init(argv[1]);
-	if (res)
+	if (res < 0)
 		return res;
-	res = read_3d_files();
+	i = res;
+	res = read_3d_files(i);
 
 // init GLUT and the window
 	glutInit(&argc, argv);
