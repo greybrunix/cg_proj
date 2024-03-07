@@ -87,11 +87,11 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 		for(j=0; j<slices; j++) {
             // Bottom face
 			if (i==0) {
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), 0.f, cur_rad*cosf(angle+angle_diff));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), 0.f, cur_rad*cosf(angle));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", 0.f, 0.f, 0.f);
 				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), 0.f, cur_rad*cosf(angle));
+				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), 0.f, cur_rad*cosf(angle+angle_diff));
 				fwrite(buff, sizeof (int8_t),b_read, output);
 			}
            
