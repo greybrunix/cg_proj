@@ -26,11 +26,23 @@ GLuint vertex_count, vertices;
 struct triple {
 	float x,y,z;
 };
+
+struct quad {
+    float angle,x,y,z;
+};
+
 struct prims {
 	int count;
 	int group;
 	char name[64];
 };
+
+struct transform {
+    struct triple translate;
+    struct quad rotate;
+    struct triple scale;
+} transform;
+
 struct {
 	struct {
 		int h,w,sx,sy;
@@ -42,6 +54,7 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
+    std::vector<struct transform> transformations;
 	std::vector<struct prims> primitives;
 } world;
 
@@ -247,7 +260,7 @@ int xml_init(char* xml_file)
 {
 	XMLDocument doc;
 	XMLElement* world_l, *window, *cam, *posi, *lookAt, *up, *proj,
-		*group_R, *gr, *mod, *models;
+		*group_R, *gr, *mod, *models, *tran, *trans;
 	int i = 0, g, j, rs = 0;
 	const char* f;
 	const char* tit;
@@ -329,6 +342,20 @@ int xml_init(char* xml_file)
 			     gr;
 			     gr = gr->FirstChildElement("group"),
 			     g += 1) {
+
+                trans = gr->FirstChildElement("transform");
+                if (trans) {
+                    for (tran=trans->FirstChildElement("diferenciar trans");
+                         tran;
+                         tran=tran->NextSiblingElement("diferenciar trans")
+                        ) {
+
+                        if (tran){
+                            world.transformations.
+                        }
+                    }
+                }
+            }
 
 				models = gr->FirstChildElement("models");
 				if (models) {
