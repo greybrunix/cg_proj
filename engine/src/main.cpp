@@ -261,6 +261,7 @@ int xml_init(char* xml_file)
 	XMLDocument doc;
 	XMLElement* world_l, *window, *cam, *posi, *lookAt, *up, *proj,
 		*group_R, *gr, *mod, *models, *tran, *trans;
+
 	int i = 0, g, j, rs = 0;
 	const char* f;
 	const char* tit;
@@ -345,18 +346,34 @@ int xml_init(char* xml_file)
 
                 trans = gr->FirstChildElement("transform");
                 if (trans) {
-                    for (tran=trans->FirstChildElement("diferenciar trans");
-                         tran;
-                         tran=tran->NextSiblingElement("diferenciar trans")
-                        ) {
-
-                        if (tran){
-                            world.transformations.
+                    tran = trans->FirstChildElement();
+                    while (tran) {
+                        if (strcmp(tran->Name(), "translate")){
+                            printf("%.3f %.3f %.3f\n", 
+                                   tran->FloatAttribute("x"),
+                                   tran->FloatAttribute("y"),
+                                   tran->FloatAttribute("z")
+                                  );
                         }
+                        else if (strcmp(tran->Name(), "rotate")) {
+                            printf("%.3f %.3f %.3f %.3f\n", 
+                                   tran->FloatAttribute("angle"),
+                                   tran->FloatAttribute("x"),
+                                   tran->FloatAttribute("y"),
+                                   tran->FloatAttribute("z")
+                                  );
+                        }
+                        else if (strcmp(tran->Name(), "scale")) {
+                            printf("%.3f %.3f %.3f\n", 
+                                   tran->FloatAttribute("x"),
+                                   tran->FloatAttribute("y"),
+                                   tran->FloatAttribute("z")
+                                  );
+                        }
+                        tran = tran->NextSiblingElement();
                     }
                 }
-            }
-
+                
 				models = gr->FirstChildElement("models");
 				if (models) {
 					for (mod=models->FirstChildElement("model");
