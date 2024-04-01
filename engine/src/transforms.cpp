@@ -21,16 +21,10 @@ void transform::do_transformation()
 
 rotate::rotate(float a,float xx, float yy, float zz)
 	:transform({.rot=glRotatef},
-		   {.rot={.angle=a,.x=xx,.y=yy,.z=zz}})
-{
-}
+		   {.rot={.angle=a,.x=xx,.y=yy,.z=zz}}) {}
 scale::scale(float xx, float yy, float zz)
 	:transform({.trans_scal=glScalef},
-		   {.trans_scal={.x=xx,.y=yy,.z=zz}})
-{
-}
+		   {.trans_scal={.x=xx,.y=yy,.z=zz}}) {}
 translate::translate(float xx, float yy, float zz)
 	:transform({.trans_scal=glTranslatef},
-		   {.trans_scal={.x=xx,.y=yy,.z=zz}})
-{
-}
+		   {.trans_scal={.x=xx,.y=yy,.z=zz}}) {}
