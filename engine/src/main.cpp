@@ -1,20 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
+#include <cstdio>
+#include <cstdlib>
 #include <vector>
 #include <tinyxml2.h>
-#include <string.h>
+#include <cstring>
+#include "transforms.cpp.h"
+
 using namespace tinyxml2;
-
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glew.h>
-#include <GL/glut.h>
-#endif
-
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
 float camX, camY, camZ;
@@ -37,12 +28,6 @@ struct prims {
 	char name[64];
 };
 
-struct transform {
-    struct triple translate;
-    struct quad rotate;
-    struct triple scale;
-} transform;
-
 struct {
 	struct {
 		int h,w,sx,sy;
@@ -54,20 +39,66 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
-    std::vector<struct transform> transformations;
+	std::vector<struct transform> transformations;
 	std::vector<struct prims> primitives;
 } world;
 
 typedef std::vector<struct triple> Primitive_Coords;
 std::vector<Primitive_Coords> prims;
 
-void spherical2Cartesian() {
-
+void spherical2Cartesian()
+{
 	camX = radius * cos(beta) * sin(alfa);
 	camY = radius * sin(beta);
 	camZ = radius * cos(beta) * cos(alfa);
 }
 
+void read_words (FILE *f, int top) {
+	char line[1024];
+	char* num;
+	int i = 0, j=0;
+	float x,y,z;
+	while (fgets(line,sizeof(line), f) != NULL) {
+		num = strtok(line, " \n");
+		x = atof(num);
+		num = strtok(NULL, " \n");
+		y = atof(num);
+		num = strtok(NULL, " \n");
+		z = atof(num);
+
+		prims[top].push_back({.x=x,.y=y,.z=z});
+	}
+}
+
+int read_3d_files(int N)
+{
+	FILE* fd;
+	int i,j;
+	int flag = 0;
+	struct tmp_s { int g; char*name;};
+	std::vector<struct triple> aux;
+	std::vector<struct tmp_s> already_read;
+	for (i=0; i<N; i++) {
+		flag = 0;
+		for (j=0; j<already_read.size() && !flag;j++)
+			if (!strcmp(world.primitives[i].name, already_read[j].name)&&
+				world.primitives[i].group == already_read[j].g)
+				flag = 1;
+		if (!flag) {
+			fd = fopen(world.primitives[i].name, "r");
+			if (!fd) {
+				return -1;
+			}
+			for (j=0; j < world.primitives[i].count; j++)
+				prims.push_back(aux);
+			read_words(fd, i);
+			fclose(fd);
+			already_read.push_back({.g=world.primitives[i].group,
+						   .name=world.primitives[i].name});
+		}
+	}
+	return 0;
+}
 static int not_in_prims_g(const char* f, int* i, int g, int N)
 {
 	int r = 1;
@@ -78,184 +109,6 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	}
 	return r;
 }
-
-void changeSize(int w, int h) {
-
-	// Prevent a divide by zero, when window is too short
-	// (you cant make a window with zero width).
-	if(h == 0)
-		h = 1;
-
-	// compute window's aspect ratio 
-	float ratio = w * 1.0 / h;
-
-	// Set the projection matrix as current
-	glMatrixMode(GL_PROJECTION);
-	// Load Identity Matrix
-	glLoadIdentity();
-	// Set the viewport to be the entire window
-	glViewport(0, 0, w, h);
-
-	// Set perspective
-	gluPerspective(world.cam.proj.x,ratio, world.cam.proj.y ,world.cam.proj.z);
-
-	// return to the model view matrix mode
-	glMatrixMode(GL_MODELVIEW);
-}
-
-void drawfigs(void)
-{
-	int i, j;
-	glBegin(GL_TRIANGLES);
-	for (i = 0; i<prims.size(); i++) {
-		for (j=0; j<prims[i].size();j++) {
-			glVertex3f(prims[i][j].x,
-				   prims[i][j].y,
-				   prims[i][j].z);
-		}
-	}
-	glEnd();
-
-}
-
-void renderScene(void) {
-
-	// clear buffers
-	char fps_c[64];
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// set the camera
-	glLoadIdentity();
-	gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
-		world.cam.lookAt.x, world.cam.lookAt.y
-		, world.cam.lookAt.z,
-		world.cam.up.x, world.cam.up.y, world.cam.up.z);
-	/*gluLookAt(camX, camY,camZ,
-		  0.f,0.f,0.f,
-		  0.f,1.f,0.f);
-	*/
-
-	glPolygonMode(GL_FRONT, GL_LINE);
-
-	glBegin(GL_LINES);
-		// X axis in red
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-100.0f, 0.0f, 0.0f);
-		glVertex3f( 100.0f, 0.0f, 0.0f);
-		// Y Axis in Green
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(0.0f, -100.0f, 0.0f);
-		glVertex3f(0.0f, 100.0f, 0.0f);
-		// Z Axis in Blue
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 0.0f, -100.0f);
-		glVertex3f(0.0f, 0.0f, 100.0f);
-		glColor3f(1.f,1.f,1.f);
-	glEnd();
-
-	frames++;
-	time = glutGet(GLUT_ELAPSED_TIME);
-	if (time - timebase > 1000) {
-		fps = frames * 1000.0 / (time - timebase);
-		timebase = time;
-		frames = 0;
-	}
-
-
-	sprintf(fps_c, "%s-%d",world.win.title, (int)fps);
-
-	glutSetWindowTitle(fps_c);
-
-	drawfigs();
-	// End of frame
-	glutSwapBuffers();
-}
-
-
-void processKeys(unsigned char c, int xx, int yy) {
-
-// put code to process regular keys in here
- /*
-	switch (c) {
-	case 'w':
-		break;
-	case 's':
-		break;
-	case '1':
-		cur_face = GL_FRONT;
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		break;
-	case '2':
-		cur_face = GL_BACK;
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		break;
-	case '3':
-		cur_face = GL_FRONT_AND_BACK;
-		glDisable(GL_CULL_FACE);
-		break;
-	case '4':
-		cur_mode = GL_LINE;
-		break;
-	case '5':
-		cur_mode = GL_POINT;
-		break;
-	case '6':
-		cur_mode = GL_FILL;
-		break;
-	}
-	glPolygonMode(cur_face,cur_mode);
-	spherical2Cartesian();
-	*/
-}
-
-
-void processSpecialKeys(int key, int xx, int yy) {
-
-	switch (key) {
-
-	case GLUT_KEY_RIGHT:
-		alfa -= 0.1; break;
-
-	case GLUT_KEY_LEFT:
-		alfa += 0.1; break;
-
-	case GLUT_KEY_UP:
-		beta += 0.1f;
-		if (beta > 1.5f)
-			beta = 1.5f;
-		break;
-
-	case GLUT_KEY_DOWN:
-		beta -= 0.1f;
-		if (beta < -1.5f)
-			beta = -1.5f;
-		break;
-
-	case GLUT_KEY_PAGE_DOWN:
-		radius -= 0.1f;
-		if (radius < 0.1f)
-			radius = 0.1f;
-		break;
-
-	case GLUT_KEY_PAGE_UP:
-		radius += 0.1f; break;
-	}
-	spherical2Cartesian();
-}
-
-
-void printInfo() {
-
-	printf("Vendor: %s\n", glGetString(GL_VENDOR));
-	printf("Renderer: %s\n", glGetString(GL_RENDERER));
-	printf("Version: %s\n", glGetString(GL_VERSION));
-
-	printf("\nUse Arrows to move the camera up/down and left/right\n\
-Page Up and Page Down control the distance from the camera to the origin\n");
-}
-
 int xml_init(char* xml_file)
 {
 	XMLDocument doc;
@@ -296,9 +149,6 @@ int xml_init(char* xml_file)
 		world.cam.pos.x = posi->FloatAttribute("x");
 		world.cam.pos.y = posi->FloatAttribute("y");
 		world.cam.pos.z = posi->FloatAttribute("z");
-		printf("%.3f %.3f %.3f\n", world.cam.pos.x,
-		       world.cam.pos.y,
-		       world.cam.pos.z);
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 			return -4;
@@ -306,9 +156,6 @@ int xml_init(char* xml_file)
 		world.cam.lookAt.x = lookAt->FloatAttribute("x");
 		world.cam.lookAt.y = lookAt->FloatAttribute("y");
 		world.cam.lookAt.z = lookAt->FloatAttribute("z");
-		printf("%.3f %.3f %.3f\n", world.cam.lookAt.x,
-		       world.cam.lookAt.y,
-		       world.cam.lookAt.z);
 		up = cam->FirstChildElement("up");
 		if (up) {
 			world.cam.up.x = up->FloatAttribute("x");
@@ -320,9 +167,6 @@ int xml_init(char* xml_file)
 			world.cam.up.y = 1.f;
 			world.cam.up.z = 0.f;
 		}
-		printf("%.3f %.3f %.3f\n", world.cam.up.x,
-		       world.cam.up.y,
-		       world.cam.up.z);
 		proj = cam->FirstChildElement("projection");
 		if (proj) {
 			world.cam.proj.x = proj->FloatAttribute("fov");
@@ -331,12 +175,9 @@ int xml_init(char* xml_file)
 		}
 		else {
 			world.cam.proj.x = 60.f; // fov
-			world.cam.proj.y = 1.f; // neAR
+			world.cam.proj.y = 1.f; // near
 			world.cam.proj.z = 1000.f; //far
 		}
-		printf("%.3f %.3f %.3f\n", world.cam.proj.x,
-		       world.cam.proj.y,
-		       world.cam.proj.z);
 		group_R = world_l->FirstChildElement("group");
 		if (group_R){
 			for (gr=group_R, g=0;
@@ -419,51 +260,109 @@ int xml_init(char* xml_file)
 	return i;
 }
 
-void read_words (FILE *f, int top) {
-	char line[1024];
-	char* num;
-	int i = 0, j=0;
-	float x,y,z;
-	while (fgets(line,sizeof(line), f) != NULL) {
-		num = strtok(line, " \n");
-		x = atof(num);
-		num = strtok(NULL, " \n");
-		y = atof(num);
-		num = strtok(NULL, " \n");
-		z = atof(num);
 
-		prims[top].push_back({.x=x,.y=y,.z=z});
-	}
+
+void changeSize(int w, int h)
+{
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window with zero width).
+	if(h == 0)
+		h = 1;
+
+	// compute window's aspect ratio 
+	float ratio = w * 1.0 / h;
+
+	// Set the projection matrix as current
+	glMatrixMode(GL_PROJECTION);
+	// Load Identity Matrix
+	glLoadIdentity();
+	// Set the viewport to be the entire window
+	glViewport(0, 0, w, h);
+
+	// Set perspective
+	gluPerspective(world.cam.proj.x,ratio, world.cam.proj.y ,world.cam.proj.z);
+
+	// return to the model view matrix mode
+	glMatrixMode(GL_MODELVIEW);
 }
 
-int read_3d_files(int N)
+void drawfigs(void)
 {
-	FILE* fd;
-	int i,j;
-	int flag = 0;
-	struct tmp_s { int g; char*name;};
-	std::vector<struct triple> aux;
-	std::vector<struct tmp_s> already_read;
-	for (i=0; i<N; i++) {
-		flag = 0;
-		for (j=0; j<already_read.size() && !flag;j++)
-			if (!strcmp(world.primitives[i].name, already_read[j].name)&&
-				world.primitives[i].group == already_read[j].g)
-				flag = 1;
-		if (!flag) {
-			fd = fopen(world.primitives[i].name, "r");
-			if (!fd) {
-				return -1;
-			}
-			for (j=0; j < world.primitives[i].count; j++)
-				prims.push_back(aux);
-			read_words(fd, i);
-			fclose(fd);
-			already_read.push_back({.g=world.primitives[i].group,
-						   .name=world.primitives[i].name});
+	int i, j;
+	glBegin(GL_TRIANGLES);
+	for (i = 0; i<prims.size(); i++) {
+		for (j=0; j<prims[i].size();j++) {
+			glVertex3f(prims[i][j].x,
+				   prims[i][j].y,
+				   prims[i][j].z);
 		}
 	}
-	return 0;
+	glEnd();
+
+}
+
+void renderScene(void)
+{
+	// clear buffers
+	char fps_c[64];
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// set the camera
+	glLoadIdentity();
+	gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
+		world.cam.lookAt.x, world.cam.lookAt.y
+		, world.cam.lookAt.z,
+		world.cam.up.x, world.cam.up.y, world.cam.up.z);
+	/*gluLookAt(camX, camY,camZ,
+		  0.f,0.f,0.f,
+		  0.f,1.f,0.f);
+	*/
+
+	glPolygonMode(GL_FRONT, GL_LINE);
+
+	glBegin(GL_LINES);
+		// X axis in red
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-100.0f, 0.0f, 0.0f);
+		glVertex3f( 100.0f, 0.0f, 0.0f);
+		// Y Axis in Green
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(0.0f, -100.0f, 0.0f);
+		glVertex3f(0.0f, 100.0f, 0.0f);
+		// Z Axis in Blue
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(0.0f, 0.0f, -100.0f);
+		glVertex3f(0.0f, 0.0f, 100.0f);
+		glColor3f(1.f,1.f,1.f);
+	glEnd();
+
+	frames++;
+	time = glutGet(GLUT_ELAPSED_TIME);
+	if (time - timebase > 1000) {
+		fps = frames * 1000.0 / (time - timebase);
+		timebase = time;
+		frames = 0;
+	}
+
+
+	sprintf(fps_c, "%s-%d",world.win.title, (int)fps);
+
+	glutSetWindowTitle(fps_c);
+
+	drawfigs();
+	// End of frame
+	glutSwapBuffers();
+}
+
+
+void processKeys(unsigned char c, int xx, int yy);
+void processSpecialKeys(int key, int xx, int yy);
+
+void printInfo() {
+
+	printf("Vendor: %s\n", glGetString(GL_VENDOR));
+	printf("Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("Version: %s\n", glGetString(GL_VERSION));
 }
 
 int main(int argc, char **argv)
