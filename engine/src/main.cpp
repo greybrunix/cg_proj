@@ -39,7 +39,7 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
-	std::vector<struct transform> transformations;
+	std::vector<class transform> transformations;
 	std::vector<struct prims> primitives;
 } world;
 
@@ -189,40 +189,47 @@ int xml_init(char* xml_file)
                 if (trans) {
                     tran = trans->FirstChildElement();
                     while (tran) {
-                        struct transform tmp_t;
-                        if (strcmp(tran->Name(), "translate")){
-                            tmp_t.translate.x = tran->FloatAttribute("x");
-                            tmp_t.translate.y = tran->FloatAttribute("y");
-                            tmp_t.translate.z = tran->FloatAttribute("z");
+                        if (strcmp(tran->Name(), "translate") == 0){
+                            translate tmp_t(tran->FloatAttribute("x"),
+                                      tran->FloatAttribute("y"),
+                                      tran->FloatAttribute("z")
+                                     );                                            
                             printf("%.3f %.3f %.3f\n", 
                                    tran->FloatAttribute("x"),
                                    tran->FloatAttribute("y"),
                                    tran->FloatAttribute("z")
                                   );
+                            world.transformations.push_back(tmp_t);
+                            free(tmp_t);
                         }
-                        else if (strcmp(tran->Name(), "rotate")) {
-                            tmp_t.rotate.angle = tran->FloatAttribute("angle");
-                            tmp_t.rotate.x = tran->FloatAttribute("x");
-                            tmp_t.rotate.y = tran->FloatAttribute("y");
-                            tmp_t.rotate.z = tran->FloatAttribute("z");
+                        else if (strcmp(tran->Name(), "rotate") == 0) {
+                            rotate tmp_t(tran->FloatAttribute("angle"),
+                                      tran->FloatAttribute("x"),
+                                      tran->FloatAttribute("y"),
+                                      tran->FloatAttribute("z")
+                                      );
                             printf("%.3f %.3f %.3f %.3f\n", 
                                    tran->FloatAttribute("angle"),
                                    tran->FloatAttribute("x"),
                                    tran->FloatAttribute("y"),
                                    tran->FloatAttribute("z")
                                   );
+                            world.transformations.push_back(tmp_t);
+                            free(tmp_t);
                         }
-                        else if (strcmp(tran->Name(), "scale")) {
-                            tmp_t.scale.x = tran->FloatAttribute("x");
-                            tmp_t.scale.y = tran->FloatAttribute("y");
-                            tmp_t.scale.z = tran->FloatAttribute("z");
+                        else if (strcmp(tran->Name(), "scale") == 0) {
+                            scale tmp_t(tran->FloatAttribute("x"),
+                                             tran->FloatAttribute("y"),
+                                             tran->FloatAttribute("z")
+                                            );
                             printf("%.3f %.3f %.3f\n", 
                                    tran->FloatAttribute("x"),
                                    tran->FloatAttribute("y"),
                                    tran->FloatAttribute("z")
                                   );
+                            world.transformations.push_back(tmp_t);
+                            free(tmp_t);
                         }
-                        world.transformations.push_back(tmp_t);
                         tran = tran->NextSiblingElement();
                     }
                 }
