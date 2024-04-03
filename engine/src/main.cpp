@@ -28,6 +28,10 @@ struct prims {
 	char name[64];
 };
 
+struct trans {
+	int group;
+	transform* tran;
+};
 struct {
 	struct {
 		int h,w,sx,sy;
@@ -39,7 +43,7 @@ struct {
 		struct triple up; /* 0 1 0 */
 		struct triple proj; /* 60 1 1000*/
 	} cam;
-	std::vector<class transform> transformations;
+	std::vector<struct trans> transformations;
 	std::vector<struct prims> primitives;
 } world;
 
@@ -179,68 +183,62 @@ int xml_init(char* xml_file)
 			world.cam.proj.z = 1000.f; //far
 		}
 		group_R = world_l->FirstChildElement("group");
-		if (group_R){
+		if (group_R) {
 			for (gr=group_R, g=0;
 			     gr;
 			     gr = gr->FirstChildElement("group"),
 			     g += 1) {
-
-                trans = gr->FirstChildElement("transform");
-                if (trans) {
-                    tran = trans->FirstChildElement();
-                    while (tran) {
-                        if (strcmp(tran->Name(), "translate") == 0){
-                            translate tmp_t(tran->FloatAttribute("x"),
-                                      tran->FloatAttribute("y"),
-                                      tran->FloatAttribute("z")
-                                     );                                            
-                            printf("%.3f %.3f %.3f\n", 
-                                   tran->FloatAttribute("x"),
-                                   tran->FloatAttribute("y"),
-                                   tran->FloatAttribute("z")
-                                  );
-                            world.transformations.push_back(tmp_t);
-                            free(tmp_t);
-                        }
-                        else if (strcmp(tran->Name(), "rotate") == 0) {
-                            rotate tmp_t(tran->FloatAttribute("angle"),
-                                      tran->FloatAttribute("x"),
-                                      tran->FloatAttribute("y"),
-                                      tran->FloatAttribute("z")
-                                      );
-                            printf("%.3f %.3f %.3f %.3f\n", 
-                                   tran->FloatAttribute("angle"),
-                                   tran->FloatAttribute("x"),
-                                   tran->FloatAttribute("y"),
-                                   tran->FloatAttribute("z")
-                                  );
-                            world.transformations.push_back(tmp_t);
-                            free(tmp_t);
-                        }
-                        else if (strcmp(tran->Name(), "scale") == 0) {
-                            scale tmp_t(tran->FloatAttribute("x"),
-                                             tran->FloatAttribute("y"),
-                                             tran->FloatAttribute("z")
-                                            );
-                            printf("%.3f %.3f %.3f\n", 
-                                   tran->FloatAttribute("x"),
-                                   tran->FloatAttribute("y"),
-                                   tran->FloatAttribute("z")
-                                  );
-                            world.transformations.push_back(tmp_t);
-                            free(tmp_t);
-                        }
-                        tran = tran->NextSiblingElement();
-                    }
-                }
-                
+				trans = gr->FirstChildElement("transform");
+				if (trans) {
+					tran = trans->FirstChildElement();
+					while (tran) {
+						if (strcmp(tran->Name(), "translate") == 0){
+							translate*tmp_t = new translate(tran->FloatAttribute("x"),
+									tran->FloatAttribute("y"),
+									tran->FloatAttribute("z")
+							);                                            
+							printf("%.3f %.3f %.3f\n", 
+								tran->FloatAttribute("x"),
+								tran->FloatAttribute("y"),
+								tran->FloatAttribute("z")
+							);
+							world.transformations.push_back(tmp_t);
+						}
+						else if (strcmp(tran->Name(), "rotate") == 0) {
+							rotate*tmp_t = new rotate(tran->FloatAttribute("angle"),
+									tran->FloatAttribute("x"),
+									tran->FloatAttribute("y"),
+									tran->FloatAttribute("z")
+							);
+							printf("%.3f %.3f %.3f %.3f\n", 
+								tran->FloatAttribute("angle"),
+								tran->FloatAttribute("x"),
+								tran->FloatAttribute("y"),
+								tran->FloatAttribute("z")
+							);
+							world.transformations.push_back(tmp_t);
+						}
+						else if (strcmp(tran->Name(), "scale") == 0) {
+							scale*tmp_t = new scale(tran->FloatAttribute("x"),
+								tran->FloatAttribute("y"),
+								tran->FloatAttribute("z")
+							);
+							printf("%.3f %.3f %.3f\n", 
+								tran->FloatAttribute("x"),
+								tran->FloatAttribute("y"),
+								tran->FloatAttribute("z")
+							);
+							world.transformations.push_back(tmp_t);
+						}
+						tran = tran->NextSiblingElement();
+					}
+				}
 				models = gr->FirstChildElement("models");
 				if (models) {
 					for (mod=models->FirstChildElement("model");
 					     mod;
 					     mod=mod->NextSiblingElement("model")
 					     ) {
-
 						if (mod){
 							f = mod->Attribute("file");
 							if ( not_in_prims_g(f, &j, g, i)) {
@@ -295,14 +293,29 @@ void changeSize(int w, int h)
 
 void drawfigs(void)
 {
-	int i, j;
+	int i, j, g;
 	glBegin(GL_TRIANGLES);
-	for (i = 0; i<prims.size(); i++) {
-		for (j=0; j<prims[i].size();j++) {
-			glVertex3f(prims[i][j].x,
-				   prims[i][j].y,
-				   prims[i][j].z);
+	/* TODO
+	 * groups
+	 * inicio de iteracao sobre grupos glPushMatrix();
+	 * iterar sobre figuras
+	 * desenhar as figuras
+	 * aplicar todas as transformacoes
+	 * no fim disto glPopMatrix();
+	 *
+	 */
+	for (;;) { /* groups */
+		glPushMatrix();
+		for (i = 0; i<prims.size(); i++) {
+			for (j=0; j<prims[i].size();j++) {
+				glVertex3f(prims[i][j].x,
+					   prims[i][j].y,
+					   prims[i][j].z);
+			}
 		}
+		for (i=0;i<tran.size();i++) { /* trans*/
+		}
+		glPopMatrix();
 	}
 	glEnd();
 
@@ -420,6 +433,6 @@ int main(int argc, char **argv)
 
 // enter GLUT's main cycle
 	glutMainLoop();
-	
+		
 	return 1;
 }
