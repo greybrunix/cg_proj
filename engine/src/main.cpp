@@ -12,6 +12,7 @@ float camX, camY, camZ;
 int timebase, time, frames=0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
+int g;
 GLuint vertex_count, vertices;
 
 struct triple {
@@ -120,7 +121,7 @@ int xml_init(char* xml_file)
 	XMLElement* world_l, *window, *cam, *posi, *lookAt, *up, *proj,
 		*group_R, *gr, *mod, *models, *tran, *trans;
 
-	int i = 0, g, j, rs = 0;
+	int i = 0, j, rs = 0;
 	const char* f;
 	const char* tit;
 	char tmp[1024];
