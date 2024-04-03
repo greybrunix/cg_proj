@@ -300,9 +300,9 @@ void changeSize(int w, int h)
 
 void drawfigs(void)
 {
-	int i, j, g;
+	int i, j, k, l, g;
 	glBegin(GL_TRIANGLES);
-	for (int i=0; i<g; i++) { /* groups */
+	for (k=0; k<g; k++) { /* groups */
 		glPushMatrix();
 		for (i = 0; i<prims.size(); i++) {
 			for (j=0; j<prims[i].size();j++) {
@@ -311,9 +311,9 @@ void drawfigs(void)
 					   prims[i][j].z);
 			}
 		}
-		for (i=0;i<world.transformations.size();i++) { /* trans*/
-            if (world.transformations[i].group == g) {
-                world.transformations[i].tran->do_transformation();
+		for (l=0;l<world.transformations.size();l++) { /* trans*/
+            if (world.transformations[l].group == g) {
+                world.transformations[l].tran->do_transformation();
             }
 		}
 		glPopMatrix();
