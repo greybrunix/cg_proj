@@ -376,8 +376,8 @@ void renderScene(void)
 }
 
 
-void processKeys(unsigned char c, int xx, int yy);
-void processSpecialKeys(int key, int xx, int yy);
+//void processKeys(unsigned char c, int xx, int yy);
+//void processSpecialKeys(int key, int xx, int yy);
 
 void printInfo() {
 
@@ -412,8 +412,8 @@ int main(int argc, char **argv)
 	glutReshapeFunc(changeSize);
 	
 // Callback registration for keyboard processing
-	glutKeyboardFunc(processKeys);
-	glutSpecialFunc(processSpecialKeys);
+//	glutKeyboardFunc(processKeys);
+//	glutSpecialFunc(processSpecialKeys);
 
 
 	// init GLEW
