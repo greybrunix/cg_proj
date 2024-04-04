@@ -119,19 +119,17 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
-void group_read_models(int cur_parent, int cur_g, XMLElement*models,
+int group_read_models(int cur_parent, int cur_g, XMLElement*models,
 					   bool reading=false, int i=0)
 {
-	if (!models)
-		return;
 	struct prims tmp_p;
 	int j;
 	const char*f;
 	char tmp[1024];
-	XMLElement*mod = !reading ? models->FirstChildElement("models")
+	XMLElement*mod = !reading ? models->FirstChildElement()
 		: models->NextSiblingElement();
 	if (!mod)
-		return;
+		return i;
 	f = mod->Attribute("file");
 	if ( not_in_prims_g(f, &j, cur_g, i)) {
 		strcpy(tmp, "../../prims/");
@@ -145,15 +143,13 @@ void group_read_models(int cur_parent, int cur_g, XMLElement*models,
 	}
 	else
 		world.primitives[j].count+=1;
-	group_read_models(cur_parent, cur_g, mod, true, i);
+	return group_read_models(cur_parent, cur_g, mod, true, i);
 }
 void group_read_transform(int cur_parent, int cur_g,
 						  XMLElement*transform,
 						  bool reading = false)
 {
 	struct trans tmp;
-	if (!transform)
-		return;
 	XMLElement*tran = !reading ? transform->FirstChildElement():
 		transform->NextSiblingElement();
 	if (!tran)
@@ -166,7 +162,6 @@ void group_read_transform(int cur_parent, int cur_g,
 			tran->FloatAttribute("y"),
 			tran->FloatAttribute("z")
 		);					      
-		world.transformations.push_back(tmp);
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
 		tmp.t = new rotate(
@@ -175,7 +170,6 @@ void group_read_transform(int cur_parent, int cur_g,
 			tran->FloatAttribute("y"),
 			tran->FloatAttribute("z")
 		);
-		world.transformations.push_back(tmp);
 	}
 	else if (strcmp(tran->Name(), "scale") == 0) {
 		tmp.t = new scale(
@@ -183,29 +177,24 @@ void group_read_transform(int cur_parent, int cur_g,
 			tran->FloatAttribute("y"),
 			tran->FloatAttribute("z")
 		);
-		world.transformations.push_back(tmp);
 	}
+	world.transformations.push_back(tmp);
 	group_read_transform(cur_parent, cur_g, tran, true);
 }
-void group_read(int cur_parent, int cur_g, XMLElement*gr, bool reading = false)
+int group_read(int cur_parent, int cur_g, XMLElement*gr, bool reading = false,
+								int i=0)
 {
-	if (!gr)
-		return;
 	XMLElement*elem = !reading ? gr->FirstChildElement():
 		gr->NextSiblingElement();
-	if (cur_g == -1)
-		return;
-	if (!elem)
-		//group_read(cur_parent, cur_parent, gr, true);
-		return;
-	printf("%s\n", elem->Name());
+	if (cur_g == -1 || !elem)
+		return i;
 	if (!strcmp(elem->Name(),"models"))
-		group_read_models(cur_parent, cur_g, elem);
+		i+=group_read_models(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "transform"))
 		group_read_transform(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "group"))
 		group_read(cur_g, cur_g+1, elem, false);
-	group_read(cur_parent, cur_g, elem, true);
+	return group_read(cur_parent, cur_g, elem, true, i);
 }
 
 int xml_init(char* xml_file)
@@ -279,7 +268,7 @@ int xml_init(char* xml_file)
 		}
 		group_R = world_l->FirstChildElement("group");
 		if (group_R) {
-			group_read(-1, 0, group_R);
+			i = group_read(-1, 0, group_R);
 		}
 	}
 	return i;
