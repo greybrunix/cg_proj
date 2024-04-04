@@ -182,7 +182,7 @@ int groups(tinyxml2::XMLElement* gr, std::vector<struct trans> trans_p, int g) {
         }
         group = gr->FirstChildElement("group");
         if (group) 
-            groups(group, trans_p, g);
+            g = groups(group, trans_p, g);
 
         // Models
 		models = gr->FirstChildElement("models");
@@ -287,10 +287,10 @@ int xml_init(char* xml_file)
 		group_R = world_l->FirstChildElement("group");
 		if (group_R) {
             std::vector<struct trans> trans_p;
-            groups(group_R, trans_p, g);
-	        global = g;
+            g = groups(group_R, trans_p, g);
         }
     }
+	global = g;
 	return i;
 }
 
