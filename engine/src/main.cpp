@@ -296,13 +296,12 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, j, k, l, g;
-	glBegin(GL_TRIANGLES);
 	for (g=0; g<prims.size(); g++) { /* groups */
 		glPushMatrix();
-		for (l=0;l<world.transformations.size();l++) { /* trans*/
+		for (l=0;l<world.transformations.size();l++) /* trans*/
 			if (world.transformations[l].group == g)
 				world.transformations[l].t->do_transformation();
-		}
+		glBegin(GL_TRIANGLES);
 		for (i = 0; i<prims[g].size(); i++) {
 			for (j=0; j<prims[g][i].size();j++) {
 				glVertex3f(prims[g][i][j].x,
@@ -310,10 +309,9 @@ void drawfigs(void)
 					   prims[g][i][j].z);
 			}
 		}
+		glEnd();
 		glPopMatrix();
 	}
-	glEnd();
-
 }
 
 void renderScene(void)
