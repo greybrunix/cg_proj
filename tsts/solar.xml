@@ -1,0 +1,134 @@
+<world>
+    <window width="512" height="512" />
+    <camera> 
+	    <position x="300" y="10" z="4" />
+	    <lookAt x="0" y="0" z="0" />
+	    <up x="0" y="1" z="0" /> <!-- optional, use these values as default-->
+        <projection fov="60" near="1" far="1000" /> <!-- optional, use these values as default-->
+    </camera>
+
+    <group>
+        <group> 
+            <transform> 
+               <translate x="0" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_104_8_8.3d" /> <!-- Sol -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="6" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Mercurio -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="11" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_2_8_8.3d" /> <!-- Venus -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="15" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_2_8_8.3d" /> <!-- Terra -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="16" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Lua -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="23" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Marte -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="24" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Satelite de marte -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="77" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_16_8_8.3d" /> <!-- Jupiter -->
+				<model file="torus_20_5_20_20.3d" /> <!-- Anel de Jupiter -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="78" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Satelite de Jupiter -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="143" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_14_8_8.3d" /> <!-- Saturno -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="143" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Satelite de Saturno -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="287" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_6_8_8.3d" /> <!-- Urano -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="287" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Satelite de Urano -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="450" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_6_8_8.3d" /> <!-- Neptuno -->
+			</models>
+        </group>
+        <group> 
+            <transform> 
+               <translate x="450" y="0" z="0" />
+            </transform>
+			<models> 
+				<model file="sphere_1_8_8.3d" /> <!-- Satelite de Neptuno -->
+			</models>
+        </group>
+	</group>
+</world>
+
