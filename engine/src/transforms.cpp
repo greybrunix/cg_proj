@@ -1,10 +1,6 @@
 #include "transforms.cpp.h"
 
-transform::transform(union trans_type t, union args a)
-{
-	this->type = t;
-	this->args = a;
-}
+transform::transform(union trans_type t, union args a){this->type=t,this->args=a;}
 void transform::do_transformation()
 {
 	switch (sizeof (this->args)) {

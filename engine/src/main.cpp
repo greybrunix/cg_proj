@@ -12,7 +12,7 @@ float camX, camY, camZ;
 int timebase, time, frames=0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
-int g;
+int global;
 GLuint vertex_count, vertices;
 
 struct triple {
@@ -121,7 +121,7 @@ int xml_init(char* xml_file)
 	XMLElement* world_l, *window, *cam, *posi, *lookAt, *up, *proj,
 		*group_R, *gr, *mod, *models, *tran, *trans;
 
-	int i = 0, j, rs = 0;
+	int i = 0, j, rs = 0, g;
 	const char* f;
 	const char* tit;
 	char tmp[1024];
@@ -195,8 +195,8 @@ int xml_init(char* xml_file)
 					tran = trans->FirstChildElement();
 					while (tran) {
 						if (strcmp(tran->Name(), "translate") == 0){
-                            struct trans tmp_t;
-                            tmp_t.group = g;
+							struct trans tmp_t;
+							tmp_t.group = g;
 							tmp_t.tran = new translate(tran->FloatAttribute("x"),
 									tran->FloatAttribute("y"),
 									tran->FloatAttribute("z")
@@ -209,8 +209,8 @@ int xml_init(char* xml_file)
 							world.transformations.push_back(tmp_t);
 						}
 						else if (strcmp(tran->Name(), "rotate") == 0) {
-                            struct trans tmp_r;
-                            tmp_r.group = g;
+							struct trans tmp_r;
+							tmp_r.group = g;
 							tmp_r.tran = new rotate(tran->FloatAttribute("angle"),
 									tran->FloatAttribute("x"),
 									tran->FloatAttribute("y"),
@@ -225,8 +225,8 @@ int xml_init(char* xml_file)
 							world.transformations.push_back(tmp_r);
 						}
 						else if (strcmp(tran->Name(), "scale") == 0) {
-                            struct trans tmp_s;
-                            tmp_s.group = g;
+							struct trans tmp_s;
+							tmp_s.group = g;
 							tmp_s.tran = new scale(tran->FloatAttribute("x"),
 								tran->FloatAttribute("y"),
 								tran->FloatAttribute("z")
@@ -270,6 +270,7 @@ int xml_init(char* xml_file)
 
 		}
 	}
+	global = g;
 	return i;
 }
 
@@ -303,7 +304,7 @@ void drawfigs(void)
 {
 	int i, j, k, l, g;
 	glBegin(GL_TRIANGLES);
-	for (k=0; k<g; k++) { /* groups */
+	for (g=0; g<global; g++) { /* groups */
 		glPushMatrix();
 		for (i = 0; i<prims.size(); i++) {
 			for (j=0; j<prims[i].size();j++) {
@@ -313,9 +314,9 @@ void drawfigs(void)
 			}
 		}
 		for (l=0;l<world.transformations.size();l++) { /* trans*/
-            if (world.transformations[l].group == g) {
-                world.transformations[l].tran->do_transformation();
-            }
+			if (world.transformations[l].group == g) {
+				world.transformations[l].tran->do_transformation();
+			}
 		}
 		glPopMatrix();
 	}
