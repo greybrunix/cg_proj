@@ -137,6 +137,7 @@ int group_read_models(int cur_parent, int cur_g, XMLElement*models,
 		strcpy(tmp_p.name, tmp);
 		tmp_p.count = 1;
 		tmp_p.group = cur_g;
+        //printf("%s\n", tmp_p.name);
 		world.primitives.push_back(tmp_p);
 		i += 1;
 	}
@@ -146,7 +147,8 @@ int group_read_models(int cur_parent, int cur_g, XMLElement*models,
 }
 void group_read_transform(int cur_parent, int cur_g,
 						  XMLElement*transform,
-						  bool reading = false)
+						  bool reading = false
+                          )
 {
 	struct trans tmp;
 	XMLElement*tran = !reading ? transform->FirstChildElement():
@@ -179,19 +181,30 @@ void group_read_transform(int cur_parent, int cur_g,
 	world.transformations.push_back(tmp);
 	group_read_transform(cur_parent, cur_g, tran, true);
 }
-int group_read(int cur_parent, int cur_g, XMLElement*gr, bool reading = false,
-								int i=0)
+int group_read(int cur_parent, int cur_g, XMLElement*gr,
+               bool reading = false,
+               int i=0)
 {
 	XMLElement*elem = !reading ? gr->FirstChildElement():
 		gr->NextSiblingElement();
 	if (cur_g == -1 || !elem)
 		return i;
+    if (cur_parent > -1) {
+        for (int i=0; i<world.transformations.size(); i++) {
+            struct trans copia;
+            if (world.transformations[i].group == cur_parent) {
+                copia.group = cur_g;
+                copia.t = world.transformations[i].t;
+                world.transformations.push_back(copia);
+            }
+        }
+    }
 	if (!strcmp(elem->Name(),"models"))
 		i+=group_read_models(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "transform"))
 		group_read_transform(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "group"))
-		group_read(cur_g, cur_g+1, elem, false);
+		group_read(cur_g, cur_g+1, elem,  false, i);
 	return group_read(cur_parent, cur_g, elem, true, i);
 }
 
@@ -307,6 +320,7 @@ void drawfigs(void)
 			if (world.transformations[l].group == g)
 				world.transformations[l].t->do_transformation();
 		glBegin(GL_TRIANGLES);
+        //printf("%ld\n", prims[g].size());
 		for (i = 0; i<prims[g].size(); i++) {
 			for (j=0; j<prims[g][i].size();j++) {
 				glVertex3f(prims[g][i][j].x,
