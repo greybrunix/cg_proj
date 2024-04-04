@@ -1,0 +1,3 @@
+/home/bdg/Documents/work/uni/fourth/CG/proj/engine/build/CMakeFiles/engine.dir
+/home/bdg/Documents/work/uni/fourth/CG/proj/engine/build/CMakeFiles/edit_cache.dir
+/home/bdg/Documents/work/uni/fourth/CG/proj/engine/build/CMakeFiles/rebuild_cache.dir
