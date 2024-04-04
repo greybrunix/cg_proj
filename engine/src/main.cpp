@@ -202,7 +202,6 @@ int xml_init(char* xml_file)
 					while (tran) {
 						if (strcmp(tran->Name(), "translate") == 0){
 							struct trans tmp_t;
-                            tmp_t.type = 't';
 							tmp_t.group = g;
 							tmp_t.t = new translate(
 								tran->FloatAttribute("x"),
@@ -213,7 +212,6 @@ int xml_init(char* xml_file)
 						}
 						else if (strcmp(tran->Name(), "rotate") == 0) {
 							struct trans tmp_r;
-                            tmp_r.type = 'r';
 							tmp_r.group = g;
 							tmp_r.t = new rotate(
 								tran->FloatAttribute("angle"),
@@ -225,7 +223,6 @@ int xml_init(char* xml_file)
 						}
 						else if (strcmp(tran->Name(), "scale") == 0) {
 							struct trans tmp_s;
-                            tmp_s.type = 's';
 							tmp_s.group = g;
 							tmp_s.t = new scale(
 								tran->FloatAttribute("x"),
