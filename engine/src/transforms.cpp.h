@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 #endif
 
+#include <cstdio>
 #define _USE_MATH_DEFINES
 #include <math.h>
 /* Classes */
@@ -12,6 +13,10 @@ union trans_type {
 	void (*trans_scal)(GLfloat x,GLfloat y, GLfloat z);
 	void (*rot)(GLfloat ang, GLfloat x,
 		     GLfloat y, GLfloat z);
+};
+struct sum_trans {
+	int type;
+	union trans_type function;
 };
 union args {
 	struct {
@@ -23,11 +28,15 @@ union args {
 };
 class transform {
 	private:
-		union trans_type type;
+		struct sum_trans type;
 		union args args;
 	public:
-		transform(union trans_type type, union args args);
+		transform(struct sum_trans type, union args args);
 		void do_transformation();
+		float get_angle();
+		float get_x();
+		float get_y();
+		float get_z();
 };
 
 class rotate : public transform {

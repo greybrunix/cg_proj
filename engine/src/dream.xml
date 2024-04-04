@@ -7,6 +7,10 @@
 		<projection fov near far/>-->
 	</camera>
 	<group>
+		<transform>
+			<translate x="500" y="0" z="0"/>
+			<rotate angle="30" x="0" y="1" z="0"/>
+		</transform>
 		<models>
 			<model file="box.3d"/>
 		</models>

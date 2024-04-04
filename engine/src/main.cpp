@@ -31,7 +31,11 @@ struct prims {
 
 struct trans {
 	int group;
-	transform* tran;
+	union {
+		class translate* t;
+		class rotate* r;
+		class scale* s;
+	} tran;
 };
 
 struct {
@@ -109,7 +113,6 @@ int read_3d_files(int N)
 		}
 	}
 	prims.push_back(thing);
-	printf("%d %d\n", global, prims.size());
 	return 0;
 }
 static int not_in_prims_g(const char* f, int* i, int g, int N)
@@ -204,26 +207,17 @@ int xml_init(char* xml_file)
 						if (strcmp(tran->Name(), "translate") == 0){
 							struct trans tmp_t;
 							tmp_t.group = g;
-							tmp_t.tran = new translate(tran->FloatAttribute("x"),
-									tran->FloatAttribute("y"),
-									tran->FloatAttribute("z")
-							);                                            
-							printf("%.3f %.3f %.3f\n", 
+							tmp_t.tran.t = new translate(
 								tran->FloatAttribute("x"),
 								tran->FloatAttribute("y"),
 								tran->FloatAttribute("z")
-							);
+							);                                            
 							world.transformations.push_back(tmp_t);
 						}
 						else if (strcmp(tran->Name(), "rotate") == 0) {
 							struct trans tmp_r;
 							tmp_r.group = g;
-							tmp_r.tran = new rotate(tran->FloatAttribute("angle"),
-									tran->FloatAttribute("x"),
-									tran->FloatAttribute("y"),
-									tran->FloatAttribute("z")
-							);
-							printf("%.3f %.3f %.3f %.3f\n", 
+							tmp_r.tran.r = new rotate(
 								tran->FloatAttribute("angle"),
 								tran->FloatAttribute("x"),
 								tran->FloatAttribute("y"),
@@ -234,11 +228,7 @@ int xml_init(char* xml_file)
 						else if (strcmp(tran->Name(), "scale") == 0) {
 							struct trans tmp_s;
 							tmp_s.group = g;
-							tmp_s.tran = new scale(tran->FloatAttribute("x"),
-								tran->FloatAttribute("y"),
-								tran->FloatAttribute("z")
-							);
-							printf("%.3f %.3f %.3f\n", 
+							tmp_s.tran.s = new scale(
 								tran->FloatAttribute("x"),
 								tran->FloatAttribute("y"),
 								tran->FloatAttribute("z")
@@ -311,12 +301,11 @@ void drawfigs(void)
 {
 	int i, j, k, l, g;
 	glBegin(GL_TRIANGLES);
-	for (g=0; g<global; g++) { /* groups */
+	for (g=0; g<prims.size(); g++) { /* groups */
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) { /* trans*/
-			if (world.transformations[l].group == g) {
-				world.transformations[l].tran->do_transformation();
-			}
+			if (world.transformations[l].group == g)
+				world.transformations[l].tran.t->do_transformation();
 		}
 		for (i = 0; i<prims[g].size(); i++) {
 			for (j=0; j<prims[g][i].size();j++) {
