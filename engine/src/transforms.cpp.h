@@ -9,48 +9,49 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 /* Classes */
-union trans_type {
-	void (*trans_scal)(GLfloat x,GLfloat y, GLfloat z);
-	void (*rot)(GLfloat ang, GLfloat x,
-		     GLfloat y, GLfloat z);
-};
-struct sum_trans {
-	int type;
-	union trans_type function;
-};
-union args {
-	struct {
-		float x,y,z;
-	} trans_scal;
-	struct {
-		float angle,x,y,z;
-	}rot;
-};
+
 class transform {
 	private:
-		struct sum_trans type;
-		union args args;
+		int type;
 	public:
-		transform(struct sum_trans type, union args args);
-		void do_transformation();
+		transform(int t);
+		virtual void do_transformation();
+};
+
+class rotate : public transform{
+	private:
+		float x,y,z,angle;
+	public: 
+		rotate(float a, float xx,
+		       float yy,float zz);
+		void do_transformation() override;
 		float get_angle();
 		float get_x();
 		float get_y();
 		float get_z();
 };
 
-class rotate : public transform {
-	public: 
-		rotate(float a, float xx,
-		       float yy,float zz);
-};
-
-class scale : public transform {
+class scale : public transform{
+	private:
+		float x,y,z;
 	public:
 		scale(float xx, float yy, float zz);
+		void do_transformation() override;
+		float get_angle();
+		float get_x();
+		float get_y();
+		float get_z();
+
 };
 
-class translate : public transform {
+class translate : public transform{
+	private:
+		float x,y,z;
 	public:
 		translate(float xx, float yy, float zz);
+		void do_transformation() override;
+		float get_angle();
+		float get_x();
+		float get_y();
+		float get_z();
 };
