@@ -19,10 +19,6 @@ struct triple {
 	float x,y,z;
 };
 
-struct quad {
-    float angle,x,y,z;
-};
-
 struct prims {
 	int count;
 	int group;
@@ -31,6 +27,7 @@ struct prims {
 
 struct trans {
 	int group;
+	int par;
 	transform* t;
 };
 
@@ -122,95 +119,84 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
-int groups(tinyxml2::XMLElement* gr, std::vector<struct trans> trans_p, int g) {
-	tinyxml2::XMLElement* tran, *trans, *models, *mod, *group;
-	int i = 0, j;
-	const char* f;
+void group_read_models(int cur_parent, int cur_g, XMLElement*models,
+					   bool reading=false, int i=0)
+{
+	struct prims tmp_p;
+	int j;
+	const char*f;
 	char tmp[1024];
-	std::vector<struct trans> trans_p_old = trans_p;
-    
-	if (gr) {
-		g += 1;
-		// Parent transformations
-		for (int k=0; k<trans_p.size(); k++) {
-			struct trans tmp; 
-			tmp.group = g;
-			tmp.t = trans_p[k].t;
-			world.transformations.push_back(tmp);
-		}
-		// Group transformations
-		trans = gr->FirstChildElement("transform");
-		if (trans) {
-			tran = trans->FirstChildElement();
-			while (tran) {
-				if (strcmp(tran->Name(), "translate") == 0){
-					struct trans tmp_t;
-					tmp_t.group = g;
-					tmp_t.t = new translate(
-						tran->FloatAttribute("x"),
-						tran->FloatAttribute("y"),
-						tran->FloatAttribute("z")
-					);					      
-					world.transformations.push_back(tmp_t);
-					trans_p.push_back(tmp_t);
-				}
-				else if (strcmp(tran->Name(), "rotate") == 0) {
-					struct trans tmp_r;
-					tmp_r.group = g;
-					tmp_r.t = new rotate(
-					tran->FloatAttribute("angle"),
-						tran->FloatAttribute("x"),
-						tran->FloatAttribute("y"),
-						tran->FloatAttribute("z")
-					);
-					world.transformations.push_back(tmp_r);
-					trans_p.push_back(tmp_r);
-				}
-				else if (strcmp(tran->Name(), "scale") == 0) {
-					struct trans tmp_s;
-					tmp_s.group = g;
-					tmp_s.t = new scale(
-						tran->FloatAttribute("x"),
-						tran->FloatAttribute("y"),
-						tran->FloatAttribute("z")
-					);
-					world.transformations.push_back(tmp_s);
-					trans_p.push_back(tmp_s);
-				}
-				tran = tran->NextSiblingElement();
-			}
-		}
-		group = gr->FirstChildElement("group");
-		if (group) 
-			g = groups(group, trans_p, g);
-
-		// Models
-		models = gr->FirstChildElement("models");
-		if (models) {
-			for (mod=models->FirstChildElement("model");
-					 mod;
-					 mod=mod->NextSiblingElement("model")) {
-			if (mod){
-					f = mod->Attribute("file");
-					if ( not_in_prims_g(f, &j, g, i)) {
-						struct prims tmp_p;
-						strcpy(tmp, "../../prims/");
-						strcpy(tmp_p.name, f);
-						strcat(tmp, tmp_p.name);
-						strcpy(tmp_p.name, tmp);
-						tmp_p.count = 1;
-						tmp_p.group = g;
-						world.primitives.push_back(tmp_p);
-						i += 1;
-					}
-					else
-						world.primitives[j].count+=1;
-				}
-			}
-		}
-		g = groups(gr->NextSiblingElement("group"), trans_p_old, g);
+	XMLElement*mod = reading ? models->FirstChildElement("models")
+		: models->NextSiblingElement();
+	if (!mod)
+		return;
+	f = mod->Attribute("file");
+	if ( not_in_prims_g(f, &j, cur_g, i)) {
+		strcpy(tmp, "../../prims/");
+		strcpy(tmp_p.name, f);
+		strcat(tmp, tmp_p.name);
+		strcpy(tmp_p.name, tmp);
+		tmp_p.count = 1;
+		tmp_p.group = cur_g;
+		world.primitives.push_back(tmp_p);
+		i += 1;
 	}
-	return g;
+	else
+		world.primitives[j].count+=1;
+	group_read_models(cur_parent, cur_g, mod, true, i);
+}
+void group_read_transform(int cur_parent, int cur_g,
+						  XMLElement*transform,
+						  bool reading = false)
+{
+	struct trans tmp;
+	XMLElement*tran = reading ? transform->FirstChildElement():
+		transform->NextSiblingElement();
+	if (!tran)
+		return;
+	tmp.group = cur_g;
+	tmp.par = cur_parent;
+	if (strcmp(tran->Name(), "translate") == 0){
+		tmp.t = new translate(
+			tran->FloatAttribute("x"),
+			tran->FloatAttribute("y"),
+			tran->FloatAttribute("z")
+		);					      
+		world.transformations.push_back(tmp);
+	}
+	else if (strcmp(tran->Name(), "rotate") == 0) {
+		tmp.t = new rotate(
+			tran->FloatAttribute("angle"),
+			tran->FloatAttribute("x"),
+			tran->FloatAttribute("y"),
+			tran->FloatAttribute("z")
+		);
+		world.transformations.push_back(tmp);
+	}
+	else if (strcmp(tran->Name(), "scale") == 0) {
+		tmp.t = new scale(
+			tran->FloatAttribute("x"),
+			tran->FloatAttribute("y"),
+			tran->FloatAttribute("z")
+		);
+		world.transformations.push_back(tmp);
+	}
+	group_read_transform(cur_parent, cur_g, tran, true);
+}
+void group_read(int cur_parent, int cur_g, XMLElement*gr, bool reading = false)
+{
+	XMLElement*elem = reading ? gr->FirstChildElement():
+		gr->NextSiblingElement();
+	if (!elem)
+		return;
+	if (!strcmp(elem->Name(),"models"))
+		group_read_models(cur_parent, cur_g, elem);
+	else if (!strcmp(elem->Name(), "transform"))
+		group_read_transform(cur_parent, cur_g, elem);
+	else if (!strcmp(elem->Name(), "group"))
+		group_read(cur_g, cur_g+1, elem, false);
+	else
+		group_read(cur_parent, cur_g, elem, true);
 }
 
 int xml_init(char* xml_file)
@@ -284,11 +270,9 @@ int xml_init(char* xml_file)
 		}
 		group_R = world_l->FirstChildElement("group");
 		if (group_R) {
-			std::vector<struct trans> trans_p;
-			g = groups(group_R, trans_p, g);
+			group_read(-1, 0, group_R);
 		}
 	}
-	global = g;
 	return i;
 }
 
