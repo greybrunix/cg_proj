@@ -126,7 +126,7 @@ void group_read_models(int cur_parent, int cur_g, XMLElement*models,
 	int j;
 	const char*f;
 	char tmp[1024];
-	XMLElement*mod = reading ? models->FirstChildElement("models")
+	XMLElement*mod = !reading ? models->FirstChildElement("models")
 		: models->NextSiblingElement();
 	if (!mod)
 		return;
@@ -150,7 +150,7 @@ void group_read_transform(int cur_parent, int cur_g,
 						  bool reading = false)
 {
 	struct trans tmp;
-	XMLElement*tran = reading ? transform->FirstChildElement():
+	XMLElement*tran = !reading ? transform->FirstChildElement():
 		transform->NextSiblingElement();
 	if (!tran)
 		return;
@@ -185,7 +185,7 @@ void group_read_transform(int cur_parent, int cur_g,
 }
 void group_read(int cur_parent, int cur_g, XMLElement*gr, bool reading = false)
 {
-	XMLElement*elem = reading ? gr->FirstChildElement():
+	XMLElement*elem = !reading ? gr->FirstChildElement():
 		gr->NextSiblingElement();
 	if (!elem)
 		return;
