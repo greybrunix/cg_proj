@@ -27,7 +27,6 @@ struct prims {
 
 struct trans {
 	int group;
-	int par;
 	transform* t;
 };
 
@@ -155,7 +154,6 @@ void group_read_transform(int cur_parent, int cur_g,
 	if (!tran)
 		return;
 	tmp.group = cur_g;
-	tmp.par = cur_parent;
 	if (strcmp(tran->Name(), "translate") == 0){
 		tmp.t = new translate(
 			tran->FloatAttribute("x"),
