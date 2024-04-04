@@ -1,5 +1,4 @@
 #include "transforms.cpp.h"
-#include <tinyxml2.h>
 
 transform::transform(int t){this->type = t;}
 void transform::do_transformation(){}
