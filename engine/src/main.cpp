@@ -31,6 +31,7 @@ struct prims {
 
 struct trans {
 	int group;
+    char type;
 	union {
 		class translate* t;
 		class rotate* r;
@@ -206,6 +207,7 @@ int xml_init(char* xml_file)
 					while (tran) {
 						if (strcmp(tran->Name(), "translate") == 0){
 							struct trans tmp_t;
+                            tmp_t.type = 't';
 							tmp_t.group = g;
 							tmp_t.tran.t = new translate(
 								tran->FloatAttribute("x"),
@@ -216,6 +218,7 @@ int xml_init(char* xml_file)
 						}
 						else if (strcmp(tran->Name(), "rotate") == 0) {
 							struct trans tmp_r;
+                            tmp_r.type = 'r';
 							tmp_r.group = g;
 							tmp_r.tran.r = new rotate(
 								tran->FloatAttribute("angle"),
@@ -227,6 +230,7 @@ int xml_init(char* xml_file)
 						}
 						else if (strcmp(tran->Name(), "scale") == 0) {
 							struct trans tmp_s;
+                            tmp_s.type = 's';
 							tmp_s.group = g;
 							tmp_s.tran.s = new scale(
 								tran->FloatAttribute("x"),
@@ -304,8 +308,14 @@ void drawfigs(void)
 	for (g=0; g<prims.size(); g++) { /* groups */
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) { /* trans*/
-			if (world.transformations[l].group == g)
-				world.transformations[l].tran.t->do_transformation();
+			if (world.transformations[l].group == g) {
+                if (world.transformations[l].type == 't')
+    				world.transformations[l].tran.t->do_transformation();
+                else if (world.transformations[l].type == 'r') 
+                    world.transformations[l].tran.r->do_transformation();
+                else if (world.transformations[l].type == 's') 
+                    world.transformations[l].tran.s->do_transformation();
+                }
 		}
 		for (i = 0; i<prims[g].size(); i++) {
 			for (j=0; j<prims[g][i].size();j++) {
