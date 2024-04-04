@@ -49,7 +49,7 @@ struct {
 	std::vector<struct prims> primitives;
 } world;
 
-typedef std::vector<struct triple> Primitive_Coords;
+typedef std::vector<std::vector<struct triple>> Primitive_Coords;
 std::vector<Primitive_Coords> prims;
 
 void spherical2Cartesian()
@@ -59,7 +59,7 @@ void spherical2Cartesian()
 	camZ = radius * cos(beta) * cos(alfa);
 }
 
-void read_words (FILE *f, int top) {
+void read_words (FILE *f, int top, std::vector<struct triple>*thing) {
 	char line[1024];
 	char* num;
 	int i = 0, j=0;
@@ -72,7 +72,7 @@ void read_words (FILE *f, int top) {
 		num = strtok(NULL, " \n");
 		z = atof(num);
 
-		prims[top].push_back({.x=x,.y=y,.z=z});
+		thing[top].push_back({.x=x,.y=y,.z=z});
 	}
 }
 
@@ -81,10 +81,14 @@ int read_3d_files(int N)
 	FILE* fd;
 	int i,j;
 	int flag = 0;
+	int group = 0;
 	struct tmp_s { int g; char*name;};
 	std::vector<struct triple> aux;
 	std::vector<struct tmp_s> already_read;
+	Primitive_Coords thing;
 	for (i=0; i<N; i++) {
+		if (world.primitives[i].group != group)
+			prims.push_back(thing),group=world.primitives[i].group;
 		flag = 0;
 		for (j=0; j<already_read.size() && !flag;j++)
 			if (!strcmp(world.primitives[i].name, already_read[j].name)&&
@@ -96,13 +100,16 @@ int read_3d_files(int N)
 				return -1;
 			}
 			for (j=0; j < world.primitives[i].count; j++)
-				prims.push_back(aux);
-			read_words(fd, i);
+				thing.push_back(aux);
+			read_words(fd, i, &aux);
+			thing.push_back(aux);
 			fclose(fd);
 			already_read.push_back({.g=world.primitives[i].group,
 						   .name=world.primitives[i].name});
 		}
 	}
+	prims.push_back(thing);
+	printf("%d %d\n", global, prims.size());
 	return 0;
 }
 static int not_in_prims_g(const char* f, int* i, int g, int N)
@@ -306,11 +313,11 @@ void drawfigs(void)
 	glBegin(GL_TRIANGLES);
 	for (g=0; g<global; g++) { /* groups */
 		glPushMatrix();
-		for (i = 0; i<prims.size(); i++) {
-			for (j=0; j<prims[i].size();j++) {
-				glVertex3f(prims[i][j].x,
-					   prims[i][j].y,
-					   prims[i][j].z);
+		for (i = 0; i<prims[g].size(); i++) {
+			for (j=0; j<prims[g][i].size();j++) {
+				glVertex3f(prims[g][i][j].x,
+					   prims[g][i][j].y,
+					   prims[g][i][j].z);
 			}
 		}
 		for (l=0;l<world.transformations.size();l++) { /* trans*/

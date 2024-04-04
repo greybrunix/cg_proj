@@ -55,6 +55,7 @@ else (WIN32) #Linux and Mac
     SET(TARGET_SRC
         transforms.cpp
     )
+	 set(CMAKE_BUILD_TYPE Debug)
 
 	find_package(GLUT REQUIRED)
 	include_directories(${GLUT_INCLUDE_DIR})
