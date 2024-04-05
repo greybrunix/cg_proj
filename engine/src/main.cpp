@@ -86,29 +86,20 @@ int read_3d_files(void)
 	struct ident_prim aux;
 	for (i=0; i<world.primitives.size(); i++) {
 		flag = 0;
-        printf("ANTES CICLO INTERIOR\n");
 		for (j=0; j<prims.size() && !flag;j++) {
 			if (!strcmp(world.primitives[i].name, prims[j].name))
 				flag = 1;
         }
-        printf("DEPOIS CICLO INTERIOR\n");
 		if (!flag) {
-            printf("ANTES OPEN\n");
 			fd = fopen(world.primitives[i].name, "r");
-            printf("DEPOIS OPEN\n");
 			if (!fd) {
 				return -1;
 			}
             std::vector<struct triple> coords;
-            printf("ANTES LER PALAVRAS\n");
 			read_words(fd, i, &coords);
-            printf("DEPOIS LER PALAVRAS\n");
             aux.coords = coords;
             strcpy(aux.name, world.primitives[i].name);
 			prims.push_back(aux);
-            printf("%s\n", prims.back().name);
-            printf("ANTES\n");
-            printf("DEPOIS\n");
 			fclose(fd);
 		}
 	}
@@ -144,8 +135,6 @@ int group_read_models(int cur_parent, int cur_g, XMLElement*models,
 		strcpy(tmp_p.name, tmp);
 		tmp_p.count = 1;
 		tmp_p.group = cur_g;
-        //printf("%s\n", tmp_p.name);
-        //printf("%ld", world.primitives.size());
 		world.primitives.push_back(tmp_p);
 		i += 1;
 	}
@@ -207,12 +196,14 @@ int group_read(int cur_parent, int cur_g, XMLElement*gr,
             }
         }
     }
+    if (cur_g > global) 
+        global = cur_g+1;
 	if (!strcmp(elem->Name(),"models"))
 		i+=group_read_models(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "transform"))
 		group_read_transform(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "group"))
-		group_read(cur_g, cur_g+1, elem,  false, i);
+		group_read(cur_g, global+1, elem,  false, i);
 	return group_read(cur_parent, cur_g, elem, true, i);
 }
 
@@ -336,6 +327,7 @@ void drawfigs(void)
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) /* trans*/
 			if (world.transformations[l].group == g) {
+                //printf("%d %d\n", world.transformations[l].group, world.transformations[l].t->get_type());
 				world.transformations[l].t->do_transformation();
             }
         for (k=0; k<world.primitives.size(); k++) {
@@ -431,7 +423,8 @@ int main(int argc, char **argv)
 	if (res < 0)
 		return res;
 
-    global = find_groups();
+    //global = find_groups();
+    printf("GLOBAL %d\n", global);
 	res = read_3d_files();
 
 // init GLUT and the window
