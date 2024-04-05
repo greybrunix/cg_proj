@@ -1,0 +1,11 @@
+\babel@toc {portuges}{}\relax 
+\contentsline {section}{\numberline {1}Introdução}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Estrutura do Relatório}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {2}\textit {Engine}}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Classes de Transformações}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Leitura do ficheiro de configuração}{3}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Agrupamento do Desenho de modelos e Aplicação de transformações}{3}{subsubsection.2.2.1}%
+\contentsline {section}{\numberline {3}Desenvolvimento da Demo}{4}{section.3}%
+\contentsline {section}{\numberline {4}Conclusão}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Trabalho Futuro}{5}{subsection.4.1}%
+\contentsline {section}{\numberline {5}Resultados}{6}{section.5}%

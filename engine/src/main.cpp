@@ -327,7 +327,6 @@ void drawfigs(void)
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) /* trans*/
 			if (world.transformations[l].group == g) {
-                //printf("%d %d\n", world.transformations[l].group, world.transformations[l].t->get_type());
 				world.transformations[l].t->do_transformation();
             }
         for (k=0; k<world.primitives.size(); k++) {
