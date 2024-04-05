@@ -31,8 +31,8 @@ struct trans {
 };
 
 struct ident_prim {
-    char name[64];
-    std::vector<struct triple> coords;
+		char name[64];
+		std::vector<struct triple> coords;
 };
 
 struct {
@@ -89,16 +89,16 @@ int read_3d_files(void)
 		for (j=0; j<prims.size() && !flag;j++) {
 			if (!strcmp(world.primitives[i].name, prims[j].name))
 				flag = 1;
-        }
+			}
 		if (!flag) {
 			fd = fopen(world.primitives[i].name, "r");
 			if (!fd) {
 				return -1;
 			}
-            std::vector<struct triple> coords;
+						std::vector<struct triple> coords;
 			read_words(fd, i, &coords);
-            aux.coords = coords;
-            strcpy(aux.name, world.primitives[i].name);
+						aux.coords = coords;
+						strcpy(aux.name, world.primitives[i].name);
 			prims.push_back(aux);
 			fclose(fd);
 		}
@@ -187,17 +187,17 @@ int group_read(int cur_parent, int cur_g, XMLElement*gr,
 	if (cur_g == -1 || !elem)
 		return i;
     if (cur_parent > -1 && !reading) {
-        for (int i=0; i<world.transformations.size(); i++) {
-            struct trans copia;
-            if (world.transformations[i].group == cur_parent) {
-                copia.group = cur_g;
-                copia.t = world.transformations[i].t;
-                world.transformations.push_back(copia);
-            }
-        }
-    }
-    if (cur_g > global) 
-        global = cur_g+1;
+			for (int i=0; i<world.transformations.size(); i++) {
+				struct trans copia;
+				if (world.transformations[i].group == cur_parent) {
+					copia.group = cur_g;
+					copia.t = world.transformations[i].t;
+					world.transformations.push_back(copia);
+				}
+			}
+		}
+	if (cur_g >= global)
+		global = cur_g+1;
 	if (!strcmp(elem->Name(),"models"))
 		i+=group_read_models(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "transform"))
