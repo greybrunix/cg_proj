@@ -17,46 +17,33 @@
 class transform {
 	private:
 		int type;
+		float a,x,y,z;
 	public:
-		transform(int t);
+		transform(int t, float xx, float yy, float zz);
+		transform(int t, float aa, float xx, float yy, float zz);
 		virtual void do_transformation();
 		int get_type();
+		virtual float get_angle();
+		virtual float get_x();
+		virtual float get_y();
+		virtual float get_z();
 };
 
 class rotate : public transform{
-	private:
-		float x,y,z,angle;
 	public: 
 		rotate(float a, float xx,
 		       float yy,float zz);
 		void do_transformation() override;
-		float get_angle();
-		float get_x();
-		float get_y();
-		float get_z();
 };
 
 class scale : public transform{
-	private:
-		float x,y,z;
 	public:
 		scale(float xx, float yy, float zz);
 		void do_transformation() override;
-		float get_angle();
-		float get_x();
-		float get_y();
-		float get_z();
-
 };
 
 class translate : public transform{
-	private:
-		float x,y,z;
 	public:
 		translate(float xx, float yy, float zz);
 		void do_transformation() override;
-		float get_angle();
-		float get_x();
-		float get_y();
-		float get_z();
 };
