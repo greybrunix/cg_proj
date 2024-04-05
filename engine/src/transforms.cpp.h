@@ -16,6 +16,7 @@ class transform {
 	public:
 		transform(int t);
 		virtual void do_transformation();
+		int get_type();
 };
 
 class rotate : public transform{

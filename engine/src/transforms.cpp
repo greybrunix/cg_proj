@@ -2,6 +2,7 @@
 
 transform::transform(int t){this->type = t;}
 void transform::do_transformation(){}
+int transform::get_type(){return this->type;}
 
 rotate::rotate(float a,float xx, float yy, float zz)
 	: transform(0)
