@@ -197,7 +197,7 @@ int group_read(int cur_parent, int cur_g, XMLElement*gr,
 		gr->NextSiblingElement();
 	if (cur_g == -1 || !elem)
 		return i;
-    if (cur_parent > -1) {
+    if (cur_parent > -1 && !reading) {
         for (int i=0; i<world.transformations.size(); i++) {
             struct trans copia;
             if (world.transformations[i].group == cur_parent) {
@@ -336,7 +336,6 @@ void drawfigs(void)
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) /* trans*/
 			if (world.transformations[l].group == g) {
-                printf("%d\n", world.transformations[l].group);
 				world.transformations[l].t->do_transformation();
             }
         for (k=0; k<world.primitives.size(); k++) {
