@@ -335,18 +335,25 @@ void drawfigs(void)
     for (g=0; g<global; g++) {
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) /* trans*/
-			if (world.transformations[l].group == g)
+			if (world.transformations[l].group == g) {
+                printf("%d\n", world.transformations[l].group);
 				world.transformations[l].t->do_transformation();
-		glBegin(GL_TRIANGLES);
-		for (i = 0; i<prims.size(); i++) {
-			for (j=0; j<prims[i].coords.size();j++) {
-                printf("%d %d\n", i, j);
-				glVertex3f(prims[i].coords[j].x,
-					   prims[i].coords[j].y,
-					   prims[i].coords[j].z);
-			}
-		}
-		glEnd();
+            }
+        for (k=0; k<world.primitives.size(); k++) {
+            if (world.primitives[k].group == g) {
+                for (i = 0; i<prims.size(); i++) {
+                    if (!strcmp(prims[i].name, world.primitives[k].name)) {
+		                glBegin(GL_TRIANGLES);
+                        for (j=0; j<prims[i].coords.size();j++) {
+                            glVertex3f(prims[i].coords[j].x,
+                                   prims[i].coords[j].y,
+                                   prims[i].coords[j].z);
+                        }
+		                glEnd();
+                    }
+                }
+            }
+        }
 		glPopMatrix();
 	}
 }
