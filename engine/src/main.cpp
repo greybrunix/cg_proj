@@ -12,7 +12,7 @@ float camX, camY, camZ;
 int timebase, time, frames=0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
-int global;
+int global = 0;
 GLuint vertex_count, vertices;
 
 struct triple {
@@ -30,6 +30,11 @@ struct trans {
 	transform* t;
 };
 
+struct ident_prim {
+    char name[64];
+    std::vector<struct triple> coords;
+};
+
 struct {
 	struct {
 		int h,w,sx,sy;
@@ -45,8 +50,8 @@ struct {
 	std::vector<struct prims> primitives;
 } world;
 
-typedef std::vector<std::vector<struct triple>> Primitive_Coords;
-std::vector<Primitive_Coords> prims;
+typedef std::vector<struct ident_prim> Primitive_Coords;
+Primitive_Coords prims;
 
 void spherical2Cartesian()
 {
@@ -68,43 +73,45 @@ void read_words (FILE *f, int top, std::vector<struct triple>*thing) {
 		num = strtok(NULL, " \n");
 		z = atof(num);
 
-		thing[top].push_back({.x=x,.y=y,.z=z});
+		thing->push_back({.x=x,.y=y,.z=z});
 	}
 }
 
-int read_3d_files(int N)
+int read_3d_files(void)
 {
 	FILE* fd;
 	int i,j;
 	int flag = 0;
 	int group = 0;
-	struct tmp_s { int g; char*name;};
-	std::vector<struct triple> aux;
-	std::vector<struct tmp_s> already_read;
-	Primitive_Coords thing;
-	for (i=0; i<N; i++) {
-		if (world.primitives[i].group != group)
-			prims.push_back(thing),group=world.primitives[i].group;
+	struct ident_prim aux;
+	for (i=0; i<world.primitives.size(); i++) {
 		flag = 0;
-		for (j=0; j<already_read.size() && !flag;j++)
-			if (!strcmp(world.primitives[i].name, already_read[j].name)&&
-				world.primitives[i].group == already_read[j].g)
+        printf("ANTES CICLO INTERIOR\n");
+		for (j=0; j<prims.size() && !flag;j++) {
+			if (!strcmp(world.primitives[i].name, prims[j].name))
 				flag = 1;
+        }
+        printf("DEPOIS CICLO INTERIOR\n");
 		if (!flag) {
+            printf("ANTES OPEN\n");
 			fd = fopen(world.primitives[i].name, "r");
+            printf("DEPOIS OPEN\n");
 			if (!fd) {
 				return -1;
 			}
-			for (j=0; j < world.primitives[i].count; j++)
-				thing.push_back(aux);
-			read_words(fd, i, &aux);
-			thing.push_back(aux);
+            std::vector<struct triple> coords;
+            printf("ANTES LER PALAVRAS\n");
+			read_words(fd, i, &coords);
+            printf("DEPOIS LER PALAVRAS\n");
+            aux.coords = coords;
+            strcpy(aux.name, world.primitives[i].name);
+			prims.push_back(aux);
+            printf("%s\n", prims.back().name);
+            printf("ANTES\n");
+            printf("DEPOIS\n");
 			fclose(fd);
-			already_read.push_back({.g=world.primitives[i].group,
-						   .name=world.primitives[i].name});
 		}
 	}
-	prims.push_back(thing);
 	return 0;
 }
 static int not_in_prims_g(const char* f, int* i, int g, int N)
@@ -138,6 +145,7 @@ int group_read_models(int cur_parent, int cur_g, XMLElement*models,
 		tmp_p.count = 1;
 		tmp_p.group = cur_g;
         //printf("%s\n", tmp_p.name);
+        //printf("%ld", world.primitives.size());
 		world.primitives.push_back(tmp_p);
 		i += 1;
 	}
@@ -285,7 +293,17 @@ int xml_init(char* xml_file)
 	return i;
 }
 
+int find_groups(void) 
+{   
+    int res = 0;
 
+    for (int i=0; i<world.primitives.size(); i++) {
+        if (world.primitives[i].group > res)
+            res = world.primitives[i].group;
+    }
+
+    return res+1;
+}
 
 void changeSize(int w, int h)
 {
@@ -314,18 +332,18 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, j, k, l, g;
-	for (g=0; g<prims.size(); g++) { /* groups */
+    for (g=0; g<global; g++) {
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) /* trans*/
 			if (world.transformations[l].group == g)
 				world.transformations[l].t->do_transformation();
 		glBegin(GL_TRIANGLES);
-        //printf("%ld\n", prims[g].size());
-		for (i = 0; i<prims[g].size(); i++) {
-			for (j=0; j<prims[g][i].size();j++) {
-				glVertex3f(prims[g][i][j].x,
-					   prims[g][i][j].y,
-					   prims[g][i][j].z);
+		for (i = 0; i<prims.size(); i++) {
+			for (j=0; j<prims[i].coords.size();j++) {
+                printf("%d %d\n", i, j);
+				glVertex3f(prims[i].coords[j].x,
+					   prims[i].coords[j].y,
+					   prims[i].coords[j].z);
 			}
 		}
 		glEnd();
@@ -403,11 +421,12 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		return 1;
 	}
-	res = xml_init(argv[1]);
+	xml_init(argv[1]);
 	if (res < 0)
 		return res;
-	i = res;
-	res = read_3d_files(i);
+
+    global = find_groups();
+	res = read_3d_files();
 
 // init GLUT and the window
 	glutInit(&argc, argv);
