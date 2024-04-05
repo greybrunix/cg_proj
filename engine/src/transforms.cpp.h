@@ -10,6 +10,10 @@
 #include <math.h>
 /* Classes */
 
+#define TRANS_ROT 0
+#define TRANS_SCA 1
+#define TRANS_TRA 2
+
 class transform {
 	private:
 		int type;
