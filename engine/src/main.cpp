@@ -449,6 +449,10 @@ int main(int argc, char **argv)
 	glewInit();
 #endif
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+    // criar o VBO
+    glGenBuffers(1, &vertices);
 
 //  OpenGL settings
 	/*glEnableClientState(GL_VERTEX_ARRAY);
