@@ -1,6 +1,5 @@
 #include <cstdio>
 #include <cstdlib>
-#include <vector>
 #include <tinyxml2.h>
 #include <cstring>
 #include "transforms.cpp.h"
@@ -60,7 +59,8 @@ void spherical2Cartesian()
 	camZ = radius * cos(beta) * cos(alfa);
 }
 
-void read_words (FILE *f, int top, std::vector<struct triple>*thing) {
+void read_words (FILE *f, int top, std::vector<struct triple>*thing)
+{
 	char line[1024];
 	char* num;
 	int i = 0, j=0;
@@ -117,7 +117,7 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 }
 
 void group_read_models(int cur_parent, int cur_g, XMLElement*models,
-					   bool reading=false, int i=0)
+		       bool reading=false, int i=0)
 {
 	struct prims tmp_p;
 	int j;
@@ -143,30 +143,45 @@ void group_read_models(int cur_parent, int cur_g, XMLElement*models,
 	group_read_models(cur_parent, cur_g, mod, true, i);
 }
 void group_read_transform(int cur_parent, int cur_g,
-						  XMLElement*transform,
-						  bool reading = false
-                          )
+			  XMLElement*transform,
+			  bool reading = false)
 {
 	struct trans tmp;
+	std::vector<struct point> points;
 	XMLElement*tran = !reading ? transform->FirstChildElement():
 		transform->NextSiblingElement();
 	if (!tran)
 		return;
 	tmp.group = cur_g;
 	if (strcmp(tran->Name(), "translate") == 0){
-		tmp.t = new translate(
-			tran->FloatAttribute("x"),
-			tran->FloatAttribute("y"),
-			tran->FloatAttribute("z")
-		);					      
+		if (!tran->IntAttribute("time")) {
+			tmp.t = new translate_static(
+				tran->FloatAttribute("x"),
+				tran->FloatAttribute("y"),
+				tran->FloatAttribute("z"));
+		}
+		else {
+			tmp.t = new translate_catmull_rom(
+				tran->IntAttribute("time"),
+				tran->BoolAttribute("align"),
+				points);
+		}
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
-		tmp.t = new rotate(
-			tran->FloatAttribute("angle"),
-			tran->FloatAttribute("x"),
-			tran->FloatAttribute("y"),
-			tran->FloatAttribute("z")
-		);
+		if (tran->FloatAttribute("angle")) {
+			tmp.t = new rotate_angle(
+				tran->FloatAttribute("angle"),
+				tran->FloatAttribute("x"),
+				tran->FloatAttribute("y"),
+				tran->FloatAttribute("z"));
+		}
+		else {
+			tmp.t = new rotate_time(
+				tran->IntAttribute("time"),
+				tran->FloatAttribute("x"),
+				tran->FloatAttribute("y"),
+				tran->FloatAttribute("z"));
+		}
 	}
 	else if (strcmp(tran->Name(), "scale") == 0) {
 		tmp.t = new scale(
@@ -284,16 +299,14 @@ int xml_init(char* xml_file)
 	return i;
 }
 
-int find_groups(void) 
-{   
-    int res = 0;
-
-    for (int i=0; i<world.primitives.size(); i++) {
-        if (world.primitives[i].group > res)
-            res = world.primitives[i].group;
-    }
-
-    return res+1;
+int find_groups(void)
+{
+	int res = 0;
+	for (int i=0; i<world.primitives.size(); i++) {
+		if (world.primitives[i].group > res)
+			res = world.primitives[i].group;
+	}
+	return res+1;
 }
 
 void changeSize(int w, int h)
@@ -303,7 +316,7 @@ void changeSize(int w, int h)
 	if(h == 0)
 		h = 1;
 
-	// compute window's aspect ratio 
+	// compute window's aspect ratio
 	float ratio = w * 1.0 / h;
 
 	// Set the projection matrix as current
@@ -323,27 +336,27 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, j, k, l, g;
-    for (g=0; g<global; g++) {
+	for (g=0; g<global; g++) {
 		glPushMatrix();
 		for (l=0;l<world.transformations.size();l++) /* trans*/
 			if (world.transformations[l].group == g) {
 				world.transformations[l].t->do_transformation();
-            }
-        for (k=0; k<world.primitives.size(); k++) {
-            if (world.primitives[k].group == g) {
-                for (i = 0; i<prims.size(); i++) {
-                    if (!strcmp(prims[i].name, world.primitives[k].name)) {
-		                glBegin(GL_TRIANGLES);
-                        for (j=0; j<prims[i].coords.size();j++) {
-                            glVertex3f(prims[i].coords[j].x,
-                                   prims[i].coords[j].y,
-                                   prims[i].coords[j].z);
-                        }
-		                glEnd();
-                    }
-                }
-            }
-        }
+			}
+		for (k=0; k<world.primitives.size(); k++) {
+			if (world.primitives[k].group == g) {
+				for (i = 0; i<prims.size(); i++) {
+					if (!strcmp(prims[i].name, world.primitives[k].name)) {
+						glBegin(GL_TRIANGLES);
+						for (j=0; j<prims[i].coords.size();j++) {
+							glVertex3f(prims[i].coords[j].x,
+								   prims[i].coords[j].y,
+								   prims[i].coords[j].z);
+						}
+						glEnd();
+					}
+				}
+			}
+		}
 		glPopMatrix();
 	}
 }
@@ -357,13 +370,10 @@ void renderScene(void)
 	// set the camera
 	glLoadIdentity();
 	gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
-		world.cam.lookAt.x, world.cam.lookAt.y
-		, world.cam.lookAt.z,
-		world.cam.up.x, world.cam.up.y, world.cam.up.z);
-	/*gluLookAt(camX, camY,camZ,
-		  0.f,0.f,0.f,
-		  0.f,1.f,0.f);
-	*/
+		  world.cam.lookAt.x, world.cam.lookAt.y,
+		  world.cam.lookAt.z,
+		  world.cam.up.x, world.cam.up.y, world.cam.up.z);
+
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 
@@ -405,8 +415,8 @@ void renderScene(void)
 //void processKeys(unsigned char c, int xx, int yy);
 //void processSpecialKeys(int key, int xx, int yy);
 
-void printInfo() {
-
+void printInfo()
+{
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
@@ -433,12 +443,12 @@ int main(int argc, char **argv)
 	glutInitWindowSize(world.win.w,world.win.h);
 	glutCreateWindow(world.win.title);
 	timebase = glutGet(GLUT_ELAPSED_TIME);
-		
-// Required callback registry 
+
+// Required callback registry
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(renderScene);
 	glutReshapeFunc(changeSize);
-	
+
 // Callback registration for keyboard processing
 //	glutKeyboardFunc(processKeys);
 //	glutSpecialFunc(processSpecialKeys);
@@ -451,8 +461,8 @@ int main(int argc, char **argv)
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-    // criar o VBO
-    glGenBuffers(1, &vertices);
+// criar o VBO
+	glGenBuffers(1, &vertices);
 
 //  OpenGL settings
 	/*glEnableClientState(GL_VERTEX_ARRAY);
@@ -466,6 +476,6 @@ int main(int argc, char **argv)
 
 // enter GLUT's main cycle
 	glutMainLoop();
-		
+
 	return 1;
 }
