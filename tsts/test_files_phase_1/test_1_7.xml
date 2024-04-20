@@ -1,0 +1,15 @@
+<world>
+    <window width="512" height="512" />
+    <camera>
+            <position x="15" y="15" z="25" />
+            <lookAt x="0" y="0" z="0" />
+            <up x="0" y="1" z="0" />
+        <projection fov="60" near="1" far="1000" />
+    </camera>
+        <group>
+                <models>
+                        <model file="torus_10_10_1000_1000.3d" /> <!-- generator torus 5 3 torus_10_10_1000_1000.3d -->
+                </models>
+        </group>
+</world>
+

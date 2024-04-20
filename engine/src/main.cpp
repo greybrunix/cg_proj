@@ -80,8 +80,8 @@ void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigne
 
         std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
 
-        if (vi.count(coord)) {
-            ind->push_back(vi[coord]);
+        if (vi.find(coord) != vi.end()) {
+            ind->push_back(vi.at(coord));
         } else {
             vi[coord] = i;
             coords->push_back(v);
@@ -113,7 +113,14 @@ int read_3d_files(void) {
             read_words(fd, &coords, &ind);
             strcpy(aux.name, world.primitives[i].name);
 
-            aux.vertex_count = coords.size() / 3;
+            /*
+            for (int j = 0; j<ind.size(); j++) {
+                printf("%f %f %f %d\n", coords[ind[j]].x, coords[ind[j]].y, coords[ind[j]].z, ind[j]);
+            }
+            */
+
+            aux.vertex_count = coords.size();
+            aux.index_count = ind.size();
 
             // Generate the VBO
             glGenBuffers(1, &aux.vbo);
@@ -372,8 +379,8 @@ void drawfigs(void) {
             if (world.primitives[k].group == g) {
                 for (i = 0; i < prims.size(); i++) {
                     if (!strcmp(prims[i].name, world.primitives[k].name)) {
-                        printf("%d\n", prims[i].vertex_count);
-                        
+                        //printf("%d\n", prims[i].vertex_count);
+                        /* 
                         // Draw the VBO
                         glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
                         
@@ -384,6 +391,15 @@ void drawfigs(void) {
 
                         // Unbind the VBO
                         glBindBuffer(GL_ARRAY_BUFFER, 0);
+                        */
+
+                        glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
+                        glVertexPointer(3,GL_FLOAT,0,0);
+                        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
+                        glDrawElements(GL_TRIANGLES,
+                        prims[i].index_count, // número de índices a desenhar
+                        GL_UNSIGNED_INT, // tipo de dados dos índices
+                        0);// parâmetro não utilizado
                     }
                 }
             }
