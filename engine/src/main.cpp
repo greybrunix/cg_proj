@@ -3,6 +3,7 @@
 #include <tinyxml2.h>
 #include <cstring>
 #include "transforms.cpp.h"
+#include <GL/glxew.h>
 
 using namespace tinyxml2;
 
@@ -448,11 +449,7 @@ int main(int argc, char **argv)
     glutInitWindowPosition(world.win.sx, world.win.sy);
     glutInitWindowSize(world.win.w, world.win.h);
     glutCreateWindow(world.win.title);
-    timebase = glutGet(GLUT_ELAPSED_TIME);
-
-    // Disable V-Sync
-    // glXSwapIntervalEXT(0);
-    
+    timebase = glutGet(GLUT_ELAPSED_TIME); 
 
     // Required callback registry
     glutDisplayFunc(renderScene);
@@ -476,6 +473,15 @@ int main(int argc, char **argv)
     glEnableClientState(GL_VERTEX_ARRAY);
 
     printInfo();
+
+    // Disable V-Sync
+    Display *dpy = glXGetCurrentDisplay();
+    GLXDrawable drawable = glXGetCurrentDrawable(); 
+    const int interval = 0;
+
+    if (drawable) {
+        glXSwapIntervalEXT(dpy, drawable, interval);
+    }
 
     // Enter GLUT's main cycle
     glutMainLoop();
