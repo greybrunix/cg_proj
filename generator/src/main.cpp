@@ -374,6 +374,49 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 	return rr;
 }
 
+int32_t gen_cylinder(float radius, float height, int32_t slices, char* file) {
+    FILE* output = fopen(file, "w+");
+    if (output == NULL) {
+        perror("Error opening file");
+        return -1;
+    }
+
+    float angle_diff = 2 * M_PI / slices;
+
+    // Generate vertices for the side faces
+    for (int i = 0; i < slices; i++) {
+        float angle = i * angle_diff;
+        float next_angle = (i + 1) * angle_diff;
+
+        float x0 = radius * sinf(angle);
+        float z0 = radius * cosf(angle);
+        float x1 = radius * sinf(next_angle);
+        float z1 = radius * cosf(next_angle);
+
+        // Generate vertices for the bottom face
+        fprintf(output, "0.0 0.0 0.0\n");
+        fprintf(output, "%.3f 0.0 %.3f\n", x0, z0);
+        fprintf(output, "%.3f 0.0 %.3f\n", x1, z1);
+
+        // Generate vertices for the top face
+        fprintf(output, "0.0 %.3f 0.0\n", height);
+        fprintf(output, "%.3f %.3f %.3f\n", x1, height, z1);
+        fprintf(output, "%.3f %.3f %.3f\n", x0, height, z0);
+
+        // Generate vertices for the side faces
+        fprintf(output, "%.3f 0.0 %.3f\n", x0, z0);
+        fprintf(output, "%.3f %.3f %.3f\n", x0, height, z0);
+        fprintf(output, "%.3f %.3f %.3f\n", x1, 0.0, z1);
+
+        fprintf(output, "%.3f %.3f %.3f\n", x1, 0.0, z1);
+        fprintf(output, "%.3f %.3f %.3f\n", x0, height, z0);
+        fprintf(output, "%.3f %.3f %.3f\n", x1, height, z1);
+    }
+
+    fclose(output);
+    return 0;
+}
+
 int32_t main(int32_t argc, char**argv)
 {
 	int32_t err = 0;
@@ -443,6 +486,18 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[5]),
 			      argv[6]);
 	}
+ 	else if (!strcmp(argv[1], "cylinder")) {
+        if (argc != 6) {
+            err = -1;
+            goto clean;
+        }
+		strcat(tmp, argv[5]);
+		strcpy(argv[5], tmp);
+		err = gen_cylinder(atof(argv[2]),
+			      atoi(argv[3]),
+			      atoi(argv[4]),
+			      argv[5]);
+    }
 
 clean:
 	return err;
