@@ -335,29 +335,49 @@ void changeSize(int w, int h)
 
 void drawfigs(void)
 {
-	int i, j, k, l, g;
-	for (g=0; g<global; g++) {
-		glPushMatrix();
-		for (l=0;l<world.transformations.size();l++) /* trans*/
-			if (world.transformations[l].group == g) {
-				world.transformations[l].t->do_transformation();
-			}
-		for (k=0; k<world.primitives.size(); k++) {
-			if (world.primitives[k].group == g) {
-				for (i = 0; i<prims.size(); i++) {
-					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-						glBegin(GL_TRIANGLES);
-						for (j=0; j<prims[i].coords.size();j++) {
-							glVertex3f(prims[i].coords[j].x,
-								   prims[i].coords[j].y,
-								   prims[i].coords[j].z);
-						}
-						glEnd();
-					}
-				}
-			}
-		}
-		glPopMatrix();
+    int i, j, k, l, g;
+    for (g = 0; g < global; g++) {
+        glPushMatrix();
+        for (l = 0; l < world.transformations.size(); l++) /* trans*/
+            if (world.transformations[l].group == g) {
+                world.transformations[l].t->do_transformation();
+            }
+
+        for (k = 0; k < world.primitives.size(); k++) {
+            if (world.primitives[k].group == g) {
+                for (i = 0; i < prims.size(); i++) {
+                    if (!strcmp(prims[i].name, world.primitives[k].name)) {
+                        // Bind the VBO
+                        glBindBuffer(GL_ARRAY_BUFFER, vertices);
+                        // Allocate memory for the VBO and transfer data
+                        glBufferData(GL_ARRAY_BUFFER, prims[i].coords.size() * sizeof(triple), &prims[i].coords[0], GL_STATIC_DRAW);
+
+                        // Enable vertex array and specify pointer to VBO data
+                        glVertexPointer(3, GL_FLOAT, 0, 0);
+
+                        // Draw the VBO
+                        glDrawArrays(GL_TRIANGLES, 0, prims[i].coords.size());
+
+                        // Unbind the VBO
+                        glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    }
+                }
+            }
+        }
+        glPopMatrix();
+    }
+}
+
+void framerate() {
+	char fps_c[50];
+	frames++;
+	double time = glutGet(GLUT_ELAPSED_TIME);
+	if (time - timebase > 1000) {
+		double fps = frames * 1000.0 / (time - timebase);
+		timebase = time;
+		frames = 0;
+        sprintf(fps_c, "%s-%d",world.win.title, (int)fps);
+    	glutSetWindowTitle(fps_c);
 	}
 }
 
@@ -393,20 +413,9 @@ void renderScene(void)
 		glColor3f(1.f,1.f,1.f);
 	glEnd();
 
-	frames++;
-	time = glutGet(GLUT_ELAPSED_TIME);
-	if (time - timebase > 1000) {
-		fps = frames * 1000.0 / (time - timebase);
-		timebase = time;
-		frames = 0;
-	}
-
-
-	sprintf(fps_c, "%s-%d",world.win.title, (int)fps);
-
-	glutSetWindowTitle(fps_c);
-
 	drawfigs();
+
+    framerate();
 	// End of frame
 	glutSwapBuffers();
 }
@@ -421,61 +430,59 @@ void printInfo()
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
 }
-
 int main(int argc, char **argv)
 {
-	int res = 0, i;
-	if (argc < 2) {
-		return 1;
-	}
-	xml_init(argv[1]);
-	if (res < 0)
-		return res;
+    int res = 0, i;
+    if (argc < 2) {
+        return 1;
+    }
+    xml_init(argv[1]);
+    if (res < 0)
+        return res;
 
-    //global = find_groups();
-    printf("GLOBAL %d\n", global);
-	res = read_3d_files();
+    res = read_3d_files();
 
-// init GLUT and the window
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
-	glutInitWindowPosition(world.win.sx,world.win.sy);
-	glutInitWindowSize(world.win.w,world.win.h);
-	glutCreateWindow(world.win.title);
-	timebase = glutGet(GLUT_ELAPSED_TIME);
+    // init GLUT and the window
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowPosition(world.win.sx, world.win.sy);
+    glutInitWindowSize(world.win.w, world.win.h);
+    glutCreateWindow(world.win.title);
+    timebase = glutGet(GLUT_ELAPSED_TIME);
 
-// Required callback registry
-	glutDisplayFunc(renderScene);
-	glutIdleFunc(renderScene);
-	glutReshapeFunc(changeSize);
+    // Disable V-Sync
+    // glXSwapIntervalEXT(0);
+    
 
-// Callback registration for keyboard processing
-//	glutKeyboardFunc(processKeys);
-//	glutSpecialFunc(processSpecialKeys);
+    // Required callback registry
+    glutDisplayFunc(renderScene);
+    glutIdleFunc(renderScene);
+    glutReshapeFunc(changeSize);
 
-
-	// init GLEW
+    // Init GLEW
 #ifndef __APPLE__
-	glewInit();
+    glewInit();
 #endif
 
-	glEnableClientState(GL_VERTEX_ARRAY);
+    // Enable depth testing and face culling
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
-// criar o VBO
-	glGenBuffers(1, &vertices);
+    // Generate and bind the VBO
+    glGenBuffers(1, &vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, vertices);
 
-//  OpenGL settings
-	/*glEnableClientState(GL_VERTEX_ARRAY);
-	glGenBuffers(1, &vertices);*/
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+    // OpenGL settings
+    glEnableClientState(GL_VERTEX_ARRAY);
 
-	//spherical2Cartesian();
+    printInfo();
 
-	printInfo();
+    // Enter GLUT's main cycle
+    glutMainLoop();
 
-// enter GLUT's main cycle
-	glutMainLoop();
+    // Delete the VBO
+    glDeleteBuffers(1, &vertices);
 
-	return 1;
+    return 1;
 }
+
