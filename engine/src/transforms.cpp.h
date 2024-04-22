@@ -31,6 +31,7 @@ public:
 	transform(int t, int ti, float xx, float yy, float zz);
 	transform(int t, int ti, bool al, std::vector<struct point> ps);
 	virtual void do_transformation();
+	virtual void do_transformation(int elapsed);
 	int get_type();
 	virtual float get_angle();
 	virtual int get_time();
@@ -38,19 +39,16 @@ public:
 	virtual float get_x();
 	virtual float get_y();
 	virtual float get_z();
+	virtual void set_angle(float aa);
 };
 
-class rotate_angle : public transform{
+class rotate : public transform{
 public:
-	rotate_angle(float a, float xx,
-		     float yy,float zz);
-	void do_transformation() override;
-};
-class rotate_time : public transform {
-public:
-	rotate_time(int ti, float xx,
-		    float yy, float zz);
-	void do_transformation() override;
+	rotate(float a, float xx,
+	       float yy,float zz);
+	rotate(int ti, float xx,
+	       float yy, float zz);
+	void do_transformation(int elapsed) override;
 };
 
 class scale : public transform{
