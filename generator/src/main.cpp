@@ -1,15 +1,35 @@
 /* Output a 3d model file*/
 #include <stddef.h>
-#include <string.h>
+#include <cstring>
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <map>
+#include <vector>
 #include <float.h>
 #include <math.h>
 
 struct pair {
 	float x,z;
 };
+
+std::map<std::string, unsigned int> vi;
+std::vector<unsigned int> ind;
+unsigned int i = 0;
+
+void write_file(std::string coord, float x, float y, float z, FILE* output) { 
+    char buff[512];
+    size_t b_read;
+    if (vi.find(coord) != vi.end()) {
+        b_read = snprintf(buff, 512, "%u\n", i);
+        fwrite(buff, sizeof(int8_t), b_read, output);
+    } else {
+        b_read = snprintf(buff, 512, "%.3f, %.3f, %.3f\n", x, y, z);
+        fwrite(buff, sizeof(int8_t), b_read, output);
+        vi[coord] = i++;
+    }
+}
 
 int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 {
@@ -18,47 +38,46 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 	float px, py, pz, alpha_diff = 2 * M_PI / slices,
 	      beta_diff = M_PI / stacks, alpha = 0, beta = 0;
 	size_t b_read;
+    std::string coord;
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) { /* ifs */
 			if(j!=0){
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-						  radius * cosf(beta - M_PI_2) * cosf(alpha),
-						  radius * sinf(beta - M_PI_2),
-						  radius*cosf(beta-M_PI_2)*sinf(alpha));
-				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-						  radius * cosf(beta - M_PI_2 + beta_diff)
-							* cosf(alpha + alpha_diff),
-						  radius * sinf(beta - M_PI_2 + beta_diff),
-						  radius*cosf(beta-M_PI_2+beta_diff)*
-							sinf(alpha + alpha_diff));
-				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-						  radius * cosf(beta - M_PI_2)
-							* cosf(alpha + alpha_diff),
-						  radius * sinf(beta - M_PI_2),
-						  radius*cosf(beta-M_PI_2)
-							*sinf(alpha + alpha_diff));
-				fwrite(buff, sizeof (int8_t),b_read, output);
+                px = radius * cosf(beta - M_PI_2) * cosf(alpha);
+                py = radius * sinf(beta - M_PI_2);
+                pz = radius*cosf(beta-M_PI_2)*sinf(alpha); 
+                coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+                write_file(coord, px, py, pz, output);
+
+                px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);
+                py = radius * sinf(beta - M_PI_2 + beta_diff);
+                pz = radius*cosf(beta-M_PI_2+beta_diff) * sinf(alpha + alpha_diff); 
+                coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+                write_file(coord, px, py, pz, output);
+
+                px = radius * cosf(beta - M_PI_2) * cosf(alpha + alpha_diff);
+                py = radius * sinf(beta - M_PI_2);
+                pz = radius*cosf(beta-M_PI_2)*sinf(alpha + alpha_diff);
+                coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+                write_file(coord, px, py, pz, output);
 			}
 			if(j!=stacks-1){
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-						  radius * cosf(beta - M_PI_2) * cosf(alpha),
-						  radius * sinf(beta - M_PI_2),
-						  radius*cosf(beta-M_PI_2)*sinf(alpha));
-				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-						  radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha),
-						  radius * sinf(beta - M_PI_2 + beta_diff),
-						  radius*cosf(beta-M_PI_2 + beta_diff)*sinf(alpha));
-				fwrite(buff, sizeof (int8_t),b_read, output);
-				b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",
-						  radius * cosf(beta - M_PI_2 + beta_diff)
-							* cosf(alpha + alpha_diff),
-						  radius * sinf(beta - M_PI_2 + beta_diff),
-						  radius*cosf(beta-M_PI_2+beta_diff)*
-							sinf(alpha + alpha_diff));
-				fwrite(buff, sizeof (int8_t),b_read, output);
+                px = radius * cosf(beta - M_PI_2) * cosf(alpha);
+                py = radius * sinf(beta - M_PI_2);
+                pz = radius*cosf(beta-M_PI_2)*sinf(alpha);
+                coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+                write_file(coord, px, py, pz, output);
+                
+                px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha);
+                py = radius * sinf(beta - M_PI_2 + beta_diff);
+                pz = radius*cosf(beta-M_PI_2 + beta_diff)*sinf(alpha);
+                coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+                write_file(coord, px, py, pz, output);
+
+                px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);
+                py = radius * sinf(beta - M_PI_2 + beta_diff);
+                pz = radius*cosf(beta-M_PI_2+beta_diff)*sinf(alpha + alpha_diff);
+                coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+                write_file(coord, px, py, pz, output);
 			}
 			beta += beta_diff;
 		}
