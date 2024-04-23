@@ -70,23 +70,23 @@ void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigne
     std::map<std::string, unsigned int> vi;
 
     while (fgets(line, sizeof(line), f) != NULL) {
-        triple v;
-        num = strtok(line, " \n");
-        v.x = atof(num);
-        num = strtok(NULL, " \n");
-        v.y = atof(num);
-        num = strtok(NULL, " \n");
-        v.z = atof(num);
-
-        std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
-
-        if (vi.find(coord) != vi.end()) {
-            ind->push_back(vi.at(coord));
-        } else {
+        char *tmp = strtok(NULL, " ");         
+        num = strtok(NULL, " ");
+        if (num != NULL) {
+            triple v;
+            v.x = atof(tmp);
+            v.y = atof(num);
+            num = strtok(NULL, " ");
+            v.z = atof(num);
+            num = strtok(NULL, " \n");
+            i = atoi(num);
+            std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
             vi[coord] = i;
             coords->push_back(v);
+            ind->push_back(i); 
+        } else {
+            i = atoi(tmp);
             ind->push_back(i);
-            i++;
         }
     }
 }
