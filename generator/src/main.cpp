@@ -416,7 +416,95 @@ int32_t gen_cylinder(float radius, float height, int32_t slices, char* file) {
     fclose(output);
     return 0;
 }
+void multMV(float m[4][4], float* v, float* res) {
 
+	for (int j = 0; j < 4; ++j) {
+		res[j] = 0;
+		for (int k = 0; k < 4; ++k) {
+			res[j] += v[k] * m[j][k];
+		}
+	}
+
+}
+
+// calculo de p(u,v) para cada ponto da patch
+float puv(float U, float V, float m[4][4]) {
+
+	// matriz onde terá o resultado de m * v
+	float res[4];
+
+	// matriz v
+	float v[4];
+
+	// Resultado final
+	float r;
+	
+	//Criar a matriz v da
+	v[0] = powf(V, 3);
+	v[1] = powf(V, 2);
+	v[2] = V;
+	v[3] = 1;
+
+	//m * v
+	multMV(m, v, res);
+
+	// U * m * V
+	r = powf(U, 3) * res[0] + powf(U, 2) * res[1] + U * res[2] + res[3];
+
+	return r;
+}
+
+int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselation,char* file) {
+
+	FILE* output = fopen(file, "w+");
+	if (output == NULL) {
+		perror("Error opening file");
+		return -1;
+	}
+	float x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4;
+	float t = 1 / tesselation;
+
+	for (float i = 0; i < 1; i += t) {
+		for (float j = 0; j < 1; j += t) {
+
+
+			x1 = puv(i, j, px);
+			x2 = puv(i + t, j, px);
+			x3 = puv(i + t, j + t, px);
+			x4 = puv(i, j + t, px);
+
+
+			y1 = puv(i, j, py);
+			y2 = puv(i + t, j, py);
+			y3 = puv(i + t, j + t, py);
+			y4 = puv(i, j + t, py);
+
+			z1 = puv(i, j, pz);
+			z2 = puv(i + t, j, pz);
+			z3 = puv(i + t, j + t, pz);
+			z4 = puv(i, j + t, pz);
+
+			fprintf(output, "%.3f %.3f %.3f\n", x1, y1, z1);
+			fprintf(output, "%.3f %.3f %.3f\n", x2, y2, z2);
+			fprintf(output, "%.3f %.3f %.3f\n", x4, y4, z4);
+
+			fprintf(output, "%.3f %.3f %.3f\n", x2, y2, z2);
+			fprintf(output, "%.3f %.3f %.3f\n", x3, y3, z3);
+			fprintf(output, "%.3f %.3f %.3f\n", x4, y4, z4);
+
+		}
+	}
+
+	fclose(output);
+	return 0;
+}
+
+int32_t gen_bezier(char* patch, int tesselation,char* file) {
+
+	bezieraux(px,py,pz,tesselation,file);
+	
+	return 0;
+}
 int32_t main(int32_t argc, char**argv)
 {
 	int32_t err = 0;
@@ -497,7 +585,16 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      atoi(argv[4]),
 			      argv[5]);
-    }
+  	}
+	else if (!strcmp(argv[1], "patch")) {
+		if (argc != 4) {
+			err = -1;
+			goto clean;
+		}
+		//strcat(tmp,arg)
+		err = gen_bezier(argv[2], atoi(argv[3]), argv[4]);
+	}
+
 
 clean:
 	return err;
