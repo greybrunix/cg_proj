@@ -63,9 +63,14 @@ public:
 	void do_transformation() override;
 };
 class translate_catmull_rom : public transform{
+private:
+	void normalize();
+	void multvec();
 public:
 	translate_catmull_rom(int time, bool align,
 			      std::vector<struct point> points);
 	void do_transformation() override;
+	float getpoint();
+	float getglobalpoint();
 };
 
