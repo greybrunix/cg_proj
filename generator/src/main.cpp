@@ -96,7 +96,8 @@ char buff[512];
 std::string coord;
 size_t b_read;
 int i, j, r = 0;
-float px, py=0, pz;
+float y = 0;
+float px, py, pz;
 float angle = 0;
 float cur_rad = radius;
 float angle_diff = 2*M_PI/slices;
@@ -108,66 +109,77 @@ for(i=0; i<stacks; i++) {
         // Bottom face
         if (i==0) {
             px = cur_rad*sinf(angle);
+            py = 0.f;
             pz = cur_rad*cosf(angle);
 
-            coord = std::to_string(px) + std::to_string(0.f) + std::to_string(pz);
-            write_file(coord, px, 0.f, pz, output);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
             px = 0.f;
+            py = 0.f;
             pz = 0.f;
-            coord = std::to_string(px) + std::to_string(0.f) + std::to_string(pz);
-            write_file(coord, px, 0.f, pz, output);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
             
             px = cur_rad*sinf(angle+angle_diff);
+            py = 0.f;
             pz = cur_rad*cosf(cur_rad*cosf(angle+angle_diff));
-            coord = std::to_string(px) + std::to_string(0.f) + std::to_string(pz);
-            write_file(coord, px, 0.f, pz, output);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
         }
        
         if (i==stacks-1){              
             px = cur_rad*sinf(angle+angle_diff);
+            py = y;
             pz = cur_rad*cosf(angle+angle_diff); 
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
 
             px = 0.f;
+            py = height;
             pz = 0.f;
-            coord = std::to_string(px) + std::to_string(height) + std::to_string(pz);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
 
             px = cur_rad*sinf(angle);
-            py = 0.f;
+            py = y;
             pz = cur_rad*cosf(angle);
-            coord = std::to_string(px) + std::to_string(height) + std::to_string(pz);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
         }
         else {
             px = (cur_rad-xz_diff)*sinf(angle+angle_diff);
+            py = y+y_diff;
             pz = (cur_rad-xz_diff)*cosf(angle+angle_diff);
-            coord = std::to_string(px) + std::to_string(py+y_diff) + std::to_string(pz);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
 
             px = (cur_rad-xz_diff)*sinf(angle);
+            py = y+y_diff;
             pz = (cur_rad-xz_diff)*cosf(angle); 
-            coord = std::to_string(px) + std::to_string(py+y_diff) + std::to_string(pz);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py+y_diff, pz, output);
 
             px = cur_rad*sinf(angle+angle_diff);
+            py = y;
             pz = cur_rad*cosf(angle+angle_diff); 
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             
             px = (cur_rad-xz_diff)*sinf(angle);
+            py = y+y_diff;
             pz = (cur_rad-xz_diff)*cosf(angle); 
-            coord = std::to_string(px) + std::to_string(py+y_diff) + std::to_string(pz);
-            write_file(coord, px, py+y_diff, pz, output);
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
             
             px = cur_rad*sinf(angle);
+            py = y; 
             pz = cur_rad*cosf(angle); 
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             
             px = cur_rad*sinf(angle+angle_diff);
+            py = y;
             pz = cur_rad*cosf(angle+angle_diff); 
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
@@ -175,7 +187,7 @@ for(i=0; i<stacks; i++) {
         angle += angle_diff;
     }
     angle = 0;
-    py += y_diff;
+    y += y_diff;
     cur_rad -= xz_diff;
 }
 fclose(output);

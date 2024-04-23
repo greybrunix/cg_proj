@@ -70,7 +70,7 @@ void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigne
     std::map<std::string, unsigned int> vi;
 
     while (fgets(line, sizeof(line), f) != NULL) {
-        char *tmp = strtok(NULL, " ");         
+        char *tmp = strtok(line, " ");         
         num = strtok(NULL, " ");
         if (num != NULL) {
             triple v;
