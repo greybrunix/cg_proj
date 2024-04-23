@@ -1,4 +1,5 @@
 /* Output a 3d model file*/
+#include <cmath>
 #include <stddef.h>
 #include <cstring>
 #include <string>
@@ -92,9 +93,10 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 {
 FILE* output = fopen(file, "w+");
 char buff[512];
+std::string coord;
 size_t b_read;
 int i, j, r = 0;
-float y=0;
+float px, py=0, pz;
 float angle = 0;
 float cur_rad = radius;
 float angle_diff = 2*M_PI/slices;
@@ -105,47 +107,75 @@ for(i=0; i<stacks; i++) {
     for(j=0; j<slices; j++) {
         // Bottom face
         if (i==0) {
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), 0.f, cur_rad*cosf(angle));
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", 0.f, 0.f, 0.f);
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), 0.f, cur_rad*cosf(angle+angle_diff));
-            fwrite(buff, sizeof (int8_t),b_read, output);
+            px = cur_rad*sinf(angle);
+            pz = cur_rad*cosf(angle);
+
+            coord = std::to_string(px) + std::to_string(0.f) + std::to_string(pz);
+            write_file(coord, px, 0.f, pz, output);
+
+            px = 0.f;
+            pz = 0.f;
+            coord = std::to_string(px) + std::to_string(0.f) + std::to_string(pz);
+            write_file(coord, px, 0.f, pz, output);
+            
+            px = cur_rad*sinf(angle+angle_diff);
+            pz = cur_rad*cosf(cur_rad*cosf(angle+angle_diff));
+            coord = std::to_string(px) + std::to_string(0.f) + std::to_string(pz);
+            write_file(coord, px, 0.f, pz, output);
         }
        
         if (i==stacks-1){              
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), y, cur_rad*cosf(angle+angle_diff));
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", 0.f, height, 0.f);
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), y, cur_rad*cosf(angle));
-            fwrite(buff, sizeof (int8_t),b_read, output);
+            px = cur_rad*sinf(angle+angle_diff);
+            pz = cur_rad*cosf(angle+angle_diff); 
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+
+            px = 0.f;
+            pz = 0.f;
+            coord = std::to_string(px) + std::to_string(height) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+
+            px = cur_rad*sinf(angle);
+            py = 0.f;
+            pz = cur_rad*cosf(angle);
+            coord = std::to_string(px) + std::to_string(height) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
         }
         else {
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sinf(angle+angle_diff), y+y_diff,
-                      (cur_rad-xz_diff)*cosf(angle+angle_diff));
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sinf(angle), y+y_diff,
-                      (cur_rad-xz_diff)*cosf(angle));
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), y,
-                      cur_rad*cosf(angle+angle_diff));
-            fwrite(buff, sizeof (int8_t),b_read, output);
+            px = (cur_rad-xz_diff)*sinf(angle+angle_diff);
+            pz = (cur_rad-xz_diff)*cosf(angle+angle_diff);
+            coord = std::to_string(px) + std::to_string(py+y_diff) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", (cur_rad-xz_diff)*sinf(angle), y+y_diff,
-                      (cur_rad-xz_diff)*cosf(angle));
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle), y,
-                      cur_rad*cosf(angle));
-            fwrite(buff, sizeof (int8_t),b_read, output);
-            b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", cur_rad*sinf(angle+angle_diff), y,
-                      cur_rad*cosf(angle+angle_diff));
-            fwrite(buff, sizeof (int8_t),b_read, output);
+            px = (cur_rad-xz_diff)*sinf(angle);
+            pz = (cur_rad-xz_diff)*cosf(angle); 
+            coord = std::to_string(px) + std::to_string(py+y_diff) + std::to_string(pz);
+            write_file(coord, px, py+y_diff, pz, output);
+
+            px = cur_rad*sinf(angle+angle_diff);
+            pz = cur_rad*cosf(angle+angle_diff); 
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            
+            px = (cur_rad-xz_diff)*sinf(angle);
+            pz = (cur_rad-xz_diff)*cosf(angle); 
+            coord = std::to_string(px) + std::to_string(py+y_diff) + std::to_string(pz);
+            write_file(coord, px, py+y_diff, pz, output);
+            
+            px = cur_rad*sinf(angle);
+            pz = cur_rad*cosf(angle); 
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            
+            px = cur_rad*sinf(angle+angle_diff);
+            pz = cur_rad*cosf(angle+angle_diff); 
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
         }
         angle += angle_diff;
     }
     angle = 0;
-    y += y_diff;
+    py += y_diff;
     cur_rad -= xz_diff;
 }
 fclose(output);
@@ -157,45 +187,71 @@ int32_t gen_box(float l, int32_t d, char* file)
 {
 	FILE* output = fopen(file, "w+");
 	char buff[512];
+    std::string coord;
 	size_t b_read;
 	int32_t i, j, r = 0;
 	float x = -l/2;
 	float y = l/2;
 	float z = -l/2;
+    float px, py, pz;
 	float diff = l/d;
 
     // Bottom and Top Faces
 	for (i=0; i<d; i++){
 		for (j=0; j<d; j++) {
 			
+            px = x;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            pz = pz+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, -y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff,-y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, -y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, -y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            
+            px = x+diff;
+            py = -y;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py = -y;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+         
+            px = x;
+            py = -y;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
 			z += diff;
 		}
@@ -211,33 +267,69 @@ int32_t gen_box(float l, int32_t d, char* file)
 	for (int i=0; i<d; i++){
 		for (int j=0; j<d; j++) {
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x+diff;
+            py = y+diff;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            py = y+diff;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y+diff;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py = y+diff;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            py = y;
+            pz = -z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py = y+diff;
+            pz = -z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py = y;
+            pz = -z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x+diff, y+diff, -z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            py = y;
+            pz = -z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y+diff;
+            pz = -z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py = y+diff;
+            pz = -z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
 			y += diff;
 		}
@@ -253,33 +345,69 @@ int32_t gen_box(float l, int32_t d, char* file)
 	for (int i=0; i<d; i++){
 		for (int j=0; j<d; j++) {
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y+diff;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x, y+diff, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y+diff;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            py = y+diff;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y+diff, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = -x;
+            py = y+diff;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = -x;
+            py = y;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = -x;
+            py = y;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y+diff, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", -x, y+diff, z+diff);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = -x;
+            py = y+diff;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = -x;
+            py = y;
+            z = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = -x;
+            py = y+diff;
+            pz = z+diff;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
 			y += diff;
 		}
@@ -296,30 +424,39 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 {
 	FILE* output = fopen(file, "w+"); 
 	char buff[512];
+    std::string coord;
 	size_t b_read;
 	float x = full_size/2, z = -x, off=full_size/divs;
+    float px, py=0.f, pz;
 	int i,j, err = 0;
 
 	for (i=0; i < divs; i++) {
 		for (j=0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z+off);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-			
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x-off, z+off);
-			fwrite(buff, sizeof (int8_t),b_read, output);
-
-			b_read = sprintf(buff, "%.3f 0.000 %.3f\n", x, z+off);
-			fwrite(buff, sizeof (int8_t),b_read, output);
+            px = x;
+            pz = z+off;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x-off;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x-off;
+            pz = z;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x-off;
+            pz = z+off;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
+            px = x;
+            pz = z+off;
+            coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+            write_file(coord, px, py, pz, output);
 
 			x -= off;
 		}
@@ -401,8 +538,10 @@ int32_t gen_cylinder(float radius, float height, int32_t slices, char* file) {
         perror("Error opening file");
         return -1;
     }
-
+    
+    std::string coord;
     float angle_diff = 2 * M_PI / slices;
+    float px, py, pz;
 
     // Generate vertices for the side faces
     for (int i = 0; i < slices; i++) {
@@ -415,23 +554,68 @@ int32_t gen_cylinder(float radius, float height, int32_t slices, char* file) {
         float z1 = radius * cosf(next_angle);
 
         // Generate vertices for the bottom face
-        fprintf(output, "0.0 0.0 0.0\n");
-        fprintf(output, "%.3f 0.0 %.3f\n", x0, z0);
-        fprintf(output, "%.3f 0.0 %.3f\n", x1, z1);
+        px = 0.0f;
+        py = 0.0f;
+        pz = 0.0f;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x0;
+        pz = z0;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x1;
+        pz = z1;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
 
         // Generate vertices for the top face
-        fprintf(output, "0.0 %.3f 0.0\n", height);
-        fprintf(output, "%.3f %.3f %.3f\n", x1, height, z1);
-        fprintf(output, "%.3f %.3f %.3f\n", x0, height, z0);
+        px = 0.0f;
+        py = height;
+        pz = 0.0f;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x1;
+        py = height;
+        pz = z1;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x0;
+        py = height;
+        pz = z0;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
 
         // Generate vertices for the side faces
-        fprintf(output, "%.3f 0.0 %.3f\n", x0, z0);
-        fprintf(output, "%.3f %.3f %.3f\n", x0, height, z0);
-        fprintf(output, "%.3f %.3f %.3f\n", x1, 0.0, z1);
-
-        fprintf(output, "%.3f %.3f %.3f\n", x1, 0.0, z1);
-        fprintf(output, "%.3f %.3f %.3f\n", x0, height, z0);
-        fprintf(output, "%.3f %.3f %.3f\n", x1, height, z1);
+        px = x0;
+        py = 0.0f;
+        pz = z0;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x0;
+        py = height;
+        pz = z0;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x1;
+        py = 0.0f;
+        pz = z1;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x1;
+        py = 0.0f;
+        pz = z1;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x0;
+        py = height;
+        pz = z0;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
+        px = x1;
+        py = height;
+        pz = z1;
+        coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+        write_file(coord, px, py, pz, output);
     }
 
     fclose(output);
@@ -507,7 +691,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[5]),
 			      argv[6]);
 	}
- 	else if (!strcmp(argv[1], "cylinder")) {
+    else if (!strcmp(argv[1], "cylinder")) {
         if (argc != 6) {
             err = -1;
             goto clean;
