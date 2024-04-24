@@ -26,7 +26,7 @@ void write_file(std::string coord, float x, float y, float z, FILE* output) {
         b_read = snprintf(buff, 512, "%u\n", vi[coord]);
         fwrite(buff, sizeof(int8_t), b_read, output);
     } else {
-        b_read = snprintf(buff, 512, "%.3f, %.3f, %.3f %u\n", x, y, z, i);
+        b_read = snprintf(buff, 512, "%u %.3f, %.3f, %.3f\n", i, x, y, z);
         fwrite(buff, sizeof(int8_t), b_read, output);
         vi[coord] = i++;
     }
