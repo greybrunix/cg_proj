@@ -31,7 +31,6 @@ public:
 	transform(int t, int ti, float xx, float yy, float zz);
 	transform(int t, int ti, bool al, std::vector<struct point> ps);
 	virtual void do_transformation();
-	virtual void do_transformation(int elapsed);
 	int get_type();
 	virtual float get_angle();
 	virtual int get_time();
@@ -39,16 +38,19 @@ public:
 	virtual float get_x();
 	virtual float get_y();
 	virtual float get_z();
-	virtual void set_angle(float aa);
 };
 
-class rotate : public transform{
+class rotate_angle : public transform{
 public:
-	rotate(float a, float xx,
-	       float yy,float zz);
-	rotate(int ti, float xx,
-	       float yy, float zz);
-	void do_transformation(int elapsed) override;
+	rotate_angle(float a, float xx,
+		     float yy,float zz);
+	void do_transformation() override;
+};
+class rotate_time : public transform {
+public:
+	rotate_time(int ti, float xx,
+		    float yy, float zz);
+	void do_transformation() override;
 };
 
 class scale : public transform{
@@ -63,14 +65,9 @@ public:
 	void do_transformation() override;
 };
 class translate_catmull_rom : public transform{
-private:
-	void normalize();
-	void multvec();
 public:
 	translate_catmull_rom(int time, bool align,
 			      std::vector<struct point> points);
 	void do_transformation() override;
-	float getpoint();
-	float getglobalpoint();
 };
 

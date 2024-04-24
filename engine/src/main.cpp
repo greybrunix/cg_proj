@@ -15,6 +15,7 @@ int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
+int start = 1;
 
 struct triple {
     float x, y, z;
@@ -70,23 +71,23 @@ void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigne
     std::map<std::string, unsigned int> vi;
 
     while (fgets(line, sizeof(line), f) != NULL) {
-        triple v;
-        num = strtok(line, " \n");
-        v.x = atof(num);
-        num = strtok(NULL, " \n");
-        v.y = atof(num);
-        num = strtok(NULL, " \n");
-        v.z = atof(num);
-
-        std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
-
-        if (vi.find(coord) != vi.end()) {
-            ind->push_back(vi.at(coord));
-        } else {
+        num = strtok(line, " ");
+        i = atoi(num);
+        num = strtok(NULL, " ");
+        if (num != NULL) {
+            triple v;
+            v.x = atof(num);
+            num = strtok(NULL, " ");
+            v.y = atof(num);
+            num = strtok(NULL, " ");
+            v.z = atof(num);
+            num = strtok(NULL, " \n");
+            std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
             vi[coord] = i;
             coords->push_back(v);
+            ind->push_back(i); 
+        } else {
             ind->push_back(i);
-            i++;
         }
     }
 }
@@ -452,7 +453,10 @@ void renderScene(void) {
     glColor3f(1.f, 1.f, 1.f);
     glEnd();
 
-    read_3d_files();
+    if (start) {
+        read_3d_files();
+        start = 0;
+    }
     drawfigs();
 
     framerate();
@@ -476,12 +480,11 @@ int main(int argc, char **argv)
     if (argc < 2) {
         return 1;
     }
+
     xml_init(argv[1]);
     if (res < 0)
         return res;
-
-    //res = read_3d_files();
-
+     
     // init GLUT and the window
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -494,7 +497,7 @@ int main(int argc, char **argv)
     glutDisplayFunc(renderScene);
     glutIdleFunc(renderScene);
     glutReshapeFunc(changeSize);
-
+    
     // Init GLEW
 #ifndef __APPLE__
     glewInit();
