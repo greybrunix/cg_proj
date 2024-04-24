@@ -215,9 +215,12 @@ int32_t gen_box(float l, int32_t d, char* file)
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             px = x+diff;
+            py = y;
             pz = pz+diff;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
+            px = x+diff;
+            py= y;
             pz = z;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
@@ -227,10 +230,13 @@ int32_t gen_box(float l, int32_t d, char* file)
             pz = z;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
+            px = x;
+            py = y;
             pz = z+diff;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             px = x+diff;
+            py = y;
             pz = z+diff;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
@@ -241,11 +247,13 @@ int32_t gen_box(float l, int32_t d, char* file)
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             px = x;
+            py = -y;
             pz = z;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             px = x+diff;
             py = -y;
+            pz = z;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
          
@@ -254,10 +262,13 @@ int32_t gen_box(float l, int32_t d, char* file)
             pz = z+diff;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
+            pz = x;
+            py = -y;
             pz = z;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             px = x+diff;
+            py = -y;
             pz = z+diff;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
@@ -298,7 +309,7 @@ int32_t gen_box(float l, int32_t d, char* file)
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             px = x;
-            py = y+diff;
+            py = y;
             pz = z;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
