@@ -475,14 +475,6 @@ float puv(float U, float V, float m[4][4]) {
 	return r;
 }
 
-void check_map(std::string coord) {
-    if (vi.find(coord) != vi.end()) {
-        ind.push_back(vi[coord]);
-    } else {
-        vi[coord] = i++;
-    }
-}
-
 int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselation,char* file) {
 
 	FILE* output = fopen(file, "w+");
@@ -515,17 +507,17 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			z4 = puv(i, j + t, pz);
 
             coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1);
-            check_map(coord);
+            write_file(coord, x1, y1, z1, output);
             coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-            check_map(coord);
+            write_file(coord, x2, y2, z2, output);
             coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-            check_map(coord);
+            write_file(coord, x4, y4, z4, output);
             coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-            check_map(coord);
+            write_file(coord, x2, y2, z2, output);
             coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3);
-            check_map(coord);
+            write_file(coord, x3, y3, z3, output);
             coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-            check_map(coord);
+            write_file(coord, x4, y4, z4, output);
 		}
 	}
 
