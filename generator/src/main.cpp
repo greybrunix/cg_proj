@@ -1,15 +1,36 @@
 /* Output a 3d model file*/
+#include <cmath>
 #include <stddef.h>
-#include <string.h>
+#include <cstring>
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <map>
+#include <vector>
 #include <float.h>
 #include <math.h>
 
 struct pair {
 	float x,z;
 };
+
+std::map<std::string, unsigned int> vi;
+std::vector<unsigned int> ind;
+unsigned int i = 0;
+
+void write_file(std::string coord, float x, float y, float z, FILE* output) { 
+    char buff[512];
+    size_t b_read;
+    if (vi.find(coord) != vi.end()) {
+        b_read = snprintf(buff, 512, "%u\n", vi[coord]);
+        fwrite(buff, sizeof(int8_t), b_read, output);
+    } else {
+        b_read = snprintf(buff, 512, "%u %.3f, %.3f, %.3f\n", i, x, y, z);
+        fwrite(buff, sizeof(int8_t), b_read, output);
+        vi[coord] = i++;
+    }
+}
 
 int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 {
@@ -440,8 +461,8 @@ float puv(float U, float V, float m[4][4]) {
 	float r;
 	
 	//Criar a matriz v da
-	v[0] = powf(V, 3);
-	v[1] = powf(V, 2);
+	v[0] = V*V*V;
+	v[1] = V*V;
 	v[2] = V;
 	v[3] = 1;
 
@@ -449,9 +470,17 @@ float puv(float U, float V, float m[4][4]) {
 	multMV(m, v, res);
 
 	// U * m * V
-	r = powf(U, 3) * res[0] + powf(U, 2) * res[1] + U * res[2] + res[3];
+	r = U*U*U * res[0] + U*U * res[1] + U * res[2] + res[3];
 
 	return r;
+}
+
+void check_map(std::string coord) {
+    if (vi.find(coord) != vi.end()) {
+        ind.push_back(vi[coord]);
+    } else {
+        vi[coord] = i++;
+    }
 }
 
 int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselation,char* file) {
@@ -462,7 +491,8 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 		return -1;
 	}
 	float x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4;
-	float t = 1 / tesselation;
+	float t = 1.0f / tesselation;
+    std::string coord;
 
 	for (float i = 0; i < 1; i += t) {
 		for (float j = 0; j < 1; j += t) {
@@ -484,14 +514,18 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			z3 = puv(i + t, j + t, pz);
 			z4 = puv(i, j + t, pz);
 
-			fprintf(output, "%.3f %.3f %.3f\n", x1, y1, z1);
-			fprintf(output, "%.3f %.3f %.3f\n", x2, y2, z2);
-			fprintf(output, "%.3f %.3f %.3f\n", x4, y4, z4);
-
-			fprintf(output, "%.3f %.3f %.3f\n", x2, y2, z2);
-			fprintf(output, "%.3f %.3f %.3f\n", x3, y3, z3);
-			fprintf(output, "%.3f %.3f %.3f\n", x4, y4, z4);
-
+            coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1);
+            check_map(coord);
+            coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
+            check_map(coord);
+            coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
+            check_map(coord);
+            coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
+            check_map(coord);
+            coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3);
+            check_map(coord);
+            coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
+            check_map(coord);
 		}
 	}
 
