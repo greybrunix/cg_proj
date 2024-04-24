@@ -15,6 +15,7 @@ int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
+int start = 1;
 
 struct triple {
     float x, y, z;
@@ -452,7 +453,10 @@ void renderScene(void) {
     glColor3f(1.f, 1.f, 1.f);
     glEnd();
 
-    read_3d_files();
+    if (start) {
+        read_3d_files();
+        start = 0;
+    }
     drawfigs();
 
     framerate();
@@ -476,12 +480,11 @@ int main(int argc, char **argv)
     if (argc < 2) {
         return 1;
     }
+
     xml_init(argv[1]);
     if (res < 0)
         return res;
-
-    //res = read_3d_files();
-
+     
     // init GLUT and the window
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -494,7 +497,7 @@ int main(int argc, char **argv)
     glutDisplayFunc(renderScene);
     glutIdleFunc(renderScene);
     glutReshapeFunc(changeSize);
-
+    
     // Init GLEW
 #ifndef __APPLE__
     glewInit();
