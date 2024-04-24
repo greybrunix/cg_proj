@@ -38,7 +38,6 @@ int32_t gen_sphere(float radius, int32_t slices, int32_t stacks, char*file)
 	char buff[512];
 	float px, py, pz, alpha_diff = 2 * M_PI / slices,
 	      beta_diff = M_PI / stacks, alpha = 0, beta = 0;
-	size_t b_read;
     std::string coord;
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) { /* ifs */
@@ -94,7 +93,6 @@ int32_t gen_cone(float radius, float height, int32_t slices, int32_t stacks, cha
 FILE* output = fopen(file, "w+");
 char buff[512];
 std::string coord;
-size_t b_read;
 int i, j, r = 0;
 float y = 0;
 float px, py, pz;
@@ -109,21 +107,21 @@ for(i=0; i<stacks; i++) {
         // Bottom face
         if (i==0) {
             px = cur_rad*sinf(angle);
-            py = 0.f;
+            py = 0.0f;
             pz = cur_rad*cosf(angle);
 
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
 
-            px = 0.f;
-            py = 0.f;
-            pz = 0.f;
+            px = 0.0f;
+            py = 0.0f;
+            pz = 0.0f;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
             
             px = cur_rad*sinf(angle+angle_diff);
-            py = 0.f;
-            pz = cur_rad*cosf(cur_rad*cosf(angle+angle_diff));
+            py = 0.0f;
+            pz = cur_rad*cosf(angle+angle_diff);
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
         }
@@ -135,9 +133,9 @@ for(i=0; i<stacks; i++) {
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
 
-            px = 0.f;
+            px = 0.0f;
             py = height;
-            pz = 0.f;
+            pz = 0.0f;
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
             write_file(coord, px, py, pz, output);
 
@@ -158,7 +156,7 @@ for(i=0; i<stacks; i++) {
             py = y+y_diff;
             pz = (cur_rad-xz_diff)*cosf(angle); 
             coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-            write_file(coord, px, py+y_diff, pz, output);
+            write_file(coord, px, py, pz, output);
 
             px = cur_rad*sinf(angle+angle_diff);
             py = y;
@@ -200,7 +198,6 @@ int32_t gen_box(float l, int32_t d, char* file)
 	FILE* output = fopen(file, "w+");
 	char buff[512];
     std::string coord;
-	size_t b_read;
 	int32_t i, j, r = 0;
 	float x = -l/2;
 	float y = l/2;
@@ -437,7 +434,6 @@ int32_t gen_plane(float full_size, int32_t divs, char* file)
 	FILE* output = fopen(file, "w+"); 
 	char buff[512];
     std::string coord;
-	size_t b_read;
 	float x = full_size/2, z = -x, off=full_size/divs;
     float px, py=0.f, pz;
 	int i,j, err = 0;
@@ -491,7 +487,6 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 	float px, py, pz;
 	char buff[512];
     std::string coord;
-	size_t b_read;
 	int32_t rr = 0;
 
 	for (int i = 0; i < slices; i++) {
