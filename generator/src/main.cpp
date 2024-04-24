@@ -437,6 +437,15 @@ int32_t gen_cylinder(float radius, float height, int32_t slices, char* file) {
     fclose(output);
     return 0;
 }
+void multMM(float a[4][4], float b[4][4], float res[4][4]) {
+	for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++) {
+			res[i][j] = 0;
+			for (int k = 0; k < 4; k++)
+				res[i][j] += a[i][k] * b[k][j];
+		}
+}
+
 void multMV(float m[4][4], float* v, float* res) {
 
 	for (int j = 0; j < 4; ++j) {
@@ -459,10 +468,10 @@ float puv(float U, float V, float m[4][4]) {
 
 	// Resultado final
 	float r;
-	
+
 	//Criar a matriz v da
-	v[0] = V*V*V;
-	v[1] = V*V;
+	v[0] = powf(V, 3);
+	v[1] = powf(V, 2);
 	v[2] = V;
 	v[3] = 1;
 
@@ -470,26 +479,23 @@ float puv(float U, float V, float m[4][4]) {
 	multMV(m, v, res);
 
 	// U * m * V
-	r = U*U*U * res[0] + U*U * res[1] + U * res[2] + res[3];
+	r = powf(U, 3) * res[0] + powf(U, 2) * res[1] + U * res[2] + res[3];
 
 	return r;
 }
 
-int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselation,char* file) {
-
-	FILE* output = fopen(file, "w+");
-	if (output == NULL) {
-		perror("Error opening file");
-		return -1;
-	}
+int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], float tesselation, FILE* output) {
+	
 	float x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4;
-	float t = 1.0f / tesselation;
-    std::string coord;
+	float t = 1 / tesselation;
+	size_t b_read;
+	char buff[512];
+
 
 	for (float i = 0; i < 1; i += t) {
 		for (float j = 0; j < 1; j += t) {
 
-
+		
 			x1 = puv(i, j, px);
 			x2 = puv(i + t, j, px);
 			x3 = puv(i + t, j + t, px);
@@ -506,29 +512,129 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			z3 = puv(i + t, j + t, pz);
 			z4 = puv(i, j + t, pz);
 
-            coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1);
-            write_file(coord, x1, y1, z1, output);
-            coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-            write_file(coord, x2, y2, z2, output);
-            coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-            write_file(coord, x4, y4, z4, output);
-            coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-            write_file(coord, x2, y2, z2, output);
-            coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3);
-            write_file(coord, x3, y3, z3, output);
-            coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-            write_file(coord, x4, y4, z4, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n",x1,y1,z1);
+			fwrite(buff, sizeof(int8_t), b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x2, y2, z2);
+			fwrite(buff, sizeof(int8_t), b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x4, y4, z4);
+			fwrite(buff, sizeof(int8_t), b_read, output);
+
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x2, y2, z2);
+			fwrite(buff, sizeof(int8_t), b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x3, y3, z3);
+			fwrite(buff, sizeof(int8_t), b_read, output);
+			b_read = snprintf(buff, 512, "%.3f %.3f %.3f\n", x4, y4, z4);
+			fwrite(buff, sizeof(int8_t), b_read, output);
+
+
 		}
 	}
-
-	fclose(output);
 	return 0;
 }
 
-int32_t gen_bezier(char* patch, int tesselation,char* file) {
 
-	bezieraux(px,py,pz,tesselation,file);
-	
+int32_t gen_bezier(char* patch, float tesselation, char* out) {
+
+	FILE* fd = fopen(patch, "r");
+	FILE* output = fopen(out, "w+");
+	//printf("%.3f",tesselation);
+	if (output == NULL) {
+		perror("Error opening file");
+		return -1;
+	}
+	char line[1024];
+	char* coord;
+	char* num;
+	float x, y, z;
+	std::string aux;
+	float px[4][4];
+	float py[4][4];
+	float pz[4][4];
+	std::map<std::string, unsigned int> vi;
+	float bezierM[4][4] = { {-1.0f,  3.0f, -3.0f, 1.0f},
+						 { 3.0f, -6.0f,  3.0f, 0.0f},
+						 {-3.0f,  3.0f,  0.0f, 0.0f},
+						 { 1.0f,  0.0f,  0.0f, 0.0f} };
+
+	std::vector<triple> points;
+	std::vector<std::vector<int>> indexes;
+
+
+	//printf("%d",strtok(output,"\n");
+	fgets(line, sizeof(line), fd);
+
+	//while (fgets(line, sizeof(line), fd) != NULL) {
+	int npatches = atoi(strtok(line, "\n"));
+
+	// 32 linhas
+	for (int i = 0; i != npatches; i++) {
+		fgets(line, sizeof(line), fd);
+		std::vector <int> patch1;
+		int index = atoi(strtok(line, ","));
+		patch1.push_back(index);
+		// 16 pontos, 4 quadrados
+		for (int l = 1; l < 16; l++) { 
+			index = atoi(strtok(NULL, ",")); 
+			patch1.push_back(index);
+		}
+		indexes.push_back(patch1);
+	}
+	fgets(line, sizeof(line), fd);
+	int npoints = atoi(strtok(line, "\n"));
+
+	for (int i = 0; i != npoints; i++) {
+		triple ponto;
+		fgets(line, sizeof(line), fd);
+		float x = atof(strtok(line, ","));
+		ponto.x = x;
+		float y = atof(strtok(NULL, ","));
+		ponto.y = y;
+		float z = atof(strtok(NULL, ","));
+		ponto.z = z;
+		points.push_back(ponto);
+	}
+
+	float mataux[4][4];
+
+	// Get the length of the vector
+	//size_t length = indexes.size();
+
+	// Print the length of the vector
+	//std::cout << "Length of the vector: " << length << std::endl;
+	//int testarnpontos = 0;
+	for (std::vector <int> quadrado:indexes) {
+
+				for (int i = 0; i < 4; i++) {
+					for (int j = 0; j < 4; j++) {
+
+						triple point = points[quadrado[i * 4 + j]];
+						
+						//printf("%.3f ", point.x);
+						//printf("%.3f ", point.y);
+						//printf("%.3f\n", point.z);
+						px[j][i] = point.x;
+						py[j][i] = point.y;
+						pz[j][i] = point.z;
+						//testarnpontos++;
+
+					}
+
+				}
+
+				multMM(bezierM, px, mataux);
+				multMM(mataux, bezierM, px);
+
+				multMM(bezierM, py, mataux);
+				multMM(mataux, bezierM, py);
+
+				multMM(bezierM, pz, mataux);
+				multMM(mataux, bezierM, pz);
+
+				bezieraux(px, py, pz, tesselation, output);
+	}
+	//printf("%d",testarnpontos);
+	fclose(fd);
+	fclose(output);
 	return 0;
 }
 int32_t main(int32_t argc, char**argv)
@@ -612,13 +718,14 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[4]),
 			      argv[5]);
   	}
-	else if (!strcmp(argv[1], "patch")) {
-		if (argc != 4) {
+	if (!strcmp(argv[1], "patch")) {
+		if (argc != 5) {
 			err = -1;
 			goto clean;
 		}
-		//strcat(tmp,arg)
-		err = gen_bezier(argv[2], atoi(argv[3]), argv[4]);
+		strcat(tmp, argv[4]);
+		strcpy(argv[4], tmp);
+		err = gen_bezier(argv[2], atof(argv[3]), argv[4]);
 	}
 
 
