@@ -24,12 +24,12 @@ private:
 	int type,time;
 	bool align;
 	float a,x,y,z;
-	float *points;
+	std::vector<struct point> points;
 public:
 	transform(int t, float xx, float yy, float zz);
 	transform(int t, float aa, float xx, float yy, float zz);
 	transform(int t, int ti, float xx, float yy, float zz);
-	transform(int t, int ti, bool al, float *ps);
+	transform(int t, int ti, bool al, std::vector<struct point> ps);
 	virtual void do_transformation();
 	int get_type();
 	virtual float get_angle();
@@ -64,21 +64,10 @@ public:
 	translate_static(float xx, float yy, float zz);
 	void do_transformation() override;
 };
-
 class translate_catmull_rom : public transform{
-private:
-	void __get_catmull_rom_point(float t,
-				   float *p, float *pos,
-				   float *deriv);
-	void __get_global_catmull_rom_point(float gt,
-					  float *pos,
-					  float *deriv);
-	void __mult_matrix_vector(float **m,
-				float *p);
-	void __normalize_vector(float *v);
 public:
 	translate_catmull_rom(int time, bool align,
-			      int *points);
+			      std::vector<struct point> points);
 	void do_transformation() override;
 };
 
