@@ -2,8 +2,6 @@
 #include <cstdlib>
 #include <tinyxml2.h>
 #include <cstring>
-#include <map>
-#include <string>
 #include "transforms.cpp.h"
 #include <GL/glxew.h>
 
@@ -180,9 +178,11 @@ void group_read_transform(int cur_parent, int cur_g,
 			  bool reading = false)
 {
 	struct trans tmp;
-	std::vector<struct point> points;
+	std::vector<point> points;
 	XMLElement* tran = !reading ? transform->FirstChildElement() :
 		transform->NextSiblingElement();
+	XMLElement* points_t;
+	point point_t;
 	if (!tran)
 		return;
 	tmp.group = cur_g;
@@ -192,14 +192,21 @@ void group_read_transform(int cur_parent, int cur_g,
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
-		}/*
+		}
 		else {
+			points_t = tran->FirstChildElement();
+			while (points_t) {
+				point_t[0] = points_t->FloatAttribute("x");
+				point_t[1] = points_t->FloatAttribute("y");
+				point_t[2] = points_t->FloatAttribute("z");
+				points.push_back(point_t);
+				points_t = points_t->NextSiblingElement();
+			}
 			tmp.t = new translate_catmull_rom(
 				tran->IntAttribute("time"),
 				tran->BoolAttribute("align"),
 				points);
 		}
-		*/
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
 		if (tran->FloatAttribute("angle")) {

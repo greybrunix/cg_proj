@@ -14,22 +14,18 @@
 #define TRANS_ROT 0
 #define TRANS_SCA 1
 #define TRANS_TRA 2
-
-struct point {
-	float x, y ,z;
-};
-
+typedef float* point;
 class transform {
 private:
 	int type,time;
 	bool align;
 	float a,x,y,z;
-	std::vector<struct point> ps;
+	std::vector<point> ps;
 public:
 	transform(int t, float xx, float yy, float zz);
 	transform(int t, float aa, float xx, float yy, float zz);
 	transform(int t, int ti, float xx, float yy, float zz);
-	transform(int t, int ti, bool al, std::vector<struct point>ps);
+	transform(int t, int ti, bool al, std::vector<point>ps);
 	virtual void do_transformation();
 	int get_type();
 	virtual float get_angle();
@@ -39,13 +35,12 @@ public:
 	virtual float get_y();
 	virtual float get_z();
 	virtual void set_angle(float a);
-	virtual std::vector<struct point> get_points();
+	virtual std::vector<point> get_points();
 };
 
 class rotate : public transform{
 private:
-	float previous_elapsed;
-	float init_time;
+	float previous_elapsed, init_time;
 	float get_PE();
 	void set_PE(float elapsed);
 	float get_IT();
@@ -73,19 +68,24 @@ public:
 
 class translate_catmull_rom : public transform{
 private:
+	float previous_elapsed, init_time;
 	void get_catmull_rom_point(float t,
-				   float *p0, float *p1, float *p2,
-				   float *p3, float *pos, float *der);
-	void get_catmull_rom_global_point(float gt, float *pos,
-					  float *der);
-	void mult_vec_mat(float *m, float *v, float *r);
-	void normalize(float *v);
-	void cross(float *v, float *u, float *r);
-	float len(float *v);
-	void build_rot_matrix(float *x, float *y, float *z, float *r);
+				   point p0, point p1, point p2,
+				   point p3, point pos, point der);
+	void get_catmull_rom_global_point(float gt, point pos,
+					  point der);
+	void mult_vec_mat(float *m, point v, point r);
+	void normalize(point v);
+	void cross(point v, point u, point r);
+	float len(point v);
+	void build_rot_matrix(point x, point y, point z, point r);
+	void set_PE(float elapsed);
+	float get_PE();
+	void set_IT(float elapsed);
+	float get_IT();
 public:
 	translate_catmull_rom(int time, bool align,
-			      std::vector<struct point>ps);
+			      std::vector<point>ps);
 	void do_transformation() override;
 };
 
