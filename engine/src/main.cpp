@@ -475,6 +475,20 @@ void processKeys(unsigned char c, int xx, int yy)
 		world.cam.beta += 0.1;
 		break;
 	}
+
+    if (world.cam.alfa < 0) {
+        world.cam.alfa += M_PI * 2;
+    }
+    else if (world.cam.alfa > M_PI * 2) {
+        world.cam.alfa -= M_PI * 2;
+    }
+
+	if (world.cam.beta < -M_PI) {
+        world.cam.beta += M_PI * 2;
+    }
+	else if (world.cam.beta > M_PI) {
+        world.cam.beta -= M_PI * 2;
+    }
 }
 
 //void processSpecialKeys(int key, int xx, int yy);
@@ -492,9 +506,12 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		return 1;
 	}
-	xml_init(argv[1]);
-	if (res < 0)
+	
+    xml_init(argv[1]);
+	if (res < 0) {
 		return res;
+    }
+
 	// init GLUT and the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -505,8 +522,6 @@ int main(int argc, char **argv)
 
 	// Init GLEW
 	glewInit();
-
-
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
@@ -532,9 +547,11 @@ int main(int argc, char **argv)
 	if (drawable) {
 		glXSwapIntervalEXT(dpy, drawable, interval);
 	}
+
 	res = read_3d_files();
 	if (res < 0)
 		return res;
+
 	// Enter GLUT's main cycle
 	glutMainLoop();
 
