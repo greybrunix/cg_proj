@@ -429,7 +429,6 @@ void renderScene(void) {
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 
-	/*
 	glBegin(GL_LINES);
 	// X axis in red
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -445,11 +444,8 @@ void renderScene(void) {
 	glVertex3f(0.0f, 0.0f, 100.0f);
 	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
-	*/
-	if (start) {
-		read_3d_files();
-		start = 0;
-	}
+
+
 	drawfigs();
 
 	framerate();
@@ -511,6 +507,7 @@ int main(int argc, char **argv)
 	if (drawable) {
 		glXSwapIntervalEXT(dpy, drawable, interval);
 	}
+	read_3d_files();
 
 	// Enter GLUT's main cycle
 	glutMainLoop();
