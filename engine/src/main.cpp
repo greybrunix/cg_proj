@@ -9,8 +9,6 @@
 
 using namespace tinyxml2;
 
-float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
-float camX, camY, camZ;
 int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
@@ -57,13 +55,6 @@ struct {
 
 typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
-
-void spherical2Cartesian()
-{
-	camX = radius * cos(beta) * sin(alfa);
-	camY = radius * sin(beta);
-	camZ = radius * cos(beta) * cos(alfa);
-}
 
 void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigned int>* ind)
 {
@@ -299,7 +290,7 @@ int xml_init(char* xml_file)
 		world.cam.dist = sqrt(world.cam.pos.x*world.cam.pos.x +
 				      world.cam.pos.y*world.cam.pos.y+
 				      world.cam.pos.z*world.cam.pos.z);
-		world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(beta)));
+		world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(world.cam.beta)));
 		world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
@@ -422,9 +413,9 @@ void renderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// calculate camera pos
-	world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
 	world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
 	world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
+	world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
 
 	// set the camera
 	glLoadIdentity();
@@ -476,18 +467,11 @@ void processKeys(unsigned char c, int xx, int yy)
 		break;
 	}
 
-    if (world.cam.alfa < 0) {
-        world.cam.alfa += M_PI * 2;
+	if (world.cam.beta < -1.5f) {
+        world.cam.beta = -1.5f;
     }
-    else if (world.cam.alfa > M_PI * 2) {
-        world.cam.alfa -= M_PI * 2;
-    }
-
-	if (world.cam.beta < -M_PI) {
-        world.cam.beta += M_PI * 2;
-    }
-	else if (world.cam.beta > M_PI) {
-        world.cam.beta -= M_PI * 2;
+	else if (world.cam.beta > 1.5f) {
+        world.cam.beta = 1.5f;
     }
 }
 
