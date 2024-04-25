@@ -21,7 +21,6 @@ struct triple {
 
 
 std::map<std::string, unsigned int> vi;
-std::vector<unsigned int> ind;
 unsigned int i = 0;
 
 void write_file(std::string coord,
