@@ -18,9 +18,12 @@ struct triple {
 	float x,y,z;
 };
 
+struct triple {
+    float x, y, z;
+};
+
 
 std::map<std::string, unsigned int> vi;
-std::vector<unsigned int> ind;
 unsigned int i = 0;
 
 void write_file(std::string coord,
