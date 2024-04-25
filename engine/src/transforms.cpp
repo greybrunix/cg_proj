@@ -1,5 +1,22 @@
 #include "transforms.cpp.h"
 
+static float Q_rsqrt(float number)
+{
+	long i;
+	float x2, y;
+	const float threehalfs = 1.5F;
+	x2 = number * 0.5F;
+	y  = number;
+	i  = * ( long * ) &y;                       // evil floating point bit level hacking
+	i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+	y  = * ( float * ) &i;
+	y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+	// y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+	return y;
+}
+
+
+
 transform::transform(int t,float xx, float yy, float zz)
 {this->a=0.f,this->type = t,this->x=xx,this->y=yy,this->z=zz;}
 transform::transform(int t,float aa,float xx, float yy, float zz)
@@ -62,10 +79,47 @@ translate_static::translate_static(float xx, float yy, float zz)
 void translate_static::do_transformation()
 {glTranslatef(this->get_x(),this->get_y(),this->get_z());}
 
-/*
+
 translate_catmull_rom::translate_catmull_rom(int time, bool align,
 					     std::vector<struct point> points)
 	: transform(TRANS_TRA, time, align, points){}
 void translate_catmull_rom::do_transformation()
 {glTranslatef(this->get_x(),this->get_y(),this->get_z());}
-*/
+void translate_catmull_rom::get_catmull_rom_point(float t,
+						  float *p0, float *p1,
+						  float *p2, float *p3,
+						  float *pos, float *der)
+{}
+void translate_catmull_rom::get_catmull_rom_global_point(float gt,
+							 float *pos,
+							 float *der)
+{}
+void translate_catmull_rom::mult_vec_mat(float *m, float *v, float *r)
+{}
+void translate_catmull_rom::normalize(float *v)
+{
+	float l = Q_rsqrt(v[0]*v[0] + v[1] * v[1] + v[2] * v[2]);
+	v[0] = v[0]*l;
+	v[1] = v[1]*l;
+	v[2] = v[2]*l;
+}
+void translate_catmull_rom::build_rot_matrix(float *x, float *y, float *z,
+                                             float *r)
+{
+	r[0] = x[0]; r[1] = x[1]; r[2] = x[2]; r[3] = 0;
+	r[4] = y[0]; r[5] = y[1]; r[6] = y[2]; r[7] = 0;
+	r[8] = z[0]; r[9] = z[1]; r[10] = z[2]; r[11] = 0;
+	r[12] = 0; r[13] = 0; r[14] = 0; r[15] = 1;
+}
+void translate_catmull_rom::cross(float *v, float *u, float *r)
+{
+	r[0] = v[1]*u[2] - v[2]*u[1];
+	r[1] = v[2]*u[0] - v[0]*u[2];
+	r[2] = v[0]*u[1] - v[1]*u[0];
+}
+float translate_catmull_rom::len(float *v)
+{
+	float res = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+	return res;
+}
+
