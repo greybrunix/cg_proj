@@ -65,11 +65,8 @@ void spherical2Cartesian()
 void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigned int>* ind)
 {
 	char line[1024];
-	char* coord;
 	char* num;
-	float x, y, z;
-	unsigned int i = 0;
-	std::map<std::string, unsigned int> vi;
+	unsigned int i;
 
 	while (fgets(line, sizeof(line), f) != NULL) {
 		num = strtok(line, " ");
@@ -83,8 +80,6 @@ void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigne
 			num = strtok(NULL, " ");
 			v.z = atof(num);
 			num = strtok(NULL, " \n");
-			std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
-			vi[coord] = i;
 			coords->push_back(v);
 			ind->push_back(i);
 		} else {
