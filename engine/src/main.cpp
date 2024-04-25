@@ -43,6 +43,9 @@ struct {
 		char title[64];
 	} win;
 	struct {
+        float dist;
+        float alfa;
+        float beta;
 		struct triple pos;
 		struct triple lookAt;
 		struct triple up; /* 0 1 0 */
@@ -293,6 +296,11 @@ int xml_init(char* xml_file)
 		world.cam.pos.x = posi->FloatAttribute("x");
 		world.cam.pos.y = posi->FloatAttribute("y");
 		world.cam.pos.z = posi->FloatAttribute("z");
+        world.cam.dist = sqrt(world.cam.pos.x*world.cam.pos.x +
+                              world.cam.pos.y*world.cam.pos.y+
+                              world.cam.pos.z*world.cam.pos.z);
+        world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(beta)));
+        world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 		return -4;
@@ -412,6 +420,11 @@ void renderScene(void) {
 	char fps_c[64];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // calculate camera pos
+    world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+    world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+    world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
+
 	// set the camera
 	glLoadIdentity();
 	gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
@@ -445,7 +458,24 @@ void renderScene(void) {
 }
 
 
-//void processKeys(unsigned char c, int xx, int yy);
+void processKeys(unsigned char c, int xx, int yy) {
+    switch (c) {
+    case 'a':
+        world.cam.alfa -= 0.1;
+        break;
+    case 'd':
+        world.cam.alfa += 0.1;
+        break;
+    case 'w':
+        world.cam.beta -= 0.1;
+        break;
+    case 's':
+        world.cam.beta += 0.1;
+        break;
+    }
+    glutPostRedisplay();
+}
+
 //void processSpecialKeys(int key, int xx, int yy);
 
 void printInfo() {
@@ -487,7 +517,9 @@ int main(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	// OpenGL settings
+    glutKeyboardFunc(processKeys);
+	
+    // OpenGL settings
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	printInfo();
