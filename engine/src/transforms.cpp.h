@@ -42,6 +42,13 @@ public:
 };
 
 class rotate : public transform{
+private:
+	float previous_elapsed;
+	float init_time;
+	float get_PE();
+	void set_PE(float elapsed);
+	float get_IT();
+	void set_IT(float elapsed);
 public:
 	rotate(float a, float xx,
 	       float yy,float zz);
