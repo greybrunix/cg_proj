@@ -15,7 +15,6 @@ int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
-int start = 1;
 
 struct triple {
 	float x, y, z;
@@ -444,10 +443,6 @@ void renderScene(void) {
 	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
 
-	if (start) {
-		read_3d_files();
-		start = 0;
-	}
 	drawfigs();
 
 	framerate();
@@ -482,15 +477,17 @@ int main(int argc, char **argv)
 	glutCreateWindow(world.win.title);
 	timebase = glutGet(GLUT_ELAPSED_TIME);
 
+	// Init GLEW
+	glewInit();
+    
+    res = read_3d_files();
+    if (res < 0)
+        return res;
+
 	// Required callback registry
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(renderScene);
 	glutReshapeFunc(changeSize);
-
-	// Init GLEW
-#ifndef __APPLE__
-	glewInit();
-#endif
 
 	// Enable depth testing and face culling
 	glEnable(GL_DEPTH_TEST);
