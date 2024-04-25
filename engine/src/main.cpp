@@ -93,7 +93,6 @@ int read_3d_files(void)
 	FILE* fd;
 	int i, j;
 	int flag = 0;
-	int group = 0;
 	struct ident_prim aux;
 	for (i = 0; i < world.primitives.size(); i++) {
 		flag = 0;
@@ -367,7 +366,7 @@ void changeSize(int w, int h)
 
 void drawfigs(void)
 {
-	int i, j, k, l, g;
+	int i, k, l, g;
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
