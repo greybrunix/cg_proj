@@ -296,11 +296,11 @@ int xml_init(char* xml_file)
 		world.cam.pos.x = posi->FloatAttribute("x");
 		world.cam.pos.y = posi->FloatAttribute("y");
 		world.cam.pos.z = posi->FloatAttribute("z");
-        world.cam.dist = sqrt(world.cam.pos.x*world.cam.pos.x +
-                              world.cam.pos.y*world.cam.pos.y+
-                              world.cam.pos.z*world.cam.pos.z);
-        world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(beta)));
-        world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
+		world.cam.dist = sqrt(world.cam.pos.x*world.cam.pos.x +
+				      world.cam.pos.y*world.cam.pos.y+
+				      world.cam.pos.z*world.cam.pos.z);
+		world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(beta)));
+		world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 		return -4;
@@ -415,15 +415,16 @@ void framerate()
 	}
 }
 
-void renderScene(void) {
+void renderScene(void)
+{
 	// clear buffers
 	char fps_c[64];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // calculate camera pos
-    world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
-    world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
-    world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
+	// calculate camera pos
+	world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+	world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+	world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
 
 	// set the camera
 	glLoadIdentity();
@@ -458,27 +459,28 @@ void renderScene(void) {
 }
 
 
-void processKeys(unsigned char c, int xx, int yy) {
-    switch (c) {
-    case 'a':
-        world.cam.alfa -= 0.1;
-        break;
-    case 'd':
-        world.cam.alfa += 0.1;
-        break;
-    case 'w':
-        world.cam.beta -= 0.1;
-        break;
-    case 's':
-        world.cam.beta += 0.1;
-        break;
-    }
-    glutPostRedisplay();
+void processKeys(unsigned char c, int xx, int yy)
+{
+	switch (c) {
+	case 'a':
+		world.cam.alfa -= 0.1;
+		break;
+	case 'd':
+		world.cam.alfa += 0.1;
+		break;
+	case 's':
+		world.cam.beta -= 0.1;
+		break;
+	case 'w':
+		world.cam.beta += 0.1;
+		break;
+	}
 }
 
 //void processSpecialKeys(int key, int xx, int yy);
 
-void printInfo() {
+void printInfo()
+{
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
@@ -503,10 +505,8 @@ int main(int argc, char **argv)
 
 	// Init GLEW
 	glewInit();
-    
-    res = read_3d_files();
-    if (res < 0)
-        return res;
+
+
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
@@ -517,8 +517,8 @@ int main(int argc, char **argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-    glutKeyboardFunc(processKeys);
-	
+	glutKeyboardFunc(processKeys);
+
     // OpenGL settings
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -532,7 +532,9 @@ int main(int argc, char **argv)
 	if (drawable) {
 		glXSwapIntervalEXT(dpy, drawable, interval);
 	}
-
+	res = read_3d_files();
+	if (res < 0)
+		return res;
 	// Enter GLUT's main cycle
 	glutMainLoop();
 
