@@ -39,7 +39,7 @@ public:
 	virtual float get_y();
 	virtual float get_z();
 	virtual void set_angle(float a);
-	virtual void get_points(std::vector<struct point>* ps);
+	virtual std::vector<struct point> get_points();
 };
 
 class rotate : public transform{

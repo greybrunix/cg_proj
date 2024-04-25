@@ -23,8 +23,8 @@ transform::transform(int t,float aa,float xx, float yy, float zz)
 {this->a=aa,this->time=0.f,this->type = t,this->x=xx,this->y=yy,this->z=zz;}
 transform::transform(int t, int ti, float xx, float yy, float zz)
 {this->time=ti,this->type=t,this->x=xx,this->y=yy,this->z=zz,this->a=0.f;}
-/*transform::transform(int t, int ti, bool al,std::vector<struct point> ps)
-  {this->type=t,this->a=0.f,this->align=al, this->points=ps;}*/
+transform::transform(int t, int ti, bool al,std::vector<struct point> ps)
+  {this->type=t,this->a=0.f,this->align=al, this->ps=ps;}
 void transform::do_transformation(){}
 int transform::get_type(){return this->type;}
 int transform::get_time(){return this->time;}
@@ -33,6 +33,7 @@ float transform::get_angle(){return this->a;}
 float transform::get_x(){return this->x;}
 float transform::get_y(){return this->y;}
 float transform::get_z(){return this->z;}
+std::vector<struct point> transform::get_points(){return this->ps;}
 void transform::set_angle(float aa) { this->a = aa; }
 
 rotate::rotate(float a, float xx, float yy, float zz)
