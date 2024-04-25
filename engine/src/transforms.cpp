@@ -6,8 +6,8 @@ transform::transform(int t,float aa,float xx, float yy, float zz)
 {this->a=aa,this->type = t,this->x=xx,this->y=yy,this->z=zz;}
 transform::transform(int t, int ti, float xx, float yy, float zz)
 {this->time=ti,this->type=t,this->x=xx,this->y=yy,this->z=zz,this->a=0.f;}
-transform::transform(int t, int ti, bool al,std::vector<struct point> ps)
-{this->type=t,this->a=0.f,this->align=al, this->points=ps;}
+/*transform::transform(int t, int ti, bool al,std::vector<struct point> ps)
+  {this->type=t,this->a=0.f,this->align=al, this->points=ps;}*/
 void transform::do_transformation(){}
 int transform::get_type(){return this->type;}
 int transform::get_time(){return this->time;}
@@ -44,9 +44,10 @@ translate_static::translate_static(float xx, float yy, float zz)
 void translate_static::do_transformation()
 {glTranslatef(this->get_x(),this->get_y(),this->get_z());}
 
-
+/*
 translate_catmull_rom::translate_catmull_rom(int time, bool align,
 					     std::vector<struct point> points)
 	: transform(TRANS_TRA, time, align, points){}
 void translate_catmull_rom::do_transformation()
 {glTranslatef(this->get_x(),this->get_y(),this->get_z());}
+*/

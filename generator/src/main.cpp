@@ -14,6 +14,9 @@
 struct pair {
 	float x,z;
 };
+struct triple {
+	float x,y,z;
+};
 
 
 std::map<std::string, unsigned int> vi;

@@ -29,7 +29,7 @@ public:
 	transform(int t, float xx, float yy, float zz);
 	transform(int t, float aa, float xx, float yy, float zz);
 	transform(int t, int ti, float xx, float yy, float zz);
-	transform(int t, int ti, bool al, float *ps);
+	//transform(int t, int ti, bool al, float *ps);
 	virtual void do_transformation();
 	int get_type();
 	virtual float get_angle();
@@ -64,7 +64,7 @@ public:
 	translate_static(float xx, float yy, float zz);
 	void do_transformation() override;
 };
-
+/*
 class translate_catmull_rom : public transform{
 private:
 	void __get_catmull_rom_point(float t,
@@ -81,4 +81,4 @@ public:
 			      int *points);
 	void do_transformation() override;
 };
-
+*/

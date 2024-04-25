@@ -196,24 +196,25 @@ void group_read_transform(int cur_parent, int cur_g,
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
-		}
+		}/*
 		else {
 			tmp.t = new translate_catmull_rom(
 				tran->IntAttribute("time"),
 				tran->BoolAttribute("align"),
 				points);
 		}
+		*/
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
 		if (tran->FloatAttribute("angle")) {
-			tmp.t = new rotate(
+			tmp.t = new rotate_angle(
 				tran->FloatAttribute("angle"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
 		}
 		else {
-			tmp.t = new rotate(
+			tmp.t = new rotate_time(
 				tran->IntAttribute("time"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
@@ -428,6 +429,7 @@ void renderScene(void) {
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 
+	/*
 	glBegin(GL_LINES);
 	// X axis in red
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -443,7 +445,7 @@ void renderScene(void) {
 	glVertex3f(0.0f, 0.0f, 100.0f);
 	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
-
+	*/
 	if (start) {
 		read_3d_files();
 		start = 0;
