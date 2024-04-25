@@ -38,20 +38,18 @@ public:
 	virtual float get_x();
 	virtual float get_y();
 	virtual float get_z();
+	virtual void set_angle(float a);
 };
 
-class rotate_angle : public transform{
+class rotate : public transform{
 public:
-	rotate_angle(float a, float xx,
-		     float yy,float zz);
+	rotate(float a, float xx,
+	       float yy,float zz);
+	rotate(int ti, float xx,
+	       float yy, float zz);
 	void do_transformation() override;
 };
-class rotate_time : public transform {
-public:
-	rotate_time(int ti, float xx,
-		    float yy, float zz);
-	void do_transformation() override;
-};
+
 
 class scale : public transform{
 public:

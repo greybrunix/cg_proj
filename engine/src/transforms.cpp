@@ -16,24 +16,32 @@ float transform::get_angle(){return this->a;}
 float transform::get_x(){return this->x;}
 float transform::get_y(){return this->y;}
 float transform::get_z(){return this->z;}
+void transform::set_angle(float aa) { this->a = aa; }
 
-rotate_angle::rotate_angle(float a,float xx, float yy, float zz)
-	: transform(TRANS_ROT, a, xx, yy, zz){}
-void rotate_angle::do_transformation()
-{glRotatef(this->get_angle(),this->get_x(),this->get_y(),this->get_z());}
-rotate_time::rotate_time(int ti, float xx, float yy, float zz)
-	: transform(TRANS_ROT, ti, xx, yy, zz){}
-void rotate_time::do_transformation()
+rotate::rotate(float a,float xx, float yy, float zz)
+    : transform(TRANS_ROT, a, xx, yy, zz){}
+void rotate::do_transformation()
 {
-	int elapsed = 0;
-	int t_time = this->get_time()*1000000;
-	float rps  = 360.f/t_time;
-	(void)glutGet(GLUT_ELAPSED_TIME);
-	while (elapsed < t_time) {
-		glRotatef(rps, this->get_x(), this->get_y(), this->get_z());
-		elapsed = glutGet(GLUT_ELAPSED_TIME);
+	float rot_a = this->get_angle();
+	int t = this->get_time();
+	int elapsed = glutGet(GLUT_ELAPSED_TIME);
+	if (!t) {
+	if (elapsed/10000000.f < t)
+	    rot_a = (t-(elapsed/1000000.f))/360.f;
+	else
+	    rot_a = 0.f;
+	this->set_angle(rot_a);
 	}
+	glRotatef(rot_a, this->get_x(),
+		  this->get_y(), this->get_z());
 }
+rotate::rotate(int ti, float xx, float yy, float zz)
+	: transform(TRANS_ROT, ti, xx, yy, zz) {}
+
+
+
+
+
 scale::scale(float xx, float yy, float zz)
 	: transform(TRANS_SCA, xx, yy, zz){}
 void scale::do_transformation()

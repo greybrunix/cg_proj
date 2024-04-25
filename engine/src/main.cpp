@@ -207,14 +207,14 @@ void group_read_transform(int cur_parent, int cur_g,
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
 		if (tran->FloatAttribute("angle")) {
-			tmp.t = new rotate_angle(
+			tmp.t = new rotate(
 				tran->FloatAttribute("angle"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
 		}
 		else {
-			tmp.t = new rotate_time(
+			tmp.t = new rotate(
 				tran->IntAttribute("time"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
