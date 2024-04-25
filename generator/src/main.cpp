@@ -18,10 +18,6 @@ struct triple {
 	float x,y,z;
 };
 
-struct triple {
-    float x, y, z;
-};
-
 
 std::map<std::string, unsigned int> vi;
 unsigned int i = 0;
