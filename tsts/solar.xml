@@ -261,9 +261,9 @@
                     <rotate time="30" x="0" y="1" z="0"/>
                     <scale x="0.7" y="0.7" z="0.7" />
                 </transform>
-                    <models> 
-                        <model file="sphere_10_20_20.3d" /> <!-- Pã -->
-                    </models>
+                    			<models> 
+                        			<model file="sphere_10_20_20.3d" /> <!-- Pã -->
+                    			</models>
             </group>
 			<group>
     			<transform> 
@@ -374,7 +374,7 @@
                     </models>
             </group>
         </group>
-        <group> <!-- Cometa -->
+        <group>
             <transform>
                 <translate time = "40" align="true">
                     <point x = "0" y = "-100" z = "100" />
