@@ -21,8 +21,8 @@ transform::transform(int t,float aa,float xx, float yy, float zz)
 {this->a=aa,this->time=0.f,this->type = t,this->x=xx,this->y=yy,this->z=zz;}
 transform::transform(int t, int ti, float xx, float yy, float zz)
 {this->time=ti,this->type=t,this->x=xx,this->y=yy,this->z=zz,this->a=0.f;}
-transform::transform(int t, int ti, bool al,std::vector<point> ps)
-{this->type=t,this->a=0.f,this->align=al, this->ps=ps;}
+transform::transform(int t, int ti, bool al)
+{this->type=t, this->time=ti, this->align=al;}
 void transform::do_transformation(){}
 int transform::get_type(){return this->type;}
 int transform::get_time(){return this->time;}
@@ -31,8 +31,8 @@ float transform::get_angle(){return this->a;}
 float transform::get_x(){return this->x;}
 float transform::get_y(){return this->y;}
 float transform::get_z(){return this->z;}
-std::vector<point> transform::get_points(){return this->ps;}
 void transform::set_angle(float aa) { this->a = aa; }
+void transform::add_point(float* p) {}
 
 rotate::rotate(float a, float xx, float yy, float zz)
 	: transform(TRANS_ROT, a, xx, yy, zz)
@@ -47,20 +47,25 @@ void rotate::do_transformation()
 {
 	float rot_a = this->get_angle();
 	int t = this->get_time();
-	float p_el = this->get_PE(); /* previous time */
-	float i_ti = this->get_IT(); /* initial time */
-	float elapsed;
+	float current_time = glutGet(GLUT_ELAPSED_TIME) / 1000.f;
+	int i_ti = this->get_IT();
+	float elapsed = current_time - i_ti;
+
 	if (t) {
-		elapsed = (glutGet(GLUT_ELAPSED_TIME) - p_el) / 1000.f;
-		rot_a = (360.f * (elapsed-i_ti)) / (t);
-		this->set_PE(elapsed);
-		if (rot_a >= 360.f) {
+		rot_a = (360.f * elapsed) / t;
+		//printf("R:%f, %f\n", elapsed, rot_a);
+		glRotatef(rot_a, this->get_x(),
+			  this->get_y(), this->get_z());
+		this->set_PE(current_time);
+		if (elapsed >= t) {
 			rot_a = 0.f;
-			this->set_IT(elapsed);
+			this->set_IT(current_time);
 		}
 	}
-	glRotatef(rot_a, this->get_x(),
-		  this->get_y(), this->get_z());
+	else
+		glRotatef(rot_a, this->get_x(),
+			  this->get_y(), this->get_z());
+	this->set_angle(rot_a);
 }
 rotate::rotate(int ti, float xx, float yy, float zz)
     : transform(TRANS_ROT, ti, xx, yy, zz)
@@ -79,45 +84,65 @@ void translate_static::do_transformation()
 {glTranslatef(this->get_x(),this->get_y(),this->get_z());}
 
 
-translate_catmull_rom::translate_catmull_rom(int time, bool align,
-                                             std::vector<point> ps)
-    : transform(TRANS_TRA, time, align, ps)
+translate_catmull_rom::translate_catmull_rom(int time, bool align)
+    : transform(TRANS_TRA, time, align)
 {
-		this->previous_elapsed = this->init_time = 0.f;
+	this->ps = new std::vector<float*>();
+	this->previous_elapsed = this->init_time = 0.f;
 }
 float translate_catmull_rom::get_PE() { return this->previous_elapsed; }
 void translate_catmull_rom::set_PE(float elapsed) { this->previous_elapsed = elapsed; }
 float translate_catmull_rom::get_IT() { return this->init_time; }
 void translate_catmull_rom::set_IT(float elapsed) { this->init_time = elapsed; }
 
-bool vec_eq(float *v1, float *v2)
-{
-	int i = 0;
-	bool r = true;
-	while (i < 4 && r) {
-		if (v1[i] != v2[i])
-			r = false;
-		i++;
-	}
-	return r;
-}
-
 void translate_catmull_rom::do_transformation()
 {
-	float pos[4]; float vx[4] = {0.F};
-	int t = this->get_time();
-	float p_el = this->get_PE(); /* previous time */
-	float i_ti = this->get_IT(); /* initial time */
-	float elapsed;
-	if (t) {
-		elapsed = (glutGet(GLUT_ELAPSED_TIME) - p_el) / 1000.f;
-		this->get_catmull_rom_global_point(elapsed, pos,vx);
-		this->set_PE(elapsed);
-		if (vec_eq(vx, pos)) {
-			this->set_IT(elapsed);
+	float pos[4] = {0.F};
+	float vx[4] = {0.F};
+	float vy[4] = {0.F};
+	float vz[4] = {0.F};
+	float mat[16];
+	int t_seconds = this->get_time();
+	float current_time = glutGet(GLUT_ELAPSED_TIME) / 1000.f;
+	int i_ti = this->get_IT();
+	float elapsed = current_time - i_ti;
+	float gt;
+	pos[3] = 1.F;
+	vy[1] = 1.F;
+	if (elapsed < t_seconds) {
+		gt = elapsed / t_seconds;
+		printf("%f\n", gt);
+		this->get_catmull_rom_global_point(gt, pos, vx);
+		pos[0] /= pos[3];
+		pos[1] /= pos[3];
+		pos[2] /= pos[3];
+		pos[3] /= pos[3]; /* w=1 projection */
+		glBegin(GL_LINE_STRIP);
+		for (int i = 0; i <= 100; ++i) {
+			float t_ = i / 100.F;
+			float pos_[4], der[4] = {0.F};
+			this->get_catmull_rom_global_point(t_, pos_, der);
+			glVertex3f(pos_[0], pos_[1], pos_[2]);
+		}
+		glEnd();
+		glTranslatef(pos[0], pos[1], pos[2]);
+		if (this->is_align()) {
+			this->normalize(vx);
+			this->cross(vx, vy, vz);
+			this->normalize(vz);
+			this->cross(vz, vx, vy);
+			if (this->len(vy) == 1.F)
+				this->normalize(vy);
+			this->build_rot_matrix(vx,vy,vz,mat);
+			glMultMatrixf(mat);
 		}
 	}
-	glTranslatef(pos[0], pos[1], pos[2]);
+	else {
+		// Reset elapsed time and initial time
+		elapsed = 0.0f;
+		i_ti = current_time;
+		this->set_IT(i_ti);
+	}
 }
 void translate_catmull_rom::get_catmull_rom_point(float t,
 						  point p0,
@@ -127,28 +152,28 @@ void translate_catmull_rom::get_catmull_rom_point(float t,
 						  point pos,
 						  point der)
 {
-	float P[4], A[4]; int i;
+	float P[4] = {0.F}, A[4] = {0.F}; int i;
 	float m[4][4] = {{-0.5f,  1.5f, -1.5f,  0.5f},
 			 {1.0f, -2.5f,  2.0f, -0.5f},
 			 {-0.5f,  0.0f,  0.5f,  0.0f},
 			 {0.0f,  1.0f,  0.0f,  0.0f}};
 	for (i = 0; i < 4; i++) {
-		P[0] = p0[i]; P[1] = p1[i], P[2] = p2[i], P[3] = 0.F;
+		P[0] = p0[i]; P[1] = p1[i]; P[2] = p2[i]; P[3] = 1.F;
 		this->mult_vec_mat(&m[0][0], P, A);
-		//pos[i] = T * A
+		// pos[i] = T * A
+		//this->normalize(A);
 		pos[i] = (t*t*t*A[0] + t*t*A[1] + t*A[2] + A[3]);
-		// compute deriv = T' * A
+		// der[i] = T' * A
 		der[i] = (3*t*t*A[0] + 2*t*A[1] + A[2]);
-		//d[i] = T' * A
 	}
 }
 void translate_catmull_rom::get_catmull_rom_global_point(float gt,
 							 point pos,
 							 point der)
 {
-	std::vector<point> p = this->get_points();
-	int point_c = p.size();
-	float t = gt * point_c; // this is the real global t
+	float p0[4],p1[4],p2[4],p3[4];
+	int point_c = this->ps->size();
+	float t = gt * (point_c); // this is the real global t
 	int index = floor(t);  // which segment
 	t = t - index; // where within  the segment
 
@@ -159,14 +184,16 @@ void translate_catmull_rom::get_catmull_rom_global_point(float gt,
 	indices[2] = (indices[1]+1)%point_c;
 	indices[3] = (indices[2]+1)%point_c;
 
-	this->get_catmull_rom_point(t, p[indices[0]], p[indices[1]],
-				    p[indices[2]], p[indices[3]],
+	this->get_point(p0,indices[0]), this->get_point(p1,indices[1]);
+	this->get_point(p2,indices[2]), this->get_point(p3,indices[3]);
+	this->get_catmull_rom_point(t, p0, p1,
+				    p2, p3,
 				    pos, der);
 }
-void translate_catmull_rom::mult_vec_mat(float *m, point v, point r)
+void translate_catmull_rom::mult_vec_mat(point m, point v, point r)
 {
 	int j,k;
-	for (j=0; j<4; ++j) {
+	for (j=0; j<4;++j) {
 		r[j] = 0;
 		for (k=0;k<4;++k) {
 			r[j] += v[k] * m[j*4+k];
@@ -199,4 +226,20 @@ float translate_catmull_rom::len(point v)
 	float res = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 	return res;
 }
-
+void translate_catmull_rom::add_point(float *p)
+{
+	float *p_ = new float[4];
+	p_[0] = p[0];
+	p_[1] = p[1];
+	p_[2] = p[2];
+	p_[3] = 1.F;
+	this->ps->push_back(p_);
+}
+void translate_catmull_rom::get_point(float *p, int i)
+{
+	float *p_ = (*ps)[i];
+	p[0] = p_[0];
+	p[1] = p_[1];
+	p[2] = p_[2];
+	p[3] = p_[3];
+}

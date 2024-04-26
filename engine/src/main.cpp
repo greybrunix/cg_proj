@@ -182,7 +182,7 @@ void group_read_transform(int cur_parent, int cur_g,
 	XMLElement* tran = !reading ? transform->FirstChildElement() :
 		transform->NextSiblingElement();
 	XMLElement* points_t;
-	point point_t;
+	float point_t[4] = {1.F};
 	if (!tran)
 		return;
 	tmp.group = cur_g;
@@ -194,18 +194,17 @@ void group_read_transform(int cur_parent, int cur_g,
 				tran->FloatAttribute("z"));
 		}
 		else {
+			tmp.t = new translate_catmull_rom(
+				tran->IntAttribute("time"),
+				tran->BoolAttribute("align"));
 			points_t = tran->FirstChildElement();
 			while (points_t) {
 				point_t[0] = points_t->FloatAttribute("x");
 				point_t[1] = points_t->FloatAttribute("y");
 				point_t[2] = points_t->FloatAttribute("z");
-				points.push_back(point_t);
+				tmp.t->add_point(point_t);
 				points_t = points_t->NextSiblingElement();
 			}
-			tmp.t = new translate_catmull_rom(
-				tran->IntAttribute("time"),
-				tran->BoolAttribute("align"),
-				points);
 		}
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
@@ -444,19 +443,12 @@ void renderScene(void)
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	glBegin(GL_LINES);
-	// X axis in red
-	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-100.0f, 0.0f, 0.0f);
 	glVertex3f(100.0f, 0.0f, 0.0f);
-	// Y Axis in Green
-	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, -100.0f, 0.0f);
 	glVertex3f(0.0f, 100.0f, 0.0f);
-	// Z Axis in Blue
-	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, -100.0f);
 	glVertex3f(0.0f, 0.0f, 100.0f);
-	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
 
 	drawfigs();

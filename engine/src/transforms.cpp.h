@@ -15,17 +15,17 @@
 #define TRANS_SCA 1
 #define TRANS_TRA 2
 typedef float* point;
+
 class transform {
 private:
 	int type,time;
 	bool align;
 	float a,x,y,z;
-	std::vector<point> ps;
 public:
 	transform(int t, float xx, float yy, float zz);
 	transform(int t, float aa, float xx, float yy, float zz);
 	transform(int t, int ti, float xx, float yy, float zz);
-	transform(int t, int ti, bool al, std::vector<point>ps);
+	transform(int t, int ti, bool al);
 	virtual void do_transformation();
 	int get_type();
 	virtual float get_angle();
@@ -35,7 +35,7 @@ public:
 	virtual float get_y();
 	virtual float get_z();
 	virtual void set_angle(float a);
-	virtual std::vector<point> get_points();
+	virtual void add_point(float *p);
 };
 
 class rotate : public transform{
@@ -68,6 +68,7 @@ public:
 
 class translate_catmull_rom : public transform{
 private:
+	std::vector<float*> *ps;
 	float previous_elapsed, init_time;
 	void get_catmull_rom_point(float t,
 				   point p0, point p1, point p2,
@@ -84,8 +85,9 @@ private:
 	void set_IT(float elapsed);
 	float get_IT();
 public:
-	translate_catmull_rom(int time, bool align,
-			      std::vector<point>ps);
+	translate_catmull_rom(int time, bool align);
 	void do_transformation() override;
+	void add_point(float *p) override;
+	void get_point(float *p, int i);
 };
 
