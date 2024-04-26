@@ -335,7 +335,6 @@
         <group>
             <transform>
             	<!--rotate angle="100" x="0" y="1" z="0" /--> 
-            	<translate x="270" y="0" z="270" />
                 <translate time = "460" align="true" >
                     <point x="270" y="0" z="270"/>
                     <point x="0" y="0" z="360"/>
