@@ -40,10 +40,10 @@ public:
 
 class rotate : public transform{
 private:
-	float previous_elapsed, init_time;
-	float get_PE();
+	int previous_elapsed, init_time;
+	int get_PE();
 	void set_PE(float elapsed);
-	float get_IT();
+	int get_IT();
 	void set_IT(float elapsed);
 public:
 	rotate(float a, float xx,
@@ -68,21 +68,21 @@ public:
 class translate_catmull_rom : public transform{
 private:
 	std::vector<float*> *ps;
-	float previous_elapsed, init_time;
+	int previous_elapsed, init_time;
 	void get_catmull_rom_point(float t,
 				   point p0, point p1, point p2,
 				   point p3, point pos, point der);
 	void get_catmull_rom_global_point(float gt, point pos,
 					  point der);
-	void mult_vec_mat(float *m, point v, point r);
+	void mult_mat_vec(float *m, point v, point r);
 	void normalize(point v);
 	void cross(point v, point u, point r);
 	float len(point v);
 	void build_rot_matrix(point x, point y, point z, point r);
 	void set_PE(float elapsed);
-	float get_PE();
+	int get_PE();
 	void set_IT(float elapsed);
-	float get_IT();
+	int get_IT();
 public:
 	translate_catmull_rom(int time, bool align);
 	void do_transformation() override;

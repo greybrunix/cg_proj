@@ -39,9 +39,9 @@ rotate::rotate(float a, float xx, float yy, float zz)
 {
 	this->previous_elapsed = this->init_time = 0.f;
 }
-float rotate::get_PE() { return this->previous_elapsed; }
+int rotate::get_PE() { return this->previous_elapsed; }
 void rotate::set_PE(float elapsed) { this->previous_elapsed = elapsed; }
-float rotate::get_IT() { return this->init_time; }
+int rotate::get_IT() { return this->init_time; }
 void rotate::set_IT(float elapsed) { this->init_time = elapsed; }
 void rotate::do_transformation()
 {
@@ -90,9 +90,9 @@ translate_catmull_rom::translate_catmull_rom(int time, bool align)
 	this->ps = new std::vector<float*>();
 	this->previous_elapsed = this->init_time = 0.f;
 }
-float translate_catmull_rom::get_PE() { return this->previous_elapsed; }
+int translate_catmull_rom::get_PE() { return this->previous_elapsed; }
 void translate_catmull_rom::set_PE(float elapsed) { this->previous_elapsed = elapsed; }
-float translate_catmull_rom::get_IT() { return this->init_time; }
+int translate_catmull_rom::get_IT() { return this->init_time; }
 void translate_catmull_rom::set_IT(float elapsed) { this->init_time = elapsed; }
 
 void translate_catmull_rom::do_transformation()
@@ -111,15 +111,14 @@ void translate_catmull_rom::do_transformation()
 	vy[1] = 1.F;
 	if (elapsed < t_seconds) {
 		gt = elapsed / t_seconds;
-		printf("%f\n", gt);
 		this->get_catmull_rom_global_point(gt, pos, vx);
 		pos[0] /= pos[3];
 		pos[1] /= pos[3];
 		pos[2] /= pos[3];
 		pos[3] /= pos[3]; /* w=1 projection */
 		glBegin(GL_LINE_STRIP);
-		for (int i = 0; i <= 100; ++i) {
-			float t_ = i / 100.F;
+		for (int i = 0; i <= 20; ++i) {
+			float t_ = i / 20.F;
 			float pos_[4], der[4] = {0.F};
 			this->get_catmull_rom_global_point(t_, pos_, der);
 			glVertex3f(pos_[0], pos_[1], pos_[2]);
@@ -157,16 +156,25 @@ void translate_catmull_rom::get_catmull_rom_point(float t,
 			 {1.0f, -2.5f,  2.0f, -0.5f},
 			 {-0.5f,  0.0f,  0.5f,  0.0f},
 			 {0.0f,  1.0f,  0.0f,  0.0f}};
+	float h = 0.025F,
+	      t_m_h = t - h, t_p_h = t + h,
+	      t_m_h_3 = t_m_h * t_m_h * t_m_h,
+	      t_m_h_2 = t_m_h * t_m_h,
+	      t_p_h_3 = t_p_h * t_p_h * t_p_h,
+	      t_p_h_2 = t_p_h * t_p_h,
+	      tmp_m, tmp_p;
+
+
 	for (i = 0; i < 4; i++) {
-		P[0] = p0[i]; P[1] = p1[i]; P[2] = p2[i]; P[3] = 1.F;
-		this->mult_vec_mat(&m[0][0], P, A);
-		// pos[i] = T * A
-		//this->normalize(A);
+		P[0] = p0[i]; P[1] = p1[i]; P[2] = p2[i]; P[3] = p3[i];
+		this->mult_mat_vec(&m[0][0], P, A);
 		pos[i] = (t*t*t*A[0] + t*t*A[1] + t*A[2] + A[3]);
-		// der[i] = T' * A
-		der[i] = (3*t*t*A[0] + 2*t*A[1] + A[2]);
+	        tmp_m = (t_m_h_3*A[0] + t_m_h_2*A[1] + t_m_h * A[2] + A[3]);
+		tmp_p = (t_p_h_3 * A[0] + t_p_h_2 * A[1] + t_p_h * A[2] + A[3]);
+		der[i] = (tmp_p - tmp_m) / (2 * h);
 	}
 }
+
 void translate_catmull_rom::get_catmull_rom_global_point(float gt,
 							 point pos,
 							 point der)
@@ -190,7 +198,7 @@ void translate_catmull_rom::get_catmull_rom_global_point(float gt,
 				    p2, p3,
 				    pos, der);
 }
-void translate_catmull_rom::mult_vec_mat(point m, point v, point r)
+void translate_catmull_rom::mult_mat_vec(point m, point v, point r)
 {
 	int j,k;
 	for (j=0; j<4;++j) {
