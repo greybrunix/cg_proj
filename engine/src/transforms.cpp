@@ -100,41 +100,40 @@ void translate_catmull_rom::set_IT(float elapsed) { this->init_time = elapsed; }
 
 void translate_catmull_rom::do_transformation()
 {
-	float pos[4] = {0.F};
-	float vx[4] = {0.F};
-	float vz[4] = {0.F};
+	static float P[4] = {0.F, 0.F, 0.F, 1.F};
+	static float X[4] = {0.F, 0.F, 0.F, 0.F};
+	static float Y[4] = {0.F, 1.F, 0.F, 0.F};
+	float Z[4] = {0.F};
 	float mat[16];
 	int t_seconds = this->get_time();
 	float current_time = glutGet(GLUT_ELAPSED_TIME) / 1000.f;
 	int i_ti = this->get_IT();
 	float elapsed = current_time - i_ti;
 	float gt;
-	pos[3] = 1.F;
-	//vy[0] = 1.F;
 	if (elapsed < t_seconds) {
 		gt = elapsed / t_seconds;
-		this->get_catmull_rom_global_point(gt, pos, vx);
-		pos[0] /= pos[3];
-		pos[1] /= pos[3];
-		pos[2] /= pos[3];
-		pos[3] /= pos[3]; /* w=1 projection */
+		this->get_catmull_rom_global_point(gt, P, X);
+		P[0] /= P[3];
+		P[1] /= P[3];
+		P[2] /= P[3];
+		P[3] /= P[3]; /* w=1 projection */
 		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i <= 20; ++i) {
 			float t_ = i / 20.F;
-			float pos_[4] = {1.F}, der[4] = {0.F};
-			this->get_catmull_rom_global_point(t_, pos_, der);
-			glVertex3f(pos_[0]/pos_[3], pos_[1]/pos_[3], pos_[2]/pos_[3]);
+			float P_[4] = {1.F}, der[4] = {0.F};
+			this->get_catmull_rom_global_point(t_, P_, der);
+			glVertex3f(P_[0]/P_[3], P_[1]/P_[3], P_[2]/P_[3]);
 		}
 		glEnd();
-		glTranslatef(pos[0], pos[1], pos[2]);
+		glTranslatef(P[0], P[1], P[2]);
 		if (this->is_align()) {
-			this->normalize(vx);
-			this->cross(vx, this->Y, vz);
-			this->normalize(vz);
-			this->cross(vz, vx, this->Y);
-			if (this->len(this->Y) == 1.F)
-				this->normalize(this->Y);
-			this->build_rot_matrix(vx,this->Y,vz,mat);
+			this->normalize(X);
+			this->cross(X, Y, Z);
+			this->normalize(Z);
+			this->cross(Z, X, Y);
+			if (this->len(Y) == 1.F)
+				this->normalize(Y);
+			this->build_rot_matrix(X,Y,Z,mat);
 			glMultMatrixf(mat);
 		}
 	}

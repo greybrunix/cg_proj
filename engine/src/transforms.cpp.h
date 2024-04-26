@@ -69,7 +69,6 @@ public:
 class translate_catmull_rom : public transform{
 private:
 	std::vector<float*> *ps;
-	float Y[4] = {0, 1, 0, 0};
 	int previous_elapsed, init_time;
 	void get_catmull_rom_point(float t,
 				   point p0, point p1, point p2,
