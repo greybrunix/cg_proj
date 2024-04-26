@@ -102,7 +102,6 @@ void translate_catmull_rom::do_transformation()
 {
 	float pos[4] = {0.F};
 	float vx[4] = {0.F};
-	float vy[4] = {0.F};
 	float vz[4] = {0.F};
 	float mat[16];
 	int t_seconds = this->get_time();
@@ -111,7 +110,7 @@ void translate_catmull_rom::do_transformation()
 	float elapsed = current_time - i_ti;
 	float gt;
 	pos[3] = 1.F;
-	vy[1] = 1.F;
+	//vy[0] = 1.F;
 	if (elapsed < t_seconds) {
 		gt = elapsed / t_seconds;
 		this->get_catmull_rom_global_point(gt, pos, vx);
@@ -130,12 +129,12 @@ void translate_catmull_rom::do_transformation()
 		glTranslatef(pos[0], pos[1], pos[2]);
 		if (this->is_align()) {
 			this->normalize(vx);
-			this->cross(vx, vy, vz);
+			this->cross(vx, this->Y, vz);
 			this->normalize(vz);
-			this->cross(vz, vx, vy);
-			if (this->len(vy) == 1.F)
-				this->normalize(vy);
-			this->build_rot_matrix(vx,vy,vz,mat);
+			this->cross(vz, vx, this->Y);
+			if (this->len(this->Y) == 1.F)
+				this->normalize(this->Y);
+			this->build_rot_matrix(vx,this->Y,vz,mat);
 			glMultMatrixf(mat);
 		}
 	}
