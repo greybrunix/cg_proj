@@ -371,6 +371,7 @@
                     </models>
             </group>
         </group>
+			</group>
         <group>
             <transform>
                 <translate time = "80" align="true">
@@ -386,5 +387,4 @@
                 <model file="bezier_10.3d" /> <!-- Cometa -->
             </models>
         </group>            		
-    </group>
 </world>
