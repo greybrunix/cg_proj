@@ -122,9 +122,9 @@ void translate_catmull_rom::do_transformation()
 		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i <= 20; ++i) {
 			float t_ = i / 20.F;
-			float pos_[4], der[4] = {0.F};
+			float pos_[4] = {1.F}, der[4] = {0.F};
 			this->get_catmull_rom_global_point(t_, pos_, der);
-			glVertex3f(pos_[0], pos_[1], pos_[2]);
+			glVertex3f(pos_[0]/pos_[3], pos_[1]/pos_[3], pos_[2]/pos_[3]);
 		}
 		glEnd();
 		glTranslatef(pos[0], pos[1], pos[2]);
