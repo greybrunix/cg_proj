@@ -38,14 +38,14 @@
     <group>
       <transform>
         <translate time="130" align="True" >
-          <point x="90" y="0" z="90"/>
-          <point x="0" y="0" z="120"/>
-          <point x="-90" y="0" z="90"/>
-          <point x="-120" y="0" z="0"/>
-          <point x="-90" y="0" z="-90"/>
-          <point x="0" y="0" z="-120"/>
-          <point x="90" y="0" z="-90"/>
-          <point x="120" y="0" z="0"/>
+          <point x="70" y="0" z="70"/>
+          <point x="0" y="0" z="90"/>
+          <point x="-70" y="0" z="70"/>
+          <point x="-90" y="0" z="0"/>
+          <point x="-70" y="0" z="-70"/>
+          <point x="0" y="0" z="-90"/>
+          <point x="70" y="0" z="-70"/>
+          <point x="90" y="0" z="0"/>
         </translate>
         <rotate time="190" x="0" y="1" z="0"/>
         <scale x="0.3" y="0.3" z="0.3" />
