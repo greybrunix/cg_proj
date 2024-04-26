@@ -293,8 +293,6 @@
 			<models> 
 				<model file="sphere_10_20_20.3d" /> <!-- Urano -->
 			</models>
-			<group>
-    			<transform> 
             <group>
                 <transform> 
                     <translate time = "30" align="True">
