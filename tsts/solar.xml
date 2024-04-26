@@ -38,14 +38,14 @@
     <group>
       <transform>
         <translate time="130" align="True" >
-          <point x="70" y="0" z="70"/>
-          <point x="0" y="0" z="90"/>
-          <point x="-70" y="0" z="70"/>
-          <point x="-90" y="0" z="0"/>
-          <point x="-70" y="0" z="-70"/>
-          <point x="0" y="0" z="-90"/>
-          <point x="70" y="0" z="-70"/>
-          <point x="90" y="0" z="0"/>
+          <point x="66" y="0" z="66"/>
+          <point x="0" y="0" z="85"/>
+          <point x="-66" y="0" z="66"/>
+          <point x="-85" y="0" z="0"/>
+          <point x="-66" y="0" z="-66"/>
+          <point x="0" y="0" z="-85"/>
+          <point x="66" y="0" z="-66"/>
+          <point x="85" y="0" z="0"/>
         </translate>
         <rotate time="190" x="0" y="1" z="0"/>
         <scale x="0.3" y="0.3" z="0.3" />
@@ -57,14 +57,14 @@
     <group>
       <transform>
         <translate time="170" align="True" >
-          <point x="80" y="0" z="80"/>
-          <point x="0" y="0" z="140"/>
-          <point x="-80" y="0" z="80"/>
-          <point x="-140" y="0" z="0"/>
-          <point x="-80" y="0" z="-80"/>
-          <point x="0" y="0" z="-140"/>
-          <point x="80" y="0" z="-80"/>
-          <point x="140" y="0" z="0"/>
+          <point x="90" y="0" z="90"/>
+          <point x="0" y="0" z="110"/>
+          <point x="-90" y="0" z="90"/>
+          <point x="-110" y="0" z="0"/>
+          <point x="-90" y="0" z="-90"/>
+          <point x="0" y="0" z="-110"/>
+          <point x="90" y="0" z="-90"/>
+          <point x="110" y="0" z="0"/>
         </translate>
         <rotate time="240" x="0" y="1" z="0"/>
         <scale x="0.4" y="0.4" z="0.4" />
