@@ -220,6 +220,7 @@
                     <point x="0" y="0" z="-240"/>
                     <point x="170" y="0" z="-170"/>
                     <point x="240" y="0" z="0"/>  
+		 </translate>
                 <rotate time="90" x="0" y="1" z="0"/>
                 <scale x="0.8" y="0.8" z="0.8" />
             </transform>
