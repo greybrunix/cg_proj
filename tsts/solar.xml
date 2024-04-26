@@ -10,6 +10,7 @@
     <group>
         <group>
             <transform> 
+                <rotate time="300" x="0" y="1" z="0"/>
                 <scale x="5.5" y="5.5" z="5.5" />
             </transform>
 			<models> 
@@ -18,7 +19,17 @@
         </group>
         <group> 
             <transform> 
-            	<translate x="40" y="0" z="40" />
+                <translate time = "90" align="True" >
+                    <point x="45" y="0" z="45"/>
+                    <point x="0" y="0" z="80"/>
+                    <point x="-45" y="0" z="45"/>
+                    <point x="-80" y="0" z="0"/>
+                    <point x="-45" y="0" z="-45"/>
+                    <point x="0" y="0" z="-80"/>
+                    <point x="45" y="0" z="-45"/>
+                    <point x="80" y="0" z="0"/>
+                </translate>
+                <rotate time="100" x="0" y="1" z="0"/>
                 <scale x="0.2" y="0.2" z="0.2" />
             </transform>
 			<models> 
@@ -27,7 +38,17 @@
         </group>
         <group> 
             <transform> 
-            	<translate x="60" y="0" z="60" />
+                <translate time="130" align="True" >
+                	<point x="60" y="0" z="60"/>
+                    <point x="0" y="0" z="120"/>
+                    <point x="-60" y="0" z="60"/>
+                    <point x="-120" y="0" z="0"/>
+                    <point x="-60" y="0" z="-60"/>
+                    <point x="0" y="0" z="-120"/>
+                    <point x="60" y="0" z="-60"/>
+                    <point x="120" y="0" z="0"/>
+                </translate>
+                <rotate time="190" x="0" y="1" z="0"/>
                 <scale x="0.3" y="0.3" z="0.3" />
             </transform>
 			<models> 
@@ -36,7 +57,17 @@
         </group>
         <group> 
             <transform>
-            	<translate x="80" y="0" z="80" />
+                <translate time="170" align="True" >
+                    <point x="80" y="0" z="80"/>
+                    <point x="0" y="0" z="140"/>
+                    <point x="-80" y="0" z="80"/>
+                    <point x="-140" y="0" z="0"/>
+                    <point x="-80" y="0" z="-80"/>
+                    <point x="0" y="0" z="-140"/>
+                    <point x="80" y="0" z="-80"/>
+                    <point x="140" y="0" z="0"/>
+                </translate>
+                <rotate time="240" x="0" y="1" z="0"/>
                 <scale x="0.4" y="0.4" z="0.4" />
             </transform>
 			<models> 
@@ -44,7 +75,17 @@
 			</models>
 			<group> 
     			<transform> 
-    				<translate x="24" y="24" z="24" />
+                    <translate time="30" align="True" >
+                        <point x="10" y="0" z="10"/>
+                        <point x="0" y="0" z="12"/>
+                        <point x="-10" y="0" z="10"/>
+                        <point x="-12" y="0" z="0"/>
+                        <point x="-10" y="0" z="-10"/>
+                        <point x="0" y="0" z="-12"/>
+                        <point x="10" y="0" z="-10"/>
+                        <point x="12" y="0" z="0"/>
+                    </translate>
+                    <rotate time= "30" x = "0" y = "1" z = "0" />
     				<scale x="0.1" y="0.1" z="0.1" />
     			</transform>
 					<models> 
@@ -54,7 +95,17 @@
         </group>
         <group> 
             <transform> 
-            	<translate x="90" y="0" z="90" />
+                <translate time="200" align="True" >
+                    <point x="100" y="0" z="100"/>
+                    <point x="0" y="0" z="160"/>
+                    <point x="-100" y="0" z="100"/>
+                    <point x="-160" y="0" z="0"/>
+                    <point x="-100" y="0" z="-100"/>
+                    <point x="0" y="0" z="-160"/>
+                    <point x="100" y="0" z="-100"/>
+                    <point x="160" y="0" z="0"/>
+                </translate>
+                <rotate time="150" x="0" y="1" z="0"/>
                 <scale x="0.34" y="0.34" z="0.34" />
             </transform>
 			<models> 
@@ -62,27 +113,57 @@
 			</models>
 			<group> 
     			<transform> 
-    				<translate x="18" y="18" z="18" />
+                    <translate time = "30" align="True">
+                        <point x="18" y="0" z="18"/>
+                        <point x="0" y="0" z="23"/>
+                        <point x="-18" y="0" z="18"/>
+                        <point x="-23" y="0" z="0"/>
+                        <point x="-18" y="0" z="-18"/>
+                        <point x="0" y="0" z="-23"/>
+                        <point x="18" y="0" z="-18"/>
+                        <point x="23" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
     				<scale x="0.4" y="0.4" z="0.4" />
     			</transform>
 					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Lua de Marte -->
+						<model file="sphere_10_20_20.3d" /> <!-- Fobos -->
 					</models>
 			</group>
 			<group> 
     			<transform> 
-    				<translate x="20" y="20" z="20" />
+                    <translate time = "30" align="True">
+                        <point x="20" y="0" z="20"/>
+                        <point x="0" y="0" z="26"/>
+                        <point x="-20" y="0" z="20"/>
+                        <point x="-26" y="0" z="0"/>
+                        <point x="-20" y="0" z="-20"/>
+                        <point x="0" y="0" z="-26"/>
+                        <point x="20" y="0" z="-20"/>
+                        <point x="26" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
     				<scale x="0.2" y="0.2" z="0.2" />
     			</transform>
 					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Segunda Lua de Marte -->
+						<model file="sphere_10_20_20.3d" /> <!-- Deimos -->
 					</models>
 			</group>
         </group>
         <group> 
             <transform> 
-            	<rotate angle="140" x="0" y="1" z="0" />
-            	<translate x="130" y="0" z="130" />
+            	<!--rotate angle="140" x="0" y="1" z="0"/-->
+                <translate time="300" align="True" >
+                    <point x="140" y="0" z="140"/>
+                    <point x="0" y="0" z="205"/>
+                    <point x="-140" y="0" z="140"/>
+                    <point x="-205" y="0" z="0"/>
+                    <point x="-140" y="0" z="-140"/>
+                    <point x="0" y="0" z="-205"/>
+                    <point x="140" y="0" z="-140"/>
+                    <point x="205" y="0" z="0"/>
+                </translate>
+                <rotate time="90" x="0" y="1" z="0"/>
                 <scale x="0.9" y="0.9" z="0.9" />
             </transform>
 			<models> 
@@ -90,42 +171,100 @@
 			</models>
 			<group>
     			<transform> 
-    				<translate x="13" y="13" z="13" />
+                    <translate time = "30" align="True">
+                        <point x="13" y="0" z="13"/>
+                        <point x="0" y="0" z="18"/>
+                        <point x="-13" y="0" z="13"/>
+                        <point x="-18" y="0" z="0"/>
+                        <point x="-13" y="0" z="-13"/>
+                        <point x="0" y="0" z="-18"/>
+                        <point x="13" y="0" z="-13"/>
+                        <point x="18" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
     				<scale x="0.1" y="0.1" z="0.1" />
     			</transform>
 					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Lua de Jupiter -->
+						<model file="sphere_10_20_20.3d" /> <!--  Métis -->
 					</models>
 			</group>
 			<group> 
     			<transform> 
-				<rotate angle="100" x="0" y="1" z="0" />
-    				<translate x="-10" y="-10" z="10" />
+				    <rotate angle="100" x="0" y="1" z="0" />
+                    <translate time = "30" align="True">
+                        <point x="14" y="0" z="14"/>
+                        <point x="0" y="0" z="19"/>
+                        <point x="-14" y="0" z="14"/>
+                        <point x="-19" y="0" z="0"/>
+                        <point x="-14" y="0" z="-14"/>
+                        <point x="0" y="0" z="-19"/>
+                        <point x="14" y="0" z="-14"/>
+                        <point x="19" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
     				<scale x="0.07" y="0.07" z="0.07" />
     			</transform>
 					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- 2º lua de Jupiter -->
+						<model file="sphere_10_20_20.3d" /> <!-- Adrasteia -->
 					</models>
 			</group>						
         </group>
         <group>
             <transform>
-            	<rotate angle="300" x="0" y="1" z="0" /> 
-            	<translate x="170" y="0" z="170" />
+                <translate time = "360" align="True" >
+                    <point x="170" y="0" z="170"/>
+                    <point x="0" y="0" z="240"/>
+                    <point x="-170" y="0" z="170"/>
+                    <point x="-240" y="0" z="0"/>
+                    <point x="-170" y="0" z="-170"/>
+                    <point x="0" y="0" z="-240"/>
+                    <point x="170" y="0" z="-170"/>
+                    <point x="240" y="0" z="0"/>  
+                <rotate time="90" x="0" y="1" z="0"/>
                 <scale x="0.8" y="0.8" z="0.8" />
             </transform>
 			<models> 
 				<model file="sphere_10_20_20.3d" /> <!-- Saturno-->
 			</models>
-			<group> 
-    			<transform> 
-    				<translate x="13" y="13" z="-13" />
+            <group>
+                <transform> 
+                    <translate time = "30" align="True">
+                        <point x="13" y="0" z="13"/>
+                        <point x="0" y="0" z="18"/>
+                        <point x="-13" y="0" z="13"/>
+                        <point x="-18" y="0" z="0"/>
+                        <point x="-13" y="0" z="-13"/>
+                        <point x="0" y="0" z="-18"/>
+                        <point x="13" y="0" z="-13"/>
+                        <point x="18" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
     				<scale x="0.1" y="0.1" z="0.1" />
     			</transform>
 					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Lua de Saturno -->
+						<model file="sphere_10_20_20.3d" /> <!--  S/2009 S 1 -->
 					</models>
 			</group>
+            <group> 
+                <transform> 
+                    <rotate angle="130" x="0" y="1" z="0" />
+                    <translate time = "30" align="True">
+                        <point x="14" y="0" z="14"/>
+                        <point x="0" y="0" z="19"/>
+                        <point x="-14" y="0" z="14"/>
+                        <point x="-19" y="0" z="0"/>
+                        <point x="-14" y="0" z="-14"/>
+                        <point x="0" y="0" z="-19"/>
+                        <point x="14" y="0" z="-14"/>
+                        <point x="19" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
+                    <scale x="0.7" y="0.7" z="0.7" />
+                </transform>
+                    <models> 
+                        <model file="sphere_10_20_20.3d" /> <!-- Pã -->
+                    </models>
+            </group>
 			<group>
     			<transform> 
     				<rotate angle="40" x="1" y="0" z="1" />
@@ -138,7 +277,17 @@
         </group>
         <group>
             <transform>
-            	<translate x="220" y="0" z="220" />
+                <translate time = "460" align="true" >
+                    <point x="220" y="0" z="220"/>
+                    <point x="0" y="0" z="300"/>
+                    <point x="-220" y="0" z="220"/>
+                    <point x="-300" y="0" z="0"/>
+                    <point x="-220" y="0" z="-220"/>
+                    <point x="0" y="0" z="-300"/>
+                    <point x="220" y="0" z="-220"/>
+                    <point x="300" y="0" z="0"/>                       
+                </translate>
+                <rotate time="100" x="0" y="1" z="0"/>
                 <scale x="0.75" y="0.75" z="0.75" />
             </transform>
 			<models> 
@@ -146,41 +295,99 @@
 			</models>
 			<group>
     			<transform> 
-    				<translate x="15" y="15" z="0" />
-    				<scale x="0.11" y="0.11" z="0.11" />
+            <group>
+                <transform> 
+                    <translate time = "30" align="True">
+                        <point x="15" y="0" z="15"/>
+                        <point x="0" y="0" z="20"/>
+                        <point x="-15" y="0" z="15"/>
+                        <point x="-20" y="0" z="0"/>
+                        <point x="-15" y="0" z="-15"/>
+                        <point x="0" y="0" z="-20"/>
+                        <point x="15" y="0" z="-15"/>
+                        <point x="20" y="0" z="0"/>   
+                    </translate>
+    				<scale x="0.4" y="0.4" z="0.4" />
     			</transform>
 					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Lua de Urano -->
+						<model file="sphere_10_20_20.3d" /> <!--  Cordélia -->
 					</models>
 			</group>	
-			<group> 
-    			<transform> 
-				<rotate angle="-100" x="0" y="1" z="0" /> 
-    				<translate x="15" y="15" z="0" />
-    				<scale x="0.11" y="0.11" z="0.11" />
-    			</transform>
-					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Segunda Lua de Urano -->
-					</models>
-			</group>
+            <group> 
+                <transform> 
+                    <rotate angle="120" x="0" y="1" z="0" />
+                    <translate time = "30" align="True">
+                        <point x="18" y="0" z="18"/>
+                        <point x="0" y="0" z="22"/>
+                        <point x="-18" y="0" z="18"/>
+                        <point x="-22" y="0" z="0"/>
+                        <point x="-18" y="0" z="-18"/>
+                        <point x="0" y="0" z="-22"/>
+                        <point x="18" y="0" z="-18"/>
+                        <point x="22" y="0" z="0"/>   
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
+                    <scale x="0.1" y="0.1" z="0.1" />
+                </transform>
+                    <models> 
+                        <model file="sphere_10_20_20.3d" /> <!-- Ofélia -->
+                    </models>
+            </group>
         </group>
         <group>
             <transform>
-            	<rotate angle="100" x="0" y="1" z="0" /> 
+            	<!--rotate angle="100" x="0" y="1" z="0" /--> 
             	<translate x="270" y="0" z="270" />
+                <translate time = "460" align="true" >
+                    <point x="270" y="0" z="270"/>
+                    <point x="0" y="0" z="360"/>
+                    <point x="-270" y="0" z="270"/>
+                    <point x="-360" y="0" z="0"/>
+                    <point x="-270" y="0" z="-270"/>
+                    <point x="0" y="0" z="-360"/>
+                    <point x="270" y="0" z="-270"/>
+                    <point x="360" y="0" z="0"/>                       
+                </translate>
+                <rotate time="60" x="0" y="1" z="0"/>
                 <scale x="0.73" y="0.73" z="0.73" />
             </transform>
 			<models> 
 				<model file="sphere_10_20_20.3d" /> <!-- Neptuno -->
 			</models>
-			<group> 
-    			<transform> 
-    				<translate x="-10" y="10" z="-10" />
-    			</transform>
-					<models> 
-						<model file="sphere_10_20_20.3d" /> <!-- Lua de Neptuno -->
-					</models>
-			</group>			
+            <group> 
+                <transform> 
+                    <translate time = "30" align="True">
+                        <point x="18" y="0" z="18"/>
+                        <point x="0" y="0" z="22"/>
+                        <point x="-18" y="0" z="18"/>
+                        <point x="-22" y="0" z="0"/>
+                        <point x="-18" y="0" z="-18"/>
+                        <point x="0" y="0" z="-22"/>
+                        <point x="18" y="0" z="-18"/>
+                        <point x="22" y="0" z="0"/>     
+                    </translate>
+                    <rotate time="30" x="0" y="1" z="0"/>
+                    <scale x="0.3" y="0.3" z="0.3" />
+                </transform>
+                    <models> 
+                        <model file="sphere_10_20_20.3d" /> <!-- Náiade -->
+                    </models>
+            </group>
         </group>
+        <group> <!-- Cometa -->
+            <transform>
+                <translate time = "40" align="true">
+                    <point x = "0" y = "-100" z = "100" />
+                    <point x = "100" y = "-100" z = "0" />
+                    <point x = "0" y = "200" z = "-20" />
+                    <point x = "-20" y = "200" z= "0" />
+                </translate>
+                <rotate angle="-60" x="1" y="0" z="0"/>
+                <scale x="2" y="2" z="2" />
+            </transform>
+            <models>
+                <model file="bezier_10.3d" /> <!-- Cometa -->
+            </models>
+        </group>            		
     </group>
 </world>
