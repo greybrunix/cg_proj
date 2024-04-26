@@ -485,8 +485,10 @@ void processKeys(unsigned char c, int xx, int yy)
     }
 
 
-	if (tesselation <= 0.F)
-		tesselation = 0.F;
+	if (tesselation <= 0.F) {
+		tesselation = 100.F;
+		draw = false;
+	}
 	else if (tesselation >= 1000000.F)
 		tesselation = 1000000.F;
 	if (world.cam.beta < -1.5f) {
