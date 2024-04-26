@@ -117,14 +117,15 @@ void translate_catmull_rom::do_transformation()
 		P[1] /= P[3];
 		P[2] /= P[3];
 		P[3] /= P[3]; /* w=1 projection */
-		glBegin(GL_LINE_STRIP);
-		for (int i = 0; i <= 20; ++i) {
-			float t_ = i / 20.F;
-			float P_[4] = {1.F}, der[4] = {0.F};
-			this->get_catmull_rom_global_point(t_, P_, der);
-			glVertex3f(P_[0]/P_[3], P_[1]/P_[3], P_[2]/P_[3]);
+		if (draw) {
+			glBegin(GL_LINE_STRIP);
+			for (float i = 0.F; i < 1; i += 1.0 / tesselation) {
+				float P_[4] = {0.F,0.F,0.F,1.F}, der[4] = {0.F};
+				this->get_catmull_rom_global_point(i, P_, der);
+				glVertex3f(P_[0]/P_[3], P_[1]/P_[3], P_[2]/P_[3]);
+			}
+			glEnd();
 		}
-		glEnd();
 		glTranslatef(P[0], P[1], P[2]);
 		if (this->is_align()) {
 			this->normalize(X);

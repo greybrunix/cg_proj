@@ -16,7 +16,8 @@
 #define TRANS_SCA 1
 #define TRANS_TRA 2
 typedef float* point;
-
+extern bool draw;
+extern float tesselation;
 class transform {
 private:
 	int type,time;

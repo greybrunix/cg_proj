@@ -11,7 +11,8 @@ int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
-
+float tesselation = 100.F;
+bool draw = true;
 struct triple {
 	float x, y, z;
 };
@@ -433,14 +434,16 @@ void renderScene(void)
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 
-	glBegin(GL_LINES);
-	glVertex3f(-100.0f, 0.0f, 0.0f);
-	glVertex3f(100.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, -100.0f, 0.0f);
-	glVertex3f(0.0f, 100.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, -100.0f);
-	glVertex3f(0.0f, 0.0f, 100.0f);
-	glEnd();
+	if (draw) {
+		glBegin(GL_LINES);
+		glVertex3f(-100.0f, 0.0f, 0.0f);
+		glVertex3f(100.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, -100.0f, 0.0f);
+		glVertex3f(0.0f, 100.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, -100.0f);
+		glVertex3f(0.0f, 0.0f, 100.0f);
+		glEnd();
+	}
 
 	drawfigs();
 
@@ -465,14 +468,27 @@ void processKeys(unsigned char c, int xx, int yy)
 	case 'w':
 		world.cam.beta += 0.1;
 		break;
+	case 'l':
+		draw -= 1;
+		break;
+	case '+':
+		tesselation += 10;
+		break;
+	case '-':
+		tesselation -= 10;
+		break;
 	}
 
+	if (tesselation <= 0.F)
+		tesselation = 0.F;
+	else if (tesselation >= 1000000.F)
+		tesselation = 1000000.F;
 	if (world.cam.beta < -1.5f) {
-        world.cam.beta = -1.5f;
-    }
+		world.cam.beta = -1.5f;
+	}
 	else if (world.cam.beta > 1.5f) {
-        world.cam.beta = 1.5f;
-    }
+		world.cam.beta = 1.5f;
+	}
 }
 
 //void processSpecialKeys(int key, int xx, int yy);
@@ -493,7 +509,9 @@ int main(int argc, char **argv)
 	xml_init(argv[1]);
 	if (res < 0) {
 		return res;
-    }
+	}
+	draw = true;
+	tesselation = 100.F;
 
 	// init GLUT and the window
 	glutInit(&argc, argv);
