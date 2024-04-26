@@ -39,7 +39,7 @@
         <group> 
             <transform> 
                 <translate time="130" align="True" >
-                	<point x="60" y="0" z="60"/>
+                    <point x="60" y="0" z="60"/>
                     <point x="0" y="0" z="120"/>
                     <point x="-60" y="0" z="60"/>
                     <point x="-120" y="0" z="0"/>
