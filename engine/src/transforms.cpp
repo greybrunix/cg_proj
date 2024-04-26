@@ -1,5 +1,9 @@
 #include "transforms.cpp.h"
 
+/** IMPORTANTE
+ *  ver Fast inverse square root algorithm
+ *      ou Quake III Arena Q_rsqrt para mais informacao
+ */
 static float Q_rsqrt(float number)
 {
 	long i;
@@ -7,11 +11,10 @@ static float Q_rsqrt(float number)
 	const float threehalfs = 1.5F;
 	x2 = number * 0.5F;
 	y  = number;
-	i  = * ( long * ) &y;                       // evil floating point bit level hacking
-	i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+	i  = * ( long * ) &y;
+	i  = 0x5f3759df - ( i >> 1 );
 	y  = * ( float * ) &i;
-	y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-	// y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+	y  = y * ( threehalfs - ( x2 * y * y ) );
 	return y;
 }
 
@@ -156,22 +159,19 @@ void translate_catmull_rom::get_catmull_rom_point(float t,
 			 {1.0f, -2.5f,  2.0f, -0.5f},
 			 {-0.5f,  0.0f,  0.5f,  0.0f},
 			 {0.0f,  1.0f,  0.0f,  0.0f}};
-	float h = 0.025F,
-	      t_m_h = t - h, t_p_h = t + h,
-	      t_m_h_3 = t_m_h * t_m_h * t_m_h,
-	      t_m_h_2 = t_m_h * t_m_h,
-	      t_p_h_3 = t_p_h * t_p_h * t_p_h,
-	      t_p_h_2 = t_p_h * t_p_h,
-	      tmp_m, tmp_p;
-
+	float h = FLT_EPSILON*1e3F;
 
 	for (i = 0; i < 4; i++) {
 		P[0] = p0[i]; P[1] = p1[i]; P[2] = p2[i]; P[3] = p3[i];
 		this->mult_mat_vec(&m[0][0], P, A);
 		pos[i] = (t*t*t*A[0] + t*t*A[1] + t*A[2] + A[3]);
-	        tmp_m = (t_m_h_3*A[0] + t_m_h_2*A[1] + t_m_h * A[2] + A[3]);
-		tmp_p = (t_p_h_3 * A[0] + t_p_h_2 * A[1] + t_p_h * A[2] + A[3]);
-		der[i] = (tmp_p - tmp_m) / (2 * h);
+		der[i] = (((t+h)*(t+h)*(t+h)*A[0] + (t+h)*(t+h)*A[1] + (t+h)*A[2] + A[3]) -
+			  ((t-h)*(t-h)*(t-h)*A[0] + (t-h)*(t-h)*A[1] + (t-h)*A[2] + A[3]))
+			/ (2 * h);
+		//der[i] = (3*t*t*A[0] + 2*t*t*A[1] + A[2]);
+		/* While simple and a direct implementation of T * A (as learnt in lectures
+		   ) was creating problems with interpolation, using the Central Difference Formula
+		for approximating `dir' is preferable*/
 	}
 }
 

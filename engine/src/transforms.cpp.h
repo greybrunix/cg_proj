@@ -9,6 +9,7 @@
 #include <vector>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cfloat>
 /* Classes */
 
 #define TRANS_ROT 0
