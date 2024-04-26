@@ -2,8 +2,6 @@
 #include <cstdlib>
 #include <tinyxml2.h>
 #include <cstring>
-#include <map>
-#include <string>
 #include "transforms.cpp.h"
 #include <GL/glxew.h>
 
@@ -171,9 +169,11 @@ void group_read_transform(int cur_parent, int cur_g,
 			  bool reading = false)
 {
 	struct trans tmp;
-	std::vector<struct point> points;
+	std::vector<point> points;
 	XMLElement* tran = !reading ? transform->FirstChildElement() :
 		transform->NextSiblingElement();
+	XMLElement* points_t;
+	float point_t[4] = {1.F};
 	if (!tran)
 		return;
 	tmp.group = cur_g;
@@ -183,25 +183,31 @@ void group_read_transform(int cur_parent, int cur_g,
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
-		}/*
+		}
 		else {
 			tmp.t = new translate_catmull_rom(
 				tran->IntAttribute("time"),
-				tran->BoolAttribute("align"),
-				points);
+				tran->BoolAttribute("align"));
+			points_t = tran->FirstChildElement();
+			while (points_t) {
+				point_t[0] = points_t->FloatAttribute("x");
+				point_t[1] = points_t->FloatAttribute("y");
+				point_t[2] = points_t->FloatAttribute("z");
+				tmp.t->add_point(point_t);
+				points_t = points_t->NextSiblingElement();
+			}
 		}
-		*/
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
 		if (tran->FloatAttribute("angle")) {
-			tmp.t = new rotate_angle(
+			tmp.t = new rotate(
 				tran->FloatAttribute("angle"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
 		}
 		else {
-			tmp.t = new rotate_time(
+			tmp.t = new rotate(
 				tran->IntAttribute("time"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
@@ -428,19 +434,12 @@ void renderScene(void)
 	glPolygonMode(GL_FRONT, GL_LINE);
 
 	glBegin(GL_LINES);
-	// X axis in red
-	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-100.0f, 0.0f, 0.0f);
 	glVertex3f(100.0f, 0.0f, 0.0f);
-	// Y Axis in Green
-	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, -100.0f, 0.0f);
 	glVertex3f(0.0f, 100.0f, 0.0f);
-	// Z Axis in Blue
-	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, -100.0f);
 	glVertex3f(0.0f, 0.0f, 100.0f);
-	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
 
 	drawfigs();
@@ -507,6 +506,10 @@ int main(int argc, char **argv)
 	// Init GLEW
 	glewInit();
 
+	res = read_3d_files();
+	if (res < 0)
+		return res;
+
 	// Required callback registry
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(renderScene);
@@ -531,11 +534,6 @@ int main(int argc, char **argv)
 	if (drawable) {
 		glXSwapIntervalEXT(dpy, drawable, interval);
 	}
-	read_3d_files();
-
-	res = read_3d_files();
-	if (res < 0)
-		return res;
 
 	// Enter GLUT's main cycle
 	glutMainLoop();
