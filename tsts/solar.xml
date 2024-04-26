@@ -18,7 +18,7 @@
     </group>
     <group>
       <transform>
-        <translate time = "90" align="True" >
+        <translate time = "90" align="False" >
           <point x="45" y="0" z="45"/>
           <point x="0" y="0" z="60"/>
           <point x="-45" y="0" z="45"/>
@@ -37,7 +37,7 @@
     </group>
     <group>
       <transform>
-        <translate time="130" align="True" >
+        <translate time="130" align="False" >
           <point x="66" y="0" z="66"/>
           <point x="0" y="0" z="85"/>
           <point x="-66" y="0" z="66"/>
@@ -56,7 +56,7 @@
     </group>
     <group>
       <transform>
-        <translate time="170" align="True" >
+        <translate time="170" align="False" >
           <point x="90" y="0" z="90"/>
           <point x="0" y="0" z="110"/>
           <point x="-90" y="0" z="90"/>
@@ -74,7 +74,7 @@
       </models>
       <group>
     	<transform>
-          <translate time="30" align="True" >
+          <translate time="30" align="False" >
             <point x="10" y="0" z="10"/>
             <point x="0" y="0" z="12"/>
             <point x="-10" y="0" z="10"/>
@@ -94,7 +94,7 @@
     </group>
     <group>
       <transform>
-        <translate time="200" align="True" >
+        <translate time="200" align="False" >
           <point x="100" y="0" z="100"/>
           <point x="0" y="0" z="160"/>
           <point x="-100" y="0" z="100"/>
@@ -112,7 +112,7 @@
       </models>
       <group>
     	<transform>
-	  <translate time = "30" align="True">
+	  <translate time = "30" align="False">
             <point x="18" y="0" z="18"/>
             <point x="0" y="0" z="23"/>
             <point x="-18" y="0" z="18"/>
@@ -131,7 +131,7 @@
       </group>
       <group>
     	<transform>
-          <translate time = "30" align="True">
+          <translate time = "30" align="False">
             <point x="20" y="0" z="20"/>
             <point x="0" y="0" z="26"/>
             <point x="-20" y="0" z="20"/>
@@ -152,7 +152,7 @@
     <group>
       <transform>
         <!--rotate angle="140" x="0" y="1" z="0"/-->
-        <translate time="300" align="True" >
+        <translate time="300" align="False" >
           <point x="140" y="0" z="140"/>
           <point x="0" y="0" z="205"/>
           <point x="-140" y="0" z="140"/>
@@ -170,7 +170,7 @@
       </models>
       <group>
     	<transform>
-          <translate time = "30" align="True">
+          <translate time = "30" align="False">
             <point x="13" y="0" z="13"/>
             <point x="0" y="0" z="18"/>
             <point x="-13" y="0" z="13"/>
@@ -190,7 +190,7 @@
       <group>
     	<transform>
 	  <rotate angle="100" x="0" y="1" z="0" />
-          <translate time = "30" align="True">
+          <translate time = "30" align="False">
             <point x="14" y="0" z="14"/>
             <point x="0" y="0" z="19"/>
             <point x="-14" y="0" z="14"/>
@@ -210,7 +210,7 @@
         </group>
         <group>
           <transform>
-            <translate time = "360" align="True" >
+            <translate time = "360" align="False" >
               <point x="170" y="0" z="170"/>
               <point x="0" y="0" z="240"/>
               <point x="-170" y="0" z="170"/>
@@ -228,7 +228,7 @@
 	    </models>
             <group>
               <transform>
-                <translate time = "30" align="True">
+                <translate time = "30" align="False">
                   <point x="13" y="0" z="13"/>
                   <point x="0" y="0" z="18"/>
                   <point x="-13" y="0" z="13"/>
@@ -248,7 +248,7 @@
             <group>
               <transform>
                 <rotate angle="130" x="0" y="1" z="0" />
-                <translate time = "30" align="True">
+                <translate time = "30" align="False">
                   <point x="14" y="0" z="14"/>
                   <point x="0" y="0" z="19"/>
                   <point x="-14" y="0" z="14"/>
@@ -277,7 +277,7 @@
         </group>
         <group>
           <transform>
-            <translate time = "460" align="true" >
+            <translate time = "460" align="False" >
               <point x="220" y="0" z="220"/>
               <point x="0" y="0" z="300"/>
               <point x="-220" y="0" z="220"/>
@@ -295,7 +295,7 @@
 	  </models>
           <group>
             <transform>
-              <translate time = "30" align="True">
+              <translate time = "30" align="False">
                 <point x="15" y="0" z="15"/>
                 <point x="0" y="0" z="20"/>
                 <point x="-15" y="0" z="15"/>
@@ -314,7 +314,7 @@
           <group>
             <transform>
               <rotate angle="120" x="0" y="1" z="0" />
-              <translate time = "30" align="True">
+              <translate time = "30" align="False">
                 <point x="18" y="0" z="18"/>
                 <point x="0" y="0" z="22"/>
                 <point x="-18" y="0" z="18"/>
@@ -335,7 +335,7 @@
         <group>
           <transform>
             <!--rotate angle="100" x="0" y="1" z="0" /--> 
-            <translate time = "460" align="true" >
+            <translate time = "460" align="False" >
               <point x="270" y="0" z="270"/>
               <point x="0" y="0" z="360"/>
               <point x="-270" y="0" z="270"/>
@@ -353,7 +353,7 @@
 	  </models>
           <group>
             <transform>
-              <translate time = "30" align="True">
+              <translate time = "30" align="False">
                 <point x="18" y="0" z="18"/>
                 <point x="0" y="0" z="22"/>
                 <point x="-18" y="0" z="18"/>
@@ -373,7 +373,7 @@
         </group>
         <group>
           <transform>
-            <translate time = "80" align="true">
+            <translate time = "80" align="False">
               <point x = "10" y = "-100" z = "100" />
               <point x = "100" y = "-100" z = "10" />
               <point x = "10" y = "200" z = "-20" />
