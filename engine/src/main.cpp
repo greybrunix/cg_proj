@@ -9,13 +9,10 @@
 
 using namespace tinyxml2;
 
-float alfa = 0.0f, beta = 0.0f, radius = 5.0f;
-float camX, camY, camZ;
 int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
-int start = 1;
 
 struct triple {
 	float x, y, z;
@@ -44,6 +41,9 @@ struct {
 		char title[64];
 	} win;
 	struct {
+        float dist;
+        float alfa;
+        float beta;
 		struct triple pos;
 		struct triple lookAt;
 		struct triple up; /* 0 1 0 */
@@ -56,21 +56,11 @@ struct {
 typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
 
-void spherical2Cartesian()
-{
-	camX = radius * cos(beta) * sin(alfa);
-	camY = radius * sin(beta);
-	camZ = radius * cos(beta) * cos(alfa);
-}
-
 void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigned int>* ind)
 {
 	char line[1024];
-	char* coord;
 	char* num;
-	float x, y, z;
-	unsigned int i = 0;
-	std::map<std::string, unsigned int> vi;
+	unsigned int i;
 
 	while (fgets(line, sizeof(line), f) != NULL) {
 		num = strtok(line, " ");
@@ -84,8 +74,6 @@ void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigne
 			num = strtok(NULL, " ");
 			v.z = atof(num);
 			num = strtok(NULL, " \n");
-			std::string coord = std::to_string(v.x) + std::to_string(v.y) + std::to_string(v.z);
-			vi[coord] = i;
 			coords->push_back(v);
 			ind->push_back(i);
 		} else {
@@ -99,7 +87,6 @@ int read_3d_files(void)
 	FILE* fd;
 	int i, j;
 	int flag = 0;
-	int group = 0;
 	struct ident_prim aux;
 	for (i = 0; i < world.primitives.size(); i++) {
 		flag = 0;
@@ -207,14 +194,14 @@ void group_read_transform(int cur_parent, int cur_g,
 	}
 	else if (strcmp(tran->Name(), "rotate") == 0) {
 		if (tran->FloatAttribute("angle")) {
-			tmp.t = new rotate(
+			tmp.t = new rotate_angle(
 				tran->FloatAttribute("angle"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
 				tran->FloatAttribute("z"));
 		}
 		else {
-			tmp.t = new rotate(
+			tmp.t = new rotate_time(
 				tran->IntAttribute("time"),
 				tran->FloatAttribute("x"),
 				tran->FloatAttribute("y"),
@@ -301,6 +288,11 @@ int xml_init(char* xml_file)
 		world.cam.pos.x = posi->FloatAttribute("x");
 		world.cam.pos.y = posi->FloatAttribute("y");
 		world.cam.pos.z = posi->FloatAttribute("z");
+		world.cam.dist = sqrt(world.cam.pos.x*world.cam.pos.x +
+				      world.cam.pos.y*world.cam.pos.y+
+				      world.cam.pos.z*world.cam.pos.z);
+		world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(world.cam.beta)));
+		world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 		return -4;
@@ -374,7 +366,7 @@ void changeSize(int w, int h)
 
 void drawfigs(void)
 {
-	int i, j, k, l, g;
+	int i, k, l, g;
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
@@ -415,10 +407,16 @@ void framerate()
 	}
 }
 
-void renderScene(void) {
+void renderScene(void)
+{
 	// clear buffers
 	char fps_c[64];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// calculate camera pos
+	world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+	world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
+	world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
 
 	// set the camera
 	glLoadIdentity();
@@ -445,7 +443,6 @@ void renderScene(void) {
 	glColor3f(1.f, 1.f, 1.f);
 	glEnd();
 
-
 	drawfigs();
 
 	framerate();
@@ -454,10 +451,35 @@ void renderScene(void) {
 }
 
 
-//void processKeys(unsigned char c, int xx, int yy);
+void processKeys(unsigned char c, int xx, int yy)
+{
+	switch (c) {
+	case 'a':
+		world.cam.alfa -= 0.1;
+		break;
+	case 'd':
+		world.cam.alfa += 0.1;
+		break;
+	case 's':
+		world.cam.beta -= 0.1;
+		break;
+	case 'w':
+		world.cam.beta += 0.1;
+		break;
+	}
+
+	if (world.cam.beta < -1.5f) {
+        world.cam.beta = -1.5f;
+    }
+	else if (world.cam.beta > 1.5f) {
+        world.cam.beta = 1.5f;
+    }
+}
+
 //void processSpecialKeys(int key, int xx, int yy);
 
-void printInfo() {
+void printInfo()
+{
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
@@ -470,8 +492,10 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	xml_init(argv[1]);
-	if (res < 0)
+	if (res < 0) {
 		return res;
+    }
+
 	// init GLUT and the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -480,21 +504,21 @@ int main(int argc, char **argv)
 	glutCreateWindow(world.win.title);
 	timebase = glutGet(GLUT_ELAPSED_TIME);
 
+	// Init GLEW
+	glewInit();
+
 	// Required callback registry
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(renderScene);
 	glutReshapeFunc(changeSize);
 
-	// Init GLEW
-#ifndef __APPLE__
-	glewInit();
-#endif
-
 	// Enable depth testing and face culling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	// OpenGL settings
+	glutKeyboardFunc(processKeys);
+
+    // OpenGL settings
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	printInfo();
@@ -508,6 +532,10 @@ int main(int argc, char **argv)
 		glXSwapIntervalEXT(dpy, drawable, interval);
 	}
 	read_3d_files();
+
+	res = read_3d_files();
+	if (res < 0)
+		return res;
 
 	// Enter GLUT's main cycle
 	glutMainLoop();
