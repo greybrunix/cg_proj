@@ -477,7 +477,13 @@ void processKeys(unsigned char c, int xx, int yy)
 	case '-':
 		tesselation -= 10;
 		break;
-	}
+    case 'z':
+        world.cam.dist -= 10;
+        break;
+    case 'x':
+        world.cam.dist += 10;
+    }
+
 
 	if (tesselation <= 0.F)
 		tesselation = 0.F;
