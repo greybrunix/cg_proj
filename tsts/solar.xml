@@ -259,7 +259,7 @@
                         <point x="19" y="0" z="0"/>   
                     </translate>
                     <rotate time="30" x="0" y="1" z="0"/>
-                    <scale x="0.7" y="0.7" z="0.7" />
+                    <scale x="0.3" y="0.3" z="0.3" />
                 </transform>
                     			<models> 
                         			<model file="sphere_10_20_20.3d" /> <!-- Pã -->
@@ -373,13 +373,13 @@
         </group>
         <group>
             <transform>
-                <translate time = "40" align="true">
+                <translate time = "80" align="true">
                     <point x = "0" y = "-100" z = "100" />
                     <point x = "100" y = "-100" z = "0" />
                     <point x = "0" y = "200" z = "-20" />
                     <point x = "-20" y = "200" z= "0" />
                 </translate>
-                <rotate angle="-60" x="1" y="0" z="0"/>
+                <rotate angle="-90" x="1" y="0" z="0"/>
                 <scale x="2" y="2" z="2" />
             </transform>
             <models>
