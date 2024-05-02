@@ -55,6 +55,7 @@ struct {
 typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
 
+// TODO Adapt to read normals and textures
 void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigned int>* ind)
 {
 	char line[1024];
@@ -105,6 +106,8 @@ int read_3d_files(void)
 
 			aux.vertex_count = coords.size();
 			aux.index_count = ind.size();
+
+            // TODO: Gerar, bind e buffer vbo's para normais e texturas
 
 			// Generate the VBO
 			glGenBuffers(1, &aux.vbo);
@@ -385,6 +388,7 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
+                        // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
 						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
@@ -433,6 +437,8 @@ void renderScene(void)
 		  world.cam.up.x, world.cam.up.y, world.cam.up.z);
 
 	glPolygonMode(GL_FRONT, GL_LINE);
+
+    // TODO Add light, glLightfv e glMaterialfv
 
 	if (draw) {
 		glBegin(GL_LINES);
@@ -501,6 +507,8 @@ void processKeys(unsigned char c, int xx, int yy)
 
 //void processSpecialKeys(int key, int xx, int yy);
 
+// TODO int loadTexture(std::string s)
+
 void printInfo()
 {
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
@@ -542,12 +550,14 @@ int main(int argc, char **argv)
 	glutReshapeFunc(changeSize);
 
 	// Enable depth testing and face culling
+    // TODO GL_LIGHTING, GL_LIGHT0
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
 	glutKeyboardFunc(processKeys);
 
     // OpenGL settings
+    // TODO GL_TEXTURE_COORD_ARRAY
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	printInfo();
