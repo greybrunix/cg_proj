@@ -249,6 +249,7 @@ void group_read(int cur_parent, int cur_g, XMLElement* gr,
 	}
 	if (cur_g >= global)
 	    global = cur_g + 1;
+    // TODO Add read lights
 	if (!strcmp(elem->Name(), "models"))
 		group_read_models(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "transform"))
@@ -258,6 +259,7 @@ void group_read(int cur_parent, int cur_g, XMLElement* gr,
 	group_read(cur_parent, cur_g, elem, true, i);
 }
 
+// TODO Add read lights, and colors in models
 int xml_init(char* xml_file)
 {
 	XMLDocument doc;
@@ -389,6 +391,7 @@ void drawfigs(void)
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
                         // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
+                        // Apply color of model
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
 						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
