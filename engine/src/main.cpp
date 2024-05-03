@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <tinyxml2.h>
 #include <cstring>
+#include <map>
 #include "transforms.cpp.h"
 #include <GL/glxew.h>
 
@@ -13,14 +14,28 @@ int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
 float tesselation = 100.F;
 bool draw = true;
+
 struct triple {
 	float x, y, z;
+};
+
+struct rgb {
+    float r, g, b;
+};
+
+struct color {
+    rgb diffuse;
+    rgb ambient;
+    rgb specular;
+    rgb emissive;
+    float shininess;
 };
 
 struct prims {
 	int count;
 	int group;
 	char name[64];
+    std::map<int, color> color;
 };
 
 struct trans {
@@ -28,6 +43,7 @@ struct trans {
 	transform* t;
 };
 
+// TODO VBO's para normais e texturas
 struct ident_prim {
 	char name[64];
 	GLuint vbo, ibo, vertex_count;
@@ -141,6 +157,34 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
+void group_read_model(int cur_parent, int cur_g, XMLElement* model,
+                      struct prims* tmp_p, bool reading = false, int i = 0)
+{
+    XMLElement* son = !reading ? model->FirstChildElement()
+        : model->NextSiblingElement();
+
+    if (!son)
+        return;
+
+    if (!strcmp(model->Name(), "color")) {
+        color color;
+        if (!son->FloatAttribute("diffuse")) {
+            rgb rgb;
+            rgb.r = son->FloatAttribute("R");
+            rgb.g = son->FloatAttribute("G");
+            rgb.b = son->FloatAttribute("B");
+            color.diffuse = rgb; 
+        } 
+        tmp_p->color[cur_g] = color;
+    }
+
+    if (!strcmp(model->Name(), "texture")) {
+    }
+
+
+}
+
+
 void group_read_models(int cur_parent, int cur_g, XMLElement* models,
 		       bool reading = false, int i = 0)
 {
@@ -150,8 +194,12 @@ void group_read_models(int cur_parent, int cur_g, XMLElement* models,
 	char tmp[1024];
 	XMLElement* mod = !reading ? models->FirstChildElement()
 		: models->NextSiblingElement();
+
 	if (!mod)
 	    return;
+
+    group_read_model(cur_parent, cur_g, mod, &tmp_p);
+
 	f = mod->Attribute("file");
 	if (not_in_prims_g(f, &j, cur_g, i)) {
 		strcpy(tmp, "../../prims/");
@@ -249,17 +297,16 @@ void group_read(int cur_parent, int cur_g, XMLElement* gr,
 	}
 	if (cur_g >= global)
 	    global = cur_g + 1;
-    // TODO Add read lights
 	if (!strcmp(elem->Name(), "models"))
 		group_read_models(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "transform"))
 		group_read_transform(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "group"))
 		group_read(cur_g, global, elem, false, i);
+    
 	group_read(cur_parent, cur_g, elem, true, i);
 }
 
-// TODO Add read lights, and colors in models
 int xml_init(char* xml_file)
 {
 	XMLDocument doc;
@@ -390,8 +437,20 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-                        // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
                         // Apply color of model
+                        color color = world.primitives[k].color.at(g);
+                        float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                        float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b};
+                        float specular[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                        float emissive[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                        float shininess = color.shininess;
+                        glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                        glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                        glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                        glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+                        // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
 						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);

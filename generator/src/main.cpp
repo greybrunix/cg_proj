@@ -22,6 +22,12 @@ struct triple {
 std::map<std::string, unsigned int> vi;
 unsigned int i = 0;
 
+// Formato linha: 
+// indice posx posy posz norx nory norz texx texy texz
+// OU 
+// indic OU 
+// indicee
+
 void write_file(std::string coord,
 		float x,
 		float y,
