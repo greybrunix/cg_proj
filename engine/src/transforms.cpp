@@ -128,12 +128,12 @@ void translate_catmull_rom::do_transformation()
 		}
 		glTranslatef(P[0], P[1], P[2]);
 		if (this->is_align()) {
-			this->normalize(X);
-			this->cross(X, Y, Z);
-			this->normalize(Z);
-			this->cross(Z, X, Y);
-			if (this->len(Y) == 1.F)
-				this->normalize(Y);
+			normalize(X);
+			cross(X, Y, Z);
+			normalize(Z);
+			cross(Z, X, Y);
+			if (len(Y) == 1.F)
+				normalize(Y);
 			this->build_rot_matrix(X,Y,Z,mat);
 			glMultMatrixf(mat);
 		}
@@ -207,7 +207,7 @@ void translate_catmull_rom::mult_mat_vec(point m, point v, point r)
 		}
 	}
 }
-void translate_catmull_rom::normalize(point v)
+void normalize(point v)
 {
 	float l = Q_rsqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 	v[0] = v[0]*l;
@@ -222,13 +222,13 @@ void translate_catmull_rom::build_rot_matrix(point x, point y, point z,
 	r[8] = z[0]; r[9] = z[1]; r[10] = z[2]; r[11] = 0;
 	r[12] = 0; r[13] = 0; r[14] = 0; r[15] = 1;
 }
-void translate_catmull_rom::cross(point v, point u, point r)
+void cross(point v, point u, point r)
 {
 	r[0] = v[1]*u[2] - v[2]*u[1];
 	r[1] = v[2]*u[0] - v[0]*u[2];
 	r[2] = v[0]*u[1] - v[1]*u[0];
 }
-float translate_catmull_rom::len(point v)
+float len(point v)
 {
 	float res = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 	return res;

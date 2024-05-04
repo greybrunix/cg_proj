@@ -601,6 +601,7 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, k, l, g;
+    frustum fr = create_from_camera(world.cam);
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/

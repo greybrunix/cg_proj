@@ -13,6 +13,22 @@ void plane::normal_sign(bool* x, bool* y, bool* z)
     *y = this->v[1] >= 0? true : false;
     *z = this->v[2] >= 0? true : false;
 }
+void plane::get_vector(point r)
+{
+    int i;
+    for (i=0; i<4;i++)
+        r[i] = this->v[i];
+}
+float plane::get_distance(){return this->ori_to_plane;}
+float plane::compute_distance_to_point(point p)
+{
+    float a,b,c,d;
+    float v[4]; this->get_vector(v);
+    a = v[0], b = v[1], c = v[2], d = this->get_distance();
+    float numerator = abs(a * p[0] + b * p[1] + c * p[2] + d);
+    float denominator = sqrtf(a * a + b * b + c * c);
+    return numerator / denominator;
+}
 AABB::AABB(point mat)
 {
     int i;
@@ -50,8 +66,25 @@ void AABB::p_n_vertices(float* p_vertex, float* n_vertex,
     n_vertex[3] = 1.F;
 }
 
-bool is_in_frustum(frustum fr)
+bool AABB::is_in_frustum(frustum fr)
 {
-    bool res = false;
-    return true;
+    bool res = true;
+
+    plane frustum_planes[6] = {fr.top_face,
+        fr.bottom_face, fr.near_face,
+        fr.far_face, fr.left_face,
+        fr.right_face};
+
+    for (auto& plane : frustum_planes) {
+        float p_vertex[4], n_vertex[4];
+
+        p_n_vertices(p_vertex, n_vertex, plane);
+
+        if (plane.compute_distance_to_point(p_vertex) < 0) {
+            res = false;
+            break;
+        }
+    }
+
+    return res;
 }
