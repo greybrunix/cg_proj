@@ -1,9 +1,5 @@
-#include <cstdio>
-#include <cstdlib>
+#include "viewfrustum.hpp"
 #include <tinyxml2.h>
-#include <cstring>
-#include "transforms.cpp.h"
-#include <GL/glxew.h>
 
 using namespace tinyxml2;
 
@@ -13,47 +9,8 @@ int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
 float tesselation = 100.F;
 bool draw = true;
-struct triple {
-	float x, y, z;
-};
-
-struct prims {
-	int count;
-	int group;
-	char name[64];
-};
-
-struct trans {
-	int group;
-	transform* t;
-};
-
-struct ident_prim {
-	char name[64];
-	GLuint vbo, ibo, vertex_count;
-	unsigned int index_count;
-};
-
-struct {
-	struct {
-	    int h, w, sx, sy;
-		char title[64];
-	} win;
-	struct {
-        float dist;
-        float alfa;
-        float beta;
-		struct triple pos;
-		struct triple lookAt;
-		struct triple up; /* 0 1 0 */
-		struct triple proj; /* 60 1 1000*/
-	} cam;
-	std::vector<struct trans> transformations;
-	std::vector<struct prims> primitives;
-} world;
-
-typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
+struct world world;
 
 void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigned int>* ind)
 {
@@ -506,6 +463,13 @@ void printInfo()
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
+
+    printf("In explorer mode: %s\n%s\n\n",
+           "z/x change sphere radius",
+           "\ta/w/s/d move around the sphere");
+    printf("Globally: %s\n%s\n",
+           "+/- change tesselation level of auxiliary drawings",
+           "\tl toggles auxiliary drawings");
 }
 
 int main(int argc, char **argv)
