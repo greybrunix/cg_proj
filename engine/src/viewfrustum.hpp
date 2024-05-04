@@ -9,6 +9,9 @@ private:
 public:
     plane(float* v, float distance);
     void normal_sign(bool* x, bool* y, bool* z);
+    void get_vector(point r);
+    float get_distance();
+    float compute_distance_to_point(point p);
 };
 
 typedef struct frustum

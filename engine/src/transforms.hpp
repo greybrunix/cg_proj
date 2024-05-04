@@ -9,6 +9,10 @@
 typedef float* point;
 extern bool draw;
 extern float tesselation;
+static float Q_rsqrt(float number);
+void normalize(point v);
+void cross(point v, point u, point r);
+float len(point v);
 class transform {
 private:
 	int type,time;
@@ -68,9 +72,6 @@ private:
 	void get_catmull_rom_global_point(float gt, point pos,
 					  point der);
 	void mult_mat_vec(float *m, point v, point r);
-	void normalize(point v);
-	void cross(point v, point u, point r);
-	float len(point v);
 	void build_rot_matrix(point x, point y, point z, point r);
 	void set_PE(float elapsed);
 	int get_PE();

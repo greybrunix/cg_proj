@@ -331,6 +331,7 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, k, l, g;
+    frustum fr = create_from_camera(world.cam);
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
@@ -342,14 +343,16 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
-						glVertexPointer(3,GL_FLOAT,0,0);
-						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
-						glDrawElements(GL_TRIANGLES,
-							       prims[i].index_count, // número de índices a desenhar
-							       GL_UNSIGNED_INT, // tipo de dados dos índices
-							       0);// parâmetro não utilizado
-					}
+                        AABB aabb(prims[i].mat); /* TODO FALTA ISTO */
+                        if (aabb.is_in_frustum(fr)) {
+                            glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
+                            glVertexPointer(3,GL_FLOAT,0,0);
+                            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
+                            glDrawElements(GL_TRIANGLES,
+                                       prims[i].index_count, // número de índices a desenhar
+                                       GL_UNSIGNED_INT, // tipo de dados dos índices
+                                       0);// parâmetro não utilizado
+                        }
 				}
 			}
 		}
