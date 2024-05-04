@@ -1,5 +1,4 @@
-#include <cstdio>
-#include <cstdlib>
+#include "viewfrustum.hpp"
 #include <tinyxml2.h>
 #include <cstring>
 #include <string>
@@ -854,6 +853,13 @@ void printInfo()
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
+
+    printf("In explorer mode: %s\n%s\n\n",
+           "z/x change sphere radius",
+           "\ta/w/s/d move around the sphere");
+    printf("Globally: %s\n%s\n",
+           "+/- change tesselation level of auxiliary drawings",
+           "\tl toggles auxiliary drawings");
 }
 
 int main(int argc, char **argv)

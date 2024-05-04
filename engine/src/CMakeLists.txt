@@ -5,7 +5,7 @@ PROJECT(engine)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-add_executable(${PROJECT_NAME} main.cpp transforms.cpp)
+add_executable(${PROJECT_NAME} main.cpp transforms.cpp viewfrustum.cpp)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
@@ -56,11 +56,13 @@ else (WIN32) #Linux and Mac
 	set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} Wno-deprecated -g3 -O0")
 
     SET(TARGET_H
-        transforms.cpp.h
+        transforms.hpp
+        viewfrustum.hpp
     )
 
     SET(TARGET_SRC
-        transforms.cpp
+	transforms.cpp
+	viewfrustum.cpp
     )
 	 set(CMAKE_BUILD_TYPE Debug)
 

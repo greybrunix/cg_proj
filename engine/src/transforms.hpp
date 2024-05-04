@@ -1,15 +1,6 @@
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glew.h>
-#include <GL/glut.h>
+#ifndef __GLOBAL_HPP
+#include "global.hpp"
 #endif
-
-#include <cstdio>
-#include <vector>
-#define _USE_MATH_DEFINES
-#include <math.h>
-#include <cfloat>
 /* Classes */
 
 #define TRANS_ROT 0
@@ -92,3 +83,7 @@ public:
 	void get_point(float *p, int i);
 };
 
+struct trans {
+	int group;
+	transform* t;
+};
