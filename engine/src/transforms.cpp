@@ -209,7 +209,7 @@ void translate_catmull_rom::mult_mat_vec(point m, point v, point r)
 }
 void translate_catmull_rom::normalize(point v)
 {
-	float l = Q_rsqrt(v[0]*v[0] + v[1] * v[1] + v[2] * v[2]);
+	float l = Q_rsqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 	v[0] = v[0]*l;
 	v[1] = v[1]*l;
 	v[2] = v[2]*l;
