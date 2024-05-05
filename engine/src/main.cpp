@@ -159,16 +159,14 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
-void group_read_model(int cur_parent, int cur_g, XMLElement* model,
-                      struct prims* tmp_p, bool reading = false, int i = 0)
+void group_read_model(int cur_g, XMLElement* model, struct prims* tmp_p)
 {
-    XMLElement* son = !reading ? model->FirstChildElement()
-        : model->NextSiblingElement();
+    XMLElement* son = model->FirstChildElement();
 
     if (!son)
         return;
 
-    if (!strcmp(model->Name(), "color")) {
+    if (!strcmp(son->Name(), "color")) {
         color color;
         if (!son->FirstChildElement("diffuse")) {
             rgb rgb;
@@ -239,7 +237,7 @@ void group_read_model(int cur_parent, int cur_g, XMLElement* model,
         tmp_p->color[cur_g] = color;
     }
 
-    if (!strcmp(model->Name(), "texture")) {
+    if (!strcmp(son->Name(), "texture")) {
         tmp_p->texture[cur_g] = son->Attribute("file");
     }
 }
@@ -258,7 +256,7 @@ void group_read_models(int cur_parent, int cur_g, XMLElement* models,
 	if (!mod)
 	    return;
 
-    group_read_model(cur_parent, cur_g, mod, &tmp_p);
+    group_read_model(cur_g, mod, &tmp_p);
 
 	f = mod->Attribute("file");
 	if (not_in_prims_g(f, &j, cur_g, i)) {
