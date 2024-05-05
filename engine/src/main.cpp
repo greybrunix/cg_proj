@@ -24,6 +24,10 @@ struct rgb {
     float r, g, b;
 };
 
+struct doubles {
+    float x, z;
+};
+
 struct color {
     rgb diffuse;
     rgb ambient;
@@ -45,10 +49,11 @@ struct trans {
 	transform* t;
 };
 
-// TODO VBO's para normais e texturas
 struct ident_prim {
 	char name[64];
-	GLuint vbo, ibo, vertex_count;
+	GLuint vbo, ibo, 
+           normals, texCoord,
+           vertex_count;
 	unsigned int index_count;
 };
 
@@ -119,17 +124,19 @@ int read_3d_files(void)
 			}
 			std::vector<struct triple> coords;
 			std::vector<unsigned int> ind;
+            std::vector<struct triple> normals;
+            std::vector<struct doubles> texCoord;
 			read_words(fd, &coords, &ind);
 			strcpy(aux.name, world.primitives[i].name);
 
 			aux.vertex_count = coords.size();
 			aux.index_count = ind.size();
 
-            // TODO: Gerar, bind e buffer vbo's para normais e texturas
-
 			// Generate the VBO
 			glGenBuffers(1, &aux.vbo);
 			glGenBuffers(1, &aux.ibo);
+            glGenBuffers(1, &aux.normals);
+            glGenBuffers(1, &aux.texCoord);
 
 			// Bind the VBO
 			glBindBuffer(GL_ARRAY_BUFFER, aux.vbo);
@@ -138,6 +145,14 @@ int read_3d_files(void)
 			// Bind the IBO
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.ibo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * ind.size(), ind.data(), GL_STATIC_DRAW);
+
+            // Bind the normals
+            glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
+
+            // Bind the textures
+            glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
 
 			// Store the VBO ID in the vertices vector
 			prims.push_back(aux);
