@@ -5,7 +5,9 @@
 #include <string>
 #include <map>
 #include "transforms.cpp.h"
+#include <GL/glut.h>
 #include <GL/glxew.h>
+#include <vector>
 
 using namespace tinyxml2;
 
@@ -52,7 +54,8 @@ struct trans {
 struct ident_prim {
 	char name[64];
 	GLuint vbo, ibo, 
-           normals, texCoord,
+           normals, normalsibo,
+           texCoord, texCoordibo,
            vertex_count;
 	unsigned int index_count;
 };
@@ -79,7 +82,10 @@ typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
 
 // TODO Adapt to read normals and textures
-void read_words(FILE *f, std::vector<struct triple>* coords, std::vector<unsigned int>* ind)
+void read_words(FILE *f, std::vector<struct triple>* coords, 
+                std::vector<unsigned int>* ind, 
+                std::vector<struct triple>* normals, 
+                std::vector<struct doubles>* texCoord)
 {
 	char line[1024];
 	char* num;
@@ -126,7 +132,9 @@ int read_3d_files(void)
 			std::vector<unsigned int> ind;
             std::vector<struct triple> normals;
             std::vector<struct doubles> texCoord;
-			read_words(fd, &coords, &ind);
+			read_words(fd, &coords, &ind, &normals,
+                       &texCoord);
+
 			strcpy(aux.name, world.primitives[i].name);
 
 			aux.vertex_count = coords.size();
@@ -136,7 +144,9 @@ int read_3d_files(void)
 			glGenBuffers(1, &aux.vbo);
 			glGenBuffers(1, &aux.ibo);
             glGenBuffers(1, &aux.normals);
+            glGenBuffers(1, &aux.normalsibo);
             glGenBuffers(1, &aux.texCoord);
+            glGenBuffers(1, &aux.texCoordibo);
 
 			// Bind the VBO
 			glBindBuffer(GL_ARRAY_BUFFER, aux.vbo);
@@ -149,10 +159,18 @@ int read_3d_files(void)
             // Bind the normals
             glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
             glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
+			
+            // Bind the normals indexes
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.normalsibo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * normalsind.size(), normalsind.data(), GL_STATIC_DRAW);
 
             // Bind the textures
             glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
             glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
+
+            // Bind the textures indexes
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.texCoordibo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * texCoordind.size(), texCoordind.data(), GL_STATIC_DRAW);
 
 			// Store the VBO ID in the vertices vector
 			prims.push_back(aux);
@@ -498,13 +516,24 @@ void drawfigs(void)
                         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
                         // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
+                        // glBindTexture(GL_TEXTURE_2D, algo);
+
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, prims[i].normals);
+                        glNormalPointer(GL_FLOAT, 0, 0);
+
+                        glBindBuffer(GL_ARRAY_BUFFER, prims[i].texCoord);
+                        glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
 						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
 						glDrawElements(GL_TRIANGLES,
 							       prims[i].index_count, // número de índices a desenhar
 							       GL_UNSIGNED_INT, // tipo de dados dos índices
 							       0);// parâmetro não utilizado
+                        
+                        // glBindTexture(GL_TEXTURE_2D);
 					}
 				}
 			}
@@ -616,7 +645,40 @@ void processKeys(unsigned char c, int xx, int yy)
 
 //void processSpecialKeys(int key, int xx, int yy);
 
-// TODO int loadTexture(std::string s)
+int loadTexture(std::string s) {
+
+	unsigned int t,tw,th;
+	unsigned char *texData;
+	unsigned int texID;
+
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+	ilGenImages(1,&t);
+	ilBindImage(t);
+	ilLoadImage((ILstring)s.c_str());
+	tw = ilGetInteger(IL_IMAGE_WIDTH);
+	th = ilGetInteger(IL_IMAGE_HEIGHT);
+	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+	texData = ilGetData();
+
+	glGenTextures(1,&texID);
+	
+	glBindTexture(GL_TEXTURE_2D,texID);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,		GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,		GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MAG_FILTER,   	GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return texID;
+
+}
 
 void printInfo()
 {
@@ -659,10 +721,12 @@ int main(int argc, char **argv)
 	glutReshapeFunc(changeSize);
 
 	// Enable depth testing and face culling
-    // TODO GL_LIGHTING, GL_LIGHT0
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
     glEnable(GL_RESCALE_NORMAL);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 
     float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
@@ -670,8 +734,8 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(processKeys);
 
     // OpenGL settings
-    // TODO GL_TEXTURE_COORD_ARRAY
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	printInfo();
 
