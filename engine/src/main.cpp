@@ -161,12 +161,18 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 
 void group_read_model(int cur_g, XMLElement* model, struct prims* tmp_p)
 {
-    XMLElement* son = model->FirstChildElement();
+    XMLElement* son;
 
-    if (!son)
+    if (!model)
         return;
+    
+    son = model->FirstChildElement("texture");
+    if (son) {
+        tmp_p->texture[cur_g] = son->Attribute("file");
+    }
 
-    if (!strcmp(son->Name(), "color")) {
+    son = model->FirstChildElement("color");
+    if (son) {
         color color;
         if (!son->FirstChildElement("diffuse")) {
             rgb rgb;
@@ -235,11 +241,7 @@ void group_read_model(int cur_g, XMLElement* model, struct prims* tmp_p)
             color.shininess = shn;
         }
         tmp_p->color[cur_g] = color;
-    }
-
-    if (!strcmp(son->Name(), "texture")) {
-        tmp_p->texture[cur_g] = son->Attribute("file");
-    }
+        }
 }
 
 
