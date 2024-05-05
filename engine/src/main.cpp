@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <tinyxml2.h>
 #include <cstring>
+#include <string>
 #include <map>
 #include "transforms.cpp.h"
 #include <GL/glxew.h>
@@ -36,6 +37,7 @@ struct prims {
 	int group;
 	char name[64];
     std::map<int, color> color;
+    std::map<int, std::string> texture;
 };
 
 struct trans {
@@ -168,20 +170,78 @@ void group_read_model(int cur_parent, int cur_g, XMLElement* model,
 
     if (!strcmp(model->Name(), "color")) {
         color color;
-        if (!son->FloatAttribute("diffuse")) {
+        if (!son->FirstChildElement("diffuse")) {
             rgb rgb;
             rgb.r = son->FloatAttribute("R");
             rgb.g = son->FloatAttribute("G");
             rgb.b = son->FloatAttribute("B");
-            color.diffuse = rgb; 
+            color.diffuse = rgb;
+        }
+        else {
+            rgb rgb;
+            rgb.r = 200;
+            rgb.g = 200;
+            rgb.b = 200;
+            color.diffuse = rgb;
         } 
+        if (!son->FirstChildElement("ambient")) {
+                rgb rgb;
+                rgb.r = son->FloatAttribute("R");
+                rgb.g = son->FloatAttribute("G");
+                rgb.b = son->FloatAttribute("B");
+                color.ambient = rgb; 
+        }
+        else {
+            rgb rgb;
+            rgb.r = 50;
+            rgb.g = 50;
+            rgb.b = 50;
+            color.ambient = rgb;
+        } 
+        if (!son->FirstChildElement("specular")) {
+            rgb rgb;
+            rgb.r = son->FloatAttribute("R");
+            rgb.g = son->FloatAttribute("G");
+            rgb.b = son->FloatAttribute("B");
+            color.specular = rgb; 
+        }
+        else {
+            rgb rgb;
+            rgb.r = 0;
+            rgb.g = 0;
+            rgb.b = 0;
+            color.specular = rgb;
+        } 
+        if (!son->FirstChildElement("emissive")) {
+            rgb rgb;
+            rgb.r = son->FloatAttribute("R");
+            rgb.g = son->FloatAttribute("G");
+            rgb.b = son->FloatAttribute("B");
+            color.emissive = rgb; 
+        }
+        else {
+            rgb rgb;
+            rgb.r = 0;
+            rgb.g = 0;
+            rgb.b = 0;
+            color.emissive = rgb;
+        } 
+        if (!son->FirstChildElement("shininess")) {
+            float shn;
+            shn = son->FloatAttribute("value");
+            color.shininess = shn; 
+        }
+        else {
+            float shn;
+            shn = 0;
+            color.shininess = shn;
+        }
         tmp_p->color[cur_g] = color;
     }
 
     if (!strcmp(model->Name(), "texture")) {
+        tmp_p->texture[cur_g] = son->Attribute("file");
     }
-
-
 }
 
 
@@ -615,6 +675,10 @@ int main(int argc, char **argv)
     // TODO GL_LIGHTING, GL_LIGHT0
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+    glEnable(GL_RESCALE_NORMAL);
+
+    float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	glutKeyboardFunc(processKeys);
 
