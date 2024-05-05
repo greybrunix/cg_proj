@@ -159,89 +159,60 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
-void group_read_model(int cur_g, XMLElement* model, struct prims* tmp_p)
+void group_read_model(int cur_g, struct prims* tmp_p,
+                      XMLElement *color_xml, XMLElement *txt_xml)
 {
-    XMLElement* son;
-
-    if (!model)
-        return;
-    
-    son = model->FirstChildElement("texture");
-    if (son) {
-        tmp_p->texture[cur_g] = son->Attribute("file");
-    }
-
-    son = model->FirstChildElement("color");
-    if (son) {
-        color color;
-        if (!son->FirstChildElement("diffuse")) {
-            rgb rgb;
-            rgb.r = son->FloatAttribute("R");
-            rgb.g = son->FloatAttribute("G");
-            rgb.b = son->FloatAttribute("B");
-            color.diffuse = rgb;
+    rgb rgb;
+    color color;
+    float shn;
+    if (color_xml) {
+        rgb.r = 0;
+        rgb.g = 0;
+        rgb.b = 0;
+        color.specular = color.emissive = rgb;
+        rgb.r = 200;
+        rgb.g = 200;
+        rgb.b = 200;
+        color.diffuse = rgb;
+        rgb.r = 50;
+        rgb.g = 50;
+        rgb.b = 50;
+        color.ambient = rgb;
+        shn = 0;
+        color.shininess = shn;
+        if (color_xml->FirstChildElement("diffuse")) {
+            rgb.r = color_xml->FloatAttribute("R");
+            rgb.g = color_xml->FloatAttribute("G");
+            rgb.b = color_xml->FloatAttribute("B");
         }
-        else {
-            rgb rgb;
-            rgb.r = 200;
-            rgb.g = 200;
-            rgb.b = 200;
-            color.diffuse = rgb;
-        } 
-        if (!son->FirstChildElement("ambient")) {
-                rgb rgb;
-                rgb.r = son->FloatAttribute("R");
-                rgb.g = son->FloatAttribute("G");
-                rgb.b = son->FloatAttribute("B");
-                color.ambient = rgb; 
-        }
-        else {
-            rgb rgb;
-            rgb.r = 50;
-            rgb.g = 50;
-            rgb.b = 50;
+        if (color_xml->FirstChildElement("ambient")) {
+            rgb.r = color_xml->FloatAttribute("R");
+            rgb.g = color_xml->FloatAttribute("G");
+            rgb.b = color_xml->FloatAttribute("B");
             color.ambient = rgb;
-        } 
-        if (!son->FirstChildElement("specular")) {
-            rgb rgb;
-            rgb.r = son->FloatAttribute("R");
-            rgb.g = son->FloatAttribute("G");
-            rgb.b = son->FloatAttribute("B");
-            color.specular = rgb; 
         }
-        else {
-            rgb rgb;
-            rgb.r = 0;
-            rgb.g = 0;
-            rgb.b = 0;
+        if (color_xml->FirstChildElement("specular")) {
+            rgb.r = color_xml->FloatAttribute("R");
+            rgb.g = color_xml->FloatAttribute("G");
+            rgb.b = color_xml->FloatAttribute("B");
             color.specular = rgb;
-        } 
-        if (!son->FirstChildElement("emissive")) {
-            rgb rgb;
-            rgb.r = son->FloatAttribute("R");
-            rgb.g = son->FloatAttribute("G");
-            rgb.b = son->FloatAttribute("B");
-            color.emissive = rgb; 
         }
-        else {
-            rgb rgb;
-            rgb.r = 0;
-            rgb.g = 0;
-            rgb.b = 0;
+        if (color_xml->FirstChildElement("emissive")) {
+            rgb.r = color_xml->FloatAttribute("R");
+            rgb.g = color_xml->FloatAttribute("G");
+            rgb.b = color_xml->FloatAttribute("B");
             color.emissive = rgb;
-        } 
-        if (!son->FirstChildElement("shininess")) {
-            float shn;
-            shn = son->FloatAttribute("value");
-            color.shininess = shn; 
         }
-        else {
-            float shn;
-            shn = 0;
+        if (color_xml->FirstChildElement("shininess")) {
+            shn = color_xml->FloatAttribute("value");
             color.shininess = shn;
         }
         tmp_p->color[cur_g] = color;
-        }
+    }
+
+    if (txt_xml) {
+        tmp_p->texture[cur_g] = txt_xml->Attribute("file");
+    }
 }
 
 
@@ -258,7 +229,8 @@ void group_read_models(int cur_parent, int cur_g, XMLElement* models,
 	if (!mod)
 	    return;
 
-    group_read_model(cur_g, mod, &tmp_p);
+    group_read_model(cur_g, &tmp_p, mod->FirstChildElement("color"),
+                     mod->FirstChildElement("texture"));
 
 	f = mod->Attribute("file");
 	if (not_in_prims_g(f, &j, cur_g, i)) {
