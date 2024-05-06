@@ -8,6 +8,7 @@
 #include <GL/glut.h>
 #include <GL/glxew.h>
 #include <vector>
+#include <IL/il.h>
 
 using namespace tinyxml2;
 
@@ -44,6 +45,7 @@ struct prims {
 	char name[64];
     std::map<int, color> color;
     std::map<int, std::string> texture;
+    std::map<int, unsigned int> texID;
 };
 
 struct trans {
@@ -197,6 +199,40 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
+int loadTexture(std::string s) {
+
+	unsigned int t,tw,th;
+	unsigned char *texData;
+	unsigned int texID;
+
+	ilInit();
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+	ilGenImages(1,&t);
+	ilBindImage(t);
+	ilLoadImage((ILstring)s.c_str());
+	tw = ilGetInteger(IL_IMAGE_WIDTH);
+	th = ilGetInteger(IL_IMAGE_HEIGHT);
+	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+	texData = ilGetData();
+
+	glGenTextures(1,&texID);
+	
+	glBindTexture(GL_TEXTURE_2D,texID);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,		GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,		GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MAG_FILTER,   	GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return texID;
+}
+
 void group_read_model(int cur_g, struct prims* tmp_p,
                       XMLElement *color_xml, XMLElement *txt_xml)
 {
@@ -249,7 +285,9 @@ void group_read_model(int cur_g, struct prims* tmp_p,
     }
 
     if (txt_xml) {
-        tmp_p->texture[cur_g] = txt_xml->Attribute("file");
+        std::string file = txt_xml->Attribute("file");
+        tmp_p->texture[cur_g] = file;
+        tmp_p->texID[cur_g] = loadTexture(file);
     }
 }
 
@@ -520,13 +558,9 @@ void drawfigs(void)
                         glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
                         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-                        // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
                         // TODO Add light, glLightfv e glMaterialfv
                         
-                        // PROF, width e height só necessarios caso sistema solar dentro de uma caixa
-                        // E tivessemos uma textura para ser replicada.
-
-                        // glBindTexture(GL_TEXTURE_2D, algo);
+                        glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
@@ -543,7 +577,7 @@ void drawfigs(void)
 							       GL_UNSIGNED_INT, // tipo de dados dos índices
 							       0);// parâmetro não utilizado
                         
-                        // glBindTexture(GL_TEXTURE_2D);
+                        glBindTexture(GL_TEXTURE_2D, 0);
 					}
 				}
 			}
@@ -653,43 +687,6 @@ void processKeys(unsigned char c, int xx, int yy)
 
 //void processSpecialKeys(int key, int xx, int yy);
 
-/*
-int loadTexture(std::string s) {
-
-	unsigned int t,tw,th;
-	unsigned char *texData;
-	unsigned int texID;
-
-	ilInit();
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-	ilGenImages(1,&t);
-	ilBindImage(t);
-	ilLoadImage((ILstring)s.c_str());
-	tw = ilGetInteger(IL_IMAGE_WIDTH);
-	th = ilGetInteger(IL_IMAGE_HEIGHT);
-	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-	texData = ilGetData();
-
-	glGenTextures(1,&texID);
-	
-	glBindTexture(GL_TEXTURE_2D,texID);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,		GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,		GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MAG_FILTER,   	GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return texID;
-
-}
-*/
-
 void printInfo()
 {
 	printf("Vendor: %s\n", glGetString(GL_VENDOR));
@@ -738,7 +735,6 @@ int main(int argc, char **argv)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    //PROF
     float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
