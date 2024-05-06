@@ -318,9 +318,6 @@ void lights_read(XMLElement* lights, bool reading = false)
         }
         if (elem->Attribute("directional")) {
             strcpy(light.type, "directional");
-            light.posX = elem->FloatAttribute("posX");
-            light.posY = elem->FloatAttribute("posY");
-            light.posZ = elem->FloatAttribute("posZ");
             light.dirX = elem->FloatAttribute("dirX");
             light.dirY = elem->FloatAttribute("dirY");
             light.dirZ = elem->FloatAttribute("dirZ");
@@ -611,8 +608,6 @@ void drawfigs(void)
                         glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
                         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-                        // TODO Add light, glLightfv e glMaterialfv
-                        
                         glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
@@ -673,7 +668,7 @@ void renderScene(void)
 
 	glPolygonMode(GL_FRONT, GL_LINE);
 
-	if (draw) {
+    if (draw) {
 		glBegin(GL_LINES);
 		glVertex3f(-100.0f, 0.0f, 0.0f);
 		glVertex3f(100.0f, 0.0f, 0.0f);
@@ -683,6 +678,35 @@ void renderScene(void)
 		glVertex3f(0.0f, 0.0f, 100.0f);
 		glEnd();
 	}
+
+    for (int i=0; world.lights.size(); i++) {
+        if (!strcmp(world.lights[i].type, "point")) {
+            float pos[4] = {world.lights[i].posX,
+                            world.lights[i].posY,
+                            world.lights[i].posZ,
+                            0.0};
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
+        }
+        if (!strcmp(world.lights[i].type, "directional")) {
+            float dir[3] = {world.lights[i].dirX,
+                            world.lights[i].dirY,
+                            world.lights[i].dirZ};
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
+        }
+        if (!strcmp(world.lights[i].type, "spotlight")) {
+            float pos[4] = {world.lights[i].posX,
+                            world.lights[i].posY,
+                            world.lights[i].posZ,
+                            0.0};
+            float dir[3] = {world.lights[i].dirX,
+                            world.lights[i].dirY,
+                            world.lights[i].dirZ};
+            float cutoff = world.lights[i].cutoff;
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
+            glLightfv(GL_LIGHT0 + i, GL_SPOT_DIRECTION, dir);
+            glLightf(GL_LIGHT0 + i, GL_SPOT_CUTOFF, cutoff);
+        }
+    }
 
 	drawfigs();
 
@@ -785,8 +809,11 @@ int main(int argc, char **argv)
 	glEnable(GL_CULL_FACE);
     glEnable(GL_RESCALE_NORMAL);
     glEnable(GL_TEXTURE_2D);
+
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    for (int i=0; i<world.lights.size(); i++) {
+        glEnable(GL_LIGHT0 + i);
+    }
 
     float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
