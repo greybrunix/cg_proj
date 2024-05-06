@@ -521,6 +521,11 @@ void drawfigs(void)
                         glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
                         // TODO Bind texture e de seguida BindBuffer normais e texturas, unbind textura
+                        // TODO Add light, glLightfv e glMaterialfv
+                        
+                        // PROF, width e height só necessarios caso sistema solar dentro de uma caixa
+                        // E tivessemos uma textura para ser replicada.
+
                         // glBindTexture(GL_TEXTURE_2D, algo);
 
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
@@ -580,8 +585,6 @@ void renderScene(void)
 		  world.cam.up.x, world.cam.up.y, world.cam.up.z);
 
 	glPolygonMode(GL_FRONT, GL_LINE);
-
-    // TODO Add light, glLightfv e glMaterialfv
 
 	if (draw) {
 		glBegin(GL_LINES);
@@ -735,6 +738,7 @@ int main(int argc, char **argv)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
+    //PROF
     float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
