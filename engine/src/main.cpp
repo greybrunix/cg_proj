@@ -31,7 +31,7 @@ struct doubles {
     float x, z;
 };
 
-struct color {
+struct colour {
     rgb diffuse;
     rgb ambient;
     rgb specular;
@@ -43,7 +43,7 @@ struct prims {
 	int count;
 	int group;
 	char name[64];
-    std::map<int, color> color;
+    std::map<int, colour> color;
     std::map<int, std::string> texture;
     std::map<int, unsigned int> texID;
 };
@@ -237,7 +237,7 @@ void group_read_model(int cur_g, struct prims* tmp_p,
                       XMLElement *color_xml, XMLElement *txt_xml)
 {
     rgb rgb;
-    color color;
+    colour color;
     float shn;
     if (color_xml) {
         rgb.r = 0;
@@ -546,7 +546,7 @@ void drawfigs(void)
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
                         // Apply color of model
-                        color color = world.primitives[k].color.at(g);
+                        colour color = world.primitives[k].color.at(g);
                         float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
                         float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b};
                         float specular[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
