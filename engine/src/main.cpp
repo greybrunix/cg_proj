@@ -81,7 +81,6 @@ struct {
 typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
 
-// TODO Adapt to read normals and textures
 void read_words(FILE *f, std::vector<struct triple>* coords, 
                 std::vector<unsigned int>* ind, 
                 std::vector<struct triple>* normals, 
@@ -97,13 +96,27 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
 		num = strtok(NULL, " ");
 		if (num != NULL) {
 			triple v;
+            triple n;
+            doubles t;
 			v.x = atof(num);
 			num = strtok(NULL, " ");
 			v.y = atof(num);
 			num = strtok(NULL, " ");
 			v.z = atof(num);
+			num = strtok(NULL, " ");
+			n.x = atof(num);
+			num = strtok(NULL, " ");
+			n.y = atof(num);
+			num = strtok(NULL, " ");
+			n.z = atof(num);
+			num = strtok(NULL, " ");
+			t.x = atof(num);
+			num = strtok(NULL, " ");
+			t.z = atof(num);
 			num = strtok(NULL, " \n");
 			coords->push_back(v);
+            normals->push_back(n);
+            texCoord->push_back(t);
 			ind->push_back(i);
 		} else {
 			ind->push_back(i);
@@ -160,17 +173,9 @@ int read_3d_files(void)
             glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
             glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
 			
-            // Bind the normals indexes
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.normalsibo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * normalsind.size(), normalsind.data(), GL_STATIC_DRAW);
-
             // Bind the textures
             glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
             glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
-
-            // Bind the textures indexes
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.texCoordibo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * texCoordind.size(), texCoordind.data(), GL_STATIC_DRAW);
 
 			// Store the VBO ID in the vertices vector
 			prims.push_back(aux);
@@ -645,6 +650,7 @@ void processKeys(unsigned char c, int xx, int yy)
 
 //void processSpecialKeys(int key, int xx, int yy);
 
+/*
 int loadTexture(std::string s) {
 
 	unsigned int t,tw,th;
@@ -679,6 +685,7 @@ int loadTexture(std::string s) {
 	return texID;
 
 }
+*/
 
 void printInfo()
 {
