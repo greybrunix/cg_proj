@@ -343,7 +343,7 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-                        AABB aabb(prims[i].mat); /* TODO FALTA ISTO */
+                        AABB aabb({{}}); /* TODO FALTA ISTO */
                         if (aabb.is_in_frustum(fr)) {
                             glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
                             glVertexPointer(3,GL_FLOAT,0,0);
@@ -353,11 +353,12 @@ void drawfigs(void)
                                        GL_UNSIGNED_INT, // tipo de dados dos índices
                                        0);// parâmetro não utilizado
                         }
-				}
-			}
-		}
-		glPopMatrix();
-	}
+				    }
+			    }
+		    }
+        }
+        glPopMatrix();
+    }
 }
 
 void framerate()
