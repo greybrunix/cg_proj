@@ -62,6 +62,13 @@ struct ident_prim {
 	unsigned int index_count;
 };
 
+struct light {
+    char type[64];
+    float posX, posY, posZ,
+          dirX, dirY, dirZ,
+          cutoff;
+};
+
 struct {
 	struct {
 	    int h, w, sx, sy;
@@ -78,6 +85,7 @@ struct {
 	} cam;
 	std::vector<struct trans> transformations;
 	std::vector<struct prims> primitives;
+    std::vector<struct light> lights;
 } world;
 
 typedef std::vector<struct ident_prim> Primitive_Coords;
@@ -291,6 +299,47 @@ void group_read_model(int cur_g, struct prims* tmp_p,
     }
 }
 
+void lights_read(XMLElement* lights, bool reading = false)
+{
+	XMLElement* elem = !reading ? lights->FirstChildElement() :
+		lights->NextSiblingElement();
+
+    light light;
+
+    if (!elem)
+        return;
+
+    if (elem->FirstChildElement("light")) {
+        if (elem->Attribute("point")) {
+            strcpy(light.type, "point");
+            light.posX = elem->FloatAttribute("posX");
+            light.posY = elem->FloatAttribute("posY");
+            light.posZ = elem->FloatAttribute("posZ");
+        }
+        if (elem->Attribute("directional")) {
+            strcpy(light.type, "directional");
+            light.posX = elem->FloatAttribute("posX");
+            light.posY = elem->FloatAttribute("posY");
+            light.posZ = elem->FloatAttribute("posZ");
+            light.dirX = elem->FloatAttribute("dirX");
+            light.dirY = elem->FloatAttribute("dirY");
+            light.dirZ = elem->FloatAttribute("dirZ");
+        }
+        if (elem->Attribute("spotlight")) {
+            strcpy(light.type, "spotlight");
+            light.posX = elem->FloatAttribute("posX");
+            light.posY = elem->FloatAttribute("posY");
+            light.posZ = elem->FloatAttribute("posZ");
+            light.dirX = elem->FloatAttribute("dirX");
+            light.dirY = elem->FloatAttribute("dirY");
+            light.dirZ = elem->FloatAttribute("dirZ");
+            light.cutoff = elem->FloatAttribute("cutoff");
+        }
+    }
+    world.lights.push_back(light);
+    
+    lights_read(lights, true);
+}
 
 void group_read_models(int cur_parent, int cur_g, XMLElement* models,
 		       bool reading = false, int i = 0)
@@ -419,7 +468,7 @@ int xml_init(char* xml_file)
 {
 	XMLDocument doc;
 	XMLElement* world_l, * window, * cam, * posi, * lookAt, * up, * proj,
-		* group_R, * gr, * mod, * models, * tran, * trans;
+		* group_R, * gr, * mod, * models, * tran, * trans, * lights;
 
 	int i = 0, j, rs = 0, g;
 	const char* f;
@@ -489,9 +538,13 @@ int xml_init(char* xml_file)
 			world.cam.proj.y = 1.f; // near
 			world.cam.proj.z = 1000.f; //far
 		}
+        lights = world_l->FirstChildElement("lights");
+        if (lights) {
+            lights_read(lights); 
+        }
 		group_R = world_l->FirstChildElement("group");
 		if (group_R) {
-		group_read(-1, 0, group_R);
+            group_read(-1, 0, group_R);
 		}
 	}
 	return i;
