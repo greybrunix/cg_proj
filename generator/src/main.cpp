@@ -63,7 +63,7 @@ void write_file(std::string coord,
 	      beta_diff = M_PI / stacks, alpha = 0, beta = 0;
 	std::string coord;
 	for (int i = 0; i < slices; i++) {
-		for (int j = 0; j < stacks; j++) { /* ifs */
+		for (int j = 0; j < stacks; j++) { # ifs 
 			if(j!=0){
 				px = radius * cosf(beta - M_PI_2) * cosf(alpha);
 				py = radius * sinf(beta - M_PI_2);
@@ -891,6 +891,7 @@ int32_t main(int32_t argc, char**argv)
 				atoi(argv[3]),
 				argv[4]);
 	}
+    /*
 	else if (!strcmp(argv[1], "box")) {
 		if (argc != 5) {
 			err = -1;
@@ -961,6 +962,7 @@ int32_t main(int32_t argc, char**argv)
 		strcpy(argv[4], tmp);
 		err = gen_bezier(argv[2], atof(argv[3]), argv[4]);
 	}
+    */
 clean:
 	return err;
 }
