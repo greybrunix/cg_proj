@@ -100,6 +100,7 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
 	char* num;
 	unsigned int i;
 
+    printf("ANTES READ WORDS\n");
 	while (fgets(line, sizeof(line), f) != NULL) {
 		num = strtok(line, " ");
 		i = atoi(num);
@@ -114,24 +115,27 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
 			num = strtok(NULL, " ");
 			v.z = atof(num);
 			num = strtok(NULL, " ");
-			n.x = atof(num);
-			num = strtok(NULL, " ");
-			n.y = atof(num);
-			num = strtok(NULL, " ");
-			n.z = atof(num);
-			num = strtok(NULL, " ");
-			t.x = atof(num);
-			num = strtok(NULL, " ");
-			t.z = atof(num);
-			num = strtok(NULL, " \n");
+            if (num != NULL) {
+                n.x = atof(num);
+                num = strtok(NULL, " ");
+                n.y = atof(num);
+                num = strtok(NULL, " ");
+                n.z = atof(num);
+                num = strtok(NULL, " ");
+                t.x = atof(num);
+                num = strtok(NULL, " ");
+                t.z = atof(num);
+                normals->push_back(n);
+                texCoord->push_back(t);
+            }
+            num = strtok(NULL, " \n");
 			coords->push_back(v);
-            normals->push_back(n);
-            texCoord->push_back(t);
 			ind->push_back(i);
 		} else {
 			ind->push_back(i);
 		}
 	}
+    printf("DEPOIS READ WORDS\n");
 }
 
 int read_3d_files(void)
@@ -309,31 +313,30 @@ void lights_read(XMLElement* lights, bool reading = false)
     if (!elem)
         return;
 
-    if (elem->FirstChildElement("light")) {
-        if (elem->Attribute("point")) {
-            strcpy(light.type, "point");
-            light.posX = elem->FloatAttribute("posX");
-            light.posY = elem->FloatAttribute("posY");
-            light.posZ = elem->FloatAttribute("posZ");
-        }
-        if (elem->Attribute("directional")) {
-            strcpy(light.type, "directional");
-            light.dirX = elem->FloatAttribute("dirX");
-            light.dirY = elem->FloatAttribute("dirY");
-            light.dirZ = elem->FloatAttribute("dirZ");
-        }
-        if (elem->Attribute("spotlight")) {
-            strcpy(light.type, "spotlight");
-            light.posX = elem->FloatAttribute("posX");
-            light.posY = elem->FloatAttribute("posY");
-            light.posZ = elem->FloatAttribute("posZ");
-            light.dirX = elem->FloatAttribute("dirX");
-            light.dirY = elem->FloatAttribute("dirY");
-            light.dirZ = elem->FloatAttribute("dirZ");
-            light.cutoff = elem->FloatAttribute("cutoff");
-        }
+    if (elem->Attribute("point")) {
+        strcpy(light.type, "point");
+        light.posX = elem->FloatAttribute("posX");
+        light.posY = elem->FloatAttribute("posY");
+        light.posZ = elem->FloatAttribute("posZ");
+    }
+    if (elem->Attribute("directional")) {
+        strcpy(light.type, "directional");
+        light.dirX = elem->FloatAttribute("dirX");
+        light.dirY = elem->FloatAttribute("dirY");
+        light.dirZ = elem->FloatAttribute("dirZ");
+    }
+    if (elem->Attribute("spotlight")) {
+        strcpy(light.type, "spotlight");
+        light.posX = elem->FloatAttribute("posX");
+        light.posY = elem->FloatAttribute("posY");
+        light.posZ = elem->FloatAttribute("posZ");
+        light.dirX = elem->FloatAttribute("dirX");
+        light.dirY = elem->FloatAttribute("dirY");
+        light.dirZ = elem->FloatAttribute("dirZ");
+        light.cutoff = elem->FloatAttribute("cutoff");
     }
     world.lights.push_back(light);
+    printf("%f\n", light.posX);
     
     lights_read(lights, true);
 }
@@ -470,7 +473,6 @@ int xml_init(char* xml_file)
 	int i = 0, j, rs = 0, g;
 	const char* f;
 	const char* tit;
-	char tmp[1024];
 	doc.LoadFile(xml_file);
 
 	world_l = doc.RootElement();
@@ -535,9 +537,12 @@ int xml_init(char* xml_file)
 			world.cam.proj.y = 1.f; // near
 			world.cam.proj.z = 1000.f; //far
 		}
+        printf("ANTES LIGHTS\n");
         lights = world_l->FirstChildElement("lights");
         if (lights) {
+            printf("ANTES LIGHTS READ\n");
             lights_read(lights); 
+            printf("DEPOIS LIGHTS READ\n");
         }
 		group_R = world_l->FirstChildElement("group");
 		if (group_R) {
@@ -595,18 +600,20 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-                        // Apply color of model
-                        colour color = world.primitives[k].color.at(g);
-                        float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
-                        float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b};
-                        float specular[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
-                        float emissive[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
-                        float shininess = color.shininess;
-                        glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-                        glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-                        glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-                        glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
-                        glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                        if (!world.primitives[k].color.empty()){
+                            // Apply color of model
+                            colour color = world.primitives[k].color.at(g);
+                            float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                            float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b};
+                            float specular[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                            float emissive[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                            float shininess = color.shininess;
+                            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                            glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                            glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                            glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                        }
 
                         glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
@@ -810,13 +817,14 @@ int main(int argc, char **argv)
     glEnable(GL_RESCALE_NORMAL);
     glEnable(GL_TEXTURE_2D);
 
-    glEnable(GL_LIGHTING);
-    for (int i=0; i<world.lights.size(); i++) {
-        glEnable(GL_LIGHT0 + i);
+    if (world.lights.size() > 0) {
+        glEnable(GL_LIGHTING);
+        for (int i=0; i<world.lights.size(); i++) {
+            glEnable(GL_LIGHT0 + i);
+        }
+        float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
     }
-
-    float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	glutKeyboardFunc(processKeys);
 
