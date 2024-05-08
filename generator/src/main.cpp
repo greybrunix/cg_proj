@@ -29,24 +29,30 @@ unsigned int i = 0;
 // indicee
 
 void write_file(std::string coord,
-		float x,
-		float y,
-		float z,
-		FILE* output)
+	float x,
+	float y,
+	float z,
+	float nx,
+	float ny,
+	float nz,
+	float texture1,
+	float texture2,
+	FILE* output)
 {
 	char buff[512];
 	size_t b_read;
 	if (vi.find(coord) != vi.end()) {
 		b_read = snprintf(buff, 512, "%u\n", vi[coord]);
 		fwrite(buff, sizeof(int8_t), b_read, output);
-	} else {
-		b_read = snprintf(buff, 512, "%u %.3f, %.3f, %.3f\n", i, x, y, z);
+	}
+	else {
+		b_read = snprintf(buff, 512, "%u %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.3f\n", i, x, y, z, nx, ny, nz, texture1, texture2);
 		fwrite(buff, sizeof(int8_t), b_read, output);
 		vi[coord] = i++;
 	}
 }
 
-int32_t gen_sphere(float radius,
+/*int32_t gen_sphere(float radius,
 		   int32_t slices,
 		   int32_t stacks,
 		   char*file)
@@ -457,51 +463,62 @@ int32_t gen_box(float l, int32_t d, char* file)
 
 	fclose(output);
 	return 0;
-}
+}*/
 
 
 int32_t gen_plane(float full_size,
-		  int32_t divs,
-		  char* file)
+	int32_t divs,
+	char* file)
 {
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	std::string coord;
-	float x = full_size/2, z = -x, off=full_size/divs;
-	float px, py=0.f, pz;
-	int i,j, err = 0;
+	float x = full_size / 2, z = -x, off = full_size / divs;
+	float px, py = 0.f, pz;
+	int i, j,l, err = 0;
+	float texture = 1.0 / divs;
+	triple n;
+	n.x = 0;
+	n.y = 1;
+	n.z = 0;
 
-	for (i=0; i < divs; i++) {
-		for (j=0; j < divs; j++) {
+	for (i = 0; i < divs; i++) {
+		for (j = 0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
+			if (i == 0) {
+				l = i;
+			}
+			else {
+				l = i - 1;
+			}
 			px = x;
-			pz = z+off;
+			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, n.x, n.y, n.z,i*texture,(j+1)*texture, output);
 			px = x;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, output);
-			px = x-off;
+			write_file(coord, px, py, pz, n.x, n.y, n.z, i * texture, j * texture, output);
+			px = x - off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, output);
-			px = x-off;
+			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, j * texture, output);
+			px = x - off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, output);
-			px = x-off;
-			pz = z+off;
+			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, j * texture, output);
+			px = x - off;
+			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, (j+1) * texture, output);
 			px = x;
-			pz = z+off;
+			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, n.x, n.y, n.z, i * texture, (j + 1) * texture, output);
 
 			x -= off;
 		}
-		x = full_size/ 2;
+		x = full_size / 2;
 		z += off;
 	}
 
@@ -510,7 +527,7 @@ int32_t gen_plane(float full_size,
 }
 
 
-int32_t gen_torus(float inner_radius, float outer_radius,
+/*int32_t gen_torus(float inner_radius, float outer_radius,
 		  int32_t slices, int32_t stacks, char* file)
 {
 	FILE* output = fopen(file, "w+");
@@ -853,7 +870,7 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 	fclose(fd);
 	fclose(output);
 	return 0;
-}
+}*/
 int32_t main(int32_t argc, char**argv)
 {
 	int32_t err = 0;
