@@ -303,38 +303,31 @@ void group_read_model(int cur_g, struct prims* tmp_p,
 
 void lights_read(XMLElement* lights, bool reading = false)
 {
-	XMLElement* elem = reading ? lights->FirstChildElement() :
-		lights->NextSiblingElement(); 
+	XMLElement* elem = !reading ? lights->FirstChildElement()
+        : lights->NextSiblingElement();
     light light;
     const char* type;
 
     if (!elem)
         return;
     
-    printf("%f %f %f\n", elem->FloatAttribute("dirx"), elem->FloatAttribute("diry"), elem->FloatAttribute("dirz"));
-    printf("TESTE\n");
-    printf("light\n");
     type = elem->Attribute("type");
-    //if (!type)
-    //    return;
-    printf("TYPE %s\n", type);
+    if (!type)
+        return;
+
     if (!strcmp("point", type)) {
-        printf("point\n");
         strcpy(light.type, "point");
         light.posX = elem->FloatAttribute("posx");
         light.posY = elem->FloatAttribute("posy");
         light.posZ = elem->FloatAttribute("posz");
     }
     else if (!strcmp("directional", type)) {
-        printf("directional\n");
         strcpy(light.type, "directional");
         light.dirX = elem->FloatAttribute("dirx");
         light.dirY = elem->FloatAttribute("diry");
         light.dirZ = elem->FloatAttribute("dirz");
-        //printf("%f %f %f\n", light.dirX, light.dirY, light.dirZ);
     }
     else if (!strcmp("spotlight", type)) {
-        printf("spotlight\n");
         strcpy(light.type, "spotlight");
         light.posX = elem->FloatAttribute("posx");
         light.posY = elem->FloatAttribute("posy");
@@ -345,7 +338,6 @@ void lights_read(XMLElement* lights, bool reading = false)
         light.cutoff = elem->FloatAttribute("cutoff");
     }
     world.lights.push_back(light);
-    //printf("%f %f %f\n", light.dirX, light.dirY, light.dirZ);
     
     lights_read(lights, true);
 }
