@@ -246,6 +246,7 @@ int loadTexture(std::string s) {
 void group_read_model(int cur_g, struct prims* tmp_p,
                       XMLElement *color_xml, XMLElement *txt_xml)
 {
+    XMLElement* elem;
     rgb rgb;
     colour color;
     float shn;
@@ -253,7 +254,8 @@ void group_read_model(int cur_g, struct prims* tmp_p,
         rgb.r = 0;
         rgb.g = 0;
         rgb.b = 0;
-        color.specular = color.emissive = rgb;
+        color.specular = rgb;
+        color.emissive = rgb;
         rgb.r = 200;
         rgb.g = 200;
         rgb.b = 200;
@@ -264,31 +266,36 @@ void group_read_model(int cur_g, struct prims* tmp_p,
         color.ambient = rgb;
         shn = 0;
         color.shininess = shn;
-        if (color_xml->FirstChildElement("diffuse")) {
-            rgb.r = color_xml->FloatAttribute("R");
-            rgb.g = color_xml->FloatAttribute("G");
-            rgb.b = color_xml->FloatAttribute("B");
+        elem = color_xml->FirstChildElement("diffuse");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.diffuse = rgb;
         }
-        if (color_xml->FirstChildElement("ambient")) {
-            rgb.r = color_xml->FloatAttribute("R");
-            rgb.g = color_xml->FloatAttribute("G");
-            rgb.b = color_xml->FloatAttribute("B");
+        elem = color_xml->FirstChildElement("ambient");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
             color.ambient = rgb;
         }
-        if (color_xml->FirstChildElement("specular")) {
-            rgb.r = color_xml->FloatAttribute("R");
-            rgb.g = color_xml->FloatAttribute("G");
-            rgb.b = color_xml->FloatAttribute("B");
+        elem = color_xml->FirstChildElement("specular");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
             color.specular = rgb;
         }
-        if (color_xml->FirstChildElement("emissive")) {
-            rgb.r = color_xml->FloatAttribute("R");
-            rgb.g = color_xml->FloatAttribute("G");
-            rgb.b = color_xml->FloatAttribute("B");
+        elem = color_xml->FirstChildElement("emissive");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
             color.emissive = rgb;
         }
         if (color_xml->FirstChildElement("shininess")) {
-            shn = color_xml->FloatAttribute("value");
+            shn = elem->FloatAttribute("value");
             color.shininess = shn;
         }
         tmp_p->color[cur_g] = color;
@@ -601,11 +608,13 @@ void drawfigs(void)
                         if (!world.primitives[k].color.empty()){
                             // Apply color of model
                             colour color = world.primitives[k].color.at(g);
+
                             float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
                             float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b};
-                            float specular[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
-                            float emissive[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
+                            float specular[] = {color.specular.r, color.specular.g, color.specular.b};
+                            float emissive[] = {color.emissive.r, color.emissive.g, color.emissive.b};
                             float shininess = color.shininess;
+
                             glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
                             glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
                             glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -671,38 +680,57 @@ void renderScene(void)
 		  world.cam.lookAt.z,
 		  world.cam.up.x, world.cam.up.y, world.cam.up.z);
 
-	glPolygonMode(GL_FRONT, GL_LINE);
+    // VER ISTO, o João disse que tinha que ser assim mas dá me igual
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     if (draw) {
-		glBegin(GL_LINES);
-		glVertex3f(-100.0f, 0.0f, 0.0f);
+        float red [3] = { 1.0f, 0.0f, 0.0f };
+        float green [3] = { 0.0f, 1.0f, 0.0f };
+        float blue [3] = { 0.0f, 0.0f, 1.0f };
+        
+        glBegin(GL_LINES);
+        
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+		
+        glVertex3f(-100.0f, 0.0f, 0.0f);
 		glVertex3f(100.0f, 0.0f, 0.0f);
-		glVertex3f(0.0f, -100.0f, 0.0f);
+        
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+		
+        glVertex3f(0.0f, -100.0f, 0.0f);
 		glVertex3f(0.0f, 100.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, -100.0f);
+        
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+		
+        glVertex3f(0.0f, 0.0f, -100.0f);
 		glVertex3f(0.0f, 0.0f, 100.0f);
-		glEnd();
+		
+        glEnd();
 	}
 
-    for (int i=0; world.lights.size(); i++) {
+    for (int i=0; i < world.lights.size(); i++) {
         if (!strcmp(world.lights[i].type, "point")) {
             float pos[4] = {world.lights[i].posX,
                             world.lights[i].posY,
                             world.lights[i].posZ,
-                            0.0};
+                            1.0};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
         }
-        if (!strcmp(world.lights[i].type, "directional")) {
-            float dir[3] = {world.lights[i].dirX,
+        else if (!strcmp(world.lights[i].type, "directional")) {
+            float dir[4] = {world.lights[i].dirX,
                             world.lights[i].dirY,
-                            world.lights[i].dirZ};
+                            world.lights[i].dirZ,
+                                0.0};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
         }
-        if (!strcmp(world.lights[i].type, "spotlight")) {
+        else if (!strcmp(world.lights[i].type, "spotlight")) {
             float pos[4] = {world.lights[i].posX,
                             world.lights[i].posY,
                             world.lights[i].posZ,
-                            0.0};
+                            1.0};
             float dir[3] = {world.lights[i].dirX,
                             world.lights[i].dirY,
                             world.lights[i].dirZ};
