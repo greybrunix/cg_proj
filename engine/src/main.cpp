@@ -615,6 +615,14 @@ void drawfigs(void)
                             float emissive[] = {color.emissive.r, color.emissive.g, color.emissive.b};
                             float shininess = color.shininess;
 
+                            /*
+                            printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
+                            printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
+                            printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
+                            printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
+                            printf("SHININESS: %f\n", color.shininess);
+                            */
+
                             glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
                             glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
                             glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -724,6 +732,8 @@ void renderScene(void)
                             world.lights[i].dirY,
                             world.lights[i].dirZ,
                                 0.0};
+            //printf("DIR %f %f %f", dir[0], dir[1], dir[2]);
+            //printf("LIGHT %d\n", GL_LIGHT0 + i);
             glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
         }
         else if (!strcmp(world.lights[i].type, "spotlight")) {
@@ -847,6 +857,7 @@ int main(int argc, char **argv)
         glEnable(GL_LIGHTING);
         for (int i=0; i<world.lights.size(); i++) {
             glEnable(GL_LIGHT0 + i);
+            //printf("LUZ %d\n", GL_LIGHT0 + i);
         }
         float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
