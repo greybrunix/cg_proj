@@ -1,90 +1,80 @@
 #include "viewfrustum.hpp"
 
-plane::plane(float* v, float distance)
+Frustum fromCamera(const camera cam)
 {
-    int i;
-    for (i=0; i<4; i++)
-        this->v[i] = v[i];
-    this->ori_to_plane = distance;
-}
-void plane::normal_sign(bool* x, bool* y, bool* z)
-{
-    *x = this->v[0] >= 0? true : false;
-    *y = this->v[1] >= 0? true : false;
-    *z = this->v[2] >= 0? true : false;
-}
-void plane::get_vector(point r)
-{
-    int i;
-    for (i=0; i<4;i++)
-        r[i] = this->v[i];
-}
-float plane::get_distance(){return this->ori_to_plane;}
-float plane::compute_distance_to_point(point p)
-{
-    float a,b,c,d;
-    float v[4]; this->get_vector(v);
-    a = v[0], b = v[1], c = v[2], d = this->get_distance();
-    float numerator = abs(a * p[0] + b * p[1] + c * p[2] + d);
-    float denominator = sqrtf(a * a + b * b + c * c);
-    return numerator / denominator;
-}
-AABB::AABB(point mat)
-{
-    int i;
-    for (i=0; i < 32; i++) {
-        this->box[i/4][i%4] = mat[i];
-    }
-}
-void AABB::p_n_vertices(float* p_vertex, float* n_vertex,
-                   plane pl_nor)
-{
-    bool x,y,z;
-    int i;
-    float min_x, min_y, min_z,
-          max_x, max_y, max_z;
-    pl_nor.normal_sign(&x,&y,&z);
-    min_x = box[0][0], min_y = box[0][1], min_z = box[0][2];
-    max_x = box[0][0], max_y = box[0][1], max_z = box[0][2];
-    for (i = 1; i < 8; ++i) {
-        min_x = std::min(min_x, this->box[i][0]);
-        min_y = std::min(min_y, this->box[i][1]);
-        min_z = std::min(min_z, this->box[i][2]);
-        max_x = std::max(max_x, this->box[i][0]);
-        max_y = std::max(max_y, this->box[i][1]);
-        max_z = std::max(max_z, this->box[i][2]);
-    }
+	Frustum frustum;
+	const float Hfar = 2.F * tanf((cam.proj[0]*.5F*M_PI)/180.F) * cam.proj[2];
+	const float Wfar = Hfar * cam.ratio;
+	const float Hnear = 2.F * tanf((cam.proj[0]*.5F*M_PI)/180.F) * cam.proj[1];
+	const float Wnear = Hnear * cam.ratio;
+	float d[3] = {cam.lookAt[0] - cam.pos[0],
+		      cam.lookAt[1] - cam.pos[1],
+		      cam.lookAt[2] - cam.pos[2]};
+	normalize(d);
+	float r[3];
+	cross(cam.up, d, r);
+	normalize(r);
+	float up[3];
+	cross(d,r, up);
+	const float HFar_up[3] = {up[0]*Hfar/2.F, up[1]*Hfar/2.F, up[2]*Hfar/2.F},
+		WFar_r[3] =  {r[0]*Wfar/2.F, r[1]*Wfar/2.F, r[2]*Wfar/2.F};
+	const float fvc[3] = {d[0]*cam.proj[2], d[1]*cam.proj[2], d[2]*cam.proj[2]};
+	const float nvc[3] = {d[0]*cam.proj[1], d[1]*cam.proj[1], d[2]*cam.proj[1]};
+	const float fc[3] = {cam.pos[0] + fvc[0],
+			     cam.pos[1] + fvc[1],
+			     cam.pos[2] + fvc[2]},
+		nc[3] = {cam.pos[0] + nvc[0],
+			     cam.pos[1] + nvc[1],
+			     cam.pos[2] + nvc[2]};
+	const float fbr[3] = {fc[0] - HFar_up[0] + WFar_r[0],
+			fc[1] - HFar_up[1] + WFar_r[1],
+			fc[2] - HFar_up[2] + WFar_r[2]},
+	      ftr[3] = {fc[0] + HFar_up[0] + WFar_r[0]},
+			fc[1] + HFar_up[1] + WFar_r[1],
+			fc[2] + HFar_up[2] + WFar_r[2]},
+	      fbl[3] = {fc[0] - HFar_up[0] - WFar_r[0]},
+			fc[1] - HFar_up[1] - WFar_r[1],
+			fc[2] - HFar_up[2] - WFar_r[2]},
+	      ftl[3] = {fc[0] + HFar_up[0] - WFar_r[0]};
+			fc[1] + HFar_up[1] - WFar_r[1],
+			fc[2] + HFar_up[2] - WFar_r[2]},
+	const float HNear_up[3] = {up[0]*Hnear/2.F, up[1]*Hnear/2.F, up[2]*Hnear/2.F},
+		WNear_r[3] =  {r[0]*Wnear/2.F, r[1]*Wnear/2.F, r[2]*Wnear/2.F};
+	const float nbr[3] = {fc[0] - HNear_up[0] + WNear_r[0],
+			fc[1] - HNear_up[1] + WNear_r[1],
+			fc[2] - HNear_up[2] + WNear_r[2]},
+	      ntr[3] = {fc[0] + HNear_up[0] + WNear_r[0]},
+			fc[1] + HNear_up[1] + WNear_r[1],
+			fc[2] + HNear_up[2] + WNear_r[2]},
+	      nbl[3] = {fc[0] - HNear_up[0] - WNear_r[0]},
+			fc[1] - HNear_up[1] - WNear_r[1],
+			fc[2] - HNear_up[2] - WNear_r[2]},
+	      ntl[3] = {fc[0] + HNear_up[0] - WNear_r[0]};
+			fc[1] + HNear_up[1] - WNear_r[1],
+			fc[2] + HNear_up[2] - WNear_r[2]},
+	float v1[3], v2[3];
+	v1[0] = ftr[0] - ftl[0]; v1[1] = ftr[1] - ftl[1]; v1[2] = ftr[2] - ftl[2];
+	v2[0] = fbr[0] - fbl[0]; v2[1] = fbr[1] - fbl[1]; v2[2] = fbr[2] - fbl[2];
+	cross(v1, v2, frustum.far);
+	
+	v1[0] = ntr[0] - ntl[0]; v1[1] = ntr[1] - ntl[1]; v1[2] = ntr[2] - ntl[2];
+	v2[0] = nbr[0] - nbl[0]; v2[1] = nbr[1] - nbl[1]; v2[2] = nbr[2] - nbl[2];
+	cross(v1, v2, frustum.near);
+	
+	v1[0] = ftl[0] - ntl[0]; v1[1] = ftl[1] - ntl[1]; v1[2] = ftl[2] - ntl[2];
+	v2[0] = ftr[0] - ntr[0]; v2[1] = ftr[1] - ntr[1]; v2[2] = ftr[2] - ntr[2];
+	cross(v1, v2, frustum.top);
 
-    p_vertex[0] = x ? max_x : min_x;
-    p_vertex[1] = y ? max_y : min_y;
-    p_vertex[2] = z ? max_z : min_z;
-    p_vertex[3] = 1.F;
-
-    n_vertex[0] = x ? min_x : max_x;
-    n_vertex[1] = y ? min_y : max_y;
-    n_vertex[2] = z ? min_z : max_z;
-    n_vertex[3] = 1.F;
-}
-
-bool AABB::is_in_frustum(frustum fr)
-{
-    bool res = true;
-
-    plane frustum_planes[6] = {fr.top_face,
-        fr.bottom_face, fr.near_face,
-        fr.far_face, fr.left_face,
-        fr.right_face};
-
-    for (auto& plane : frustum_planes) {
-        float p_vertex[4], n_vertex[4];
-
-        p_n_vertices(p_vertex, n_vertex, plane);
-
-        if (plane.compute_distance_to_point(p_vertex) < 0) {
-            res = false;
-            break;
-        }
-    }
-
-    return res;
+	v1[0] = fbl[0] - nbl[0]; v1[1] = fbl[1] - nbl[1]; v1[2] = fbl[2] - nbl[2];
+	v2[0] = fbr[0] - nbr[0]; v2[1] = fbr[1] - nbr[1]; v2[2] = fbr[2] - nbr[2];
+	cross(v1, v2, frustum.bot);
+	
+	v1[0] = ftl[0] - ntl[0]; v1[1] = ftl[1] - ntl[1]; v1[2] = ftl[2] - ntl[2];
+	v2[0] = fbl[0] - nbl[0]; v2[1] = fbl[1] - nbl[1]; v2[2] = fbl[2] - nbl[2];
+	cross(v1, v2, frustum.left);
+	
+	v1[0] = ftr[0] - ntr[0]; v1[1] = ftr[1] - ntr[1]; v1[2] = ftr[2] - ntr[2];
+	v2[0] = fbr[0] - nbr[0]; v2[1] = fbr[1] - nbr[1]; v2[2] = fbr[2] - nbr[2];
+	cross(v1, v2, frustum.right);
+	return frustum;
 }
