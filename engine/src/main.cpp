@@ -334,7 +334,7 @@ void lights_read(XMLElement* lights, bool reading = false)
         light.dirY = elem->FloatAttribute("diry");
         light.dirZ = elem->FloatAttribute("dirz");
     }
-    else if (!strcmp("spotlight", type)) {
+    else if (!strcmp("spotlight", type)) { // spot ou spotlight???
         strcpy(light.type, "spotlight");
         light.posX = elem->FloatAttribute("posx");
         light.posY = elem->FloatAttribute("posy");
@@ -609,10 +609,10 @@ void drawfigs(void)
                             // Apply color of model
                             colour color = world.primitives[k].color.at(g);
 
-                            float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b};
-                            float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b};
-                            float specular[] = {color.specular.r, color.specular.g, color.specular.b};
-                            float emissive[] = {color.emissive.r, color.emissive.g, color.emissive.b};
+                            float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b, 1.0f};
+                            float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b, 1.0f};
+                            float specular[] = {color.specular.r, color.specular.g, color.specular.b, 1.0f};
+                            float emissive[] = {color.emissive.r, color.emissive.g, color.emissive.b, 1.0f};
                             float shininess = color.shininess;
 
                             /*
@@ -632,12 +632,15 @@ void drawfigs(void)
 
                         glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
+                        glEnableClientState(GL_VERTEX_ARRAY);
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
 
+                        glEnableClientState(GL_NORMAL_ARRAY);
                         glBindBuffer(GL_ARRAY_BUFFER, prims[i].normals);
                         glNormalPointer(GL_FLOAT, 0, 0);
 
+                        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                         glBindBuffer(GL_ARRAY_BUFFER, prims[i].texCoord);
                         glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
@@ -646,6 +649,10 @@ void drawfigs(void)
 							       prims[i].index_count, // número de índices a desenhar
 							       GL_UNSIGNED_INT, // tipo de dados dos índices
 							       0);// parâmetro não utilizado
+
+                        glDisableClientState(GL_VERTEX_ARRAY);
+                        glDisableClientState(GL_NORMAL_ARRAY);
+                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                         
                         glBindTexture(GL_TEXTURE_2D, 0);
 					}
@@ -672,92 +679,79 @@ void framerate()
 
 void renderScene(void)
 {
-	// clear buffers
-	char fps_c[64];
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // clear buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// calculate camera pos
-	world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
-	world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
-	world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+    // calculate camera pos
+    world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+    world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
+    world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
 
-	// set the camera
-	glLoadIdentity();
-	gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
-		  world.cam.lookAt.x, world.cam.lookAt.y,
-		  world.cam.lookAt.z,
-		  world.cam.up.x, world.cam.up.y, world.cam.up.z);
+    // set the camera
+    glLoadIdentity();
+    gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
+              world.cam.lookAt.x, world.cam.lookAt.y,
+              world.cam.lookAt.z,
+              world.cam.up.x, world.cam.up.y, world.cam.up.z);
 
-    // VER ISTO, o João disse que tinha que ser assim mas dá me igual
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // Set the polygon mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // Draw coordinate axes
     if (draw) {
-        float red [3] = { 1.0f, 0.0f, 0.0f };
-        float green [3] = { 0.0f, 1.0f, 0.0f };
-        float blue [3] = { 0.0f, 0.0f, 1.0f };
-        
-        glBegin(GL_LINES);
-        
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-		
-        glVertex3f(-100.0f, 0.0f, 0.0f);
-		glVertex3f(100.0f, 0.0f, 0.0f);
-        
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
-		
-        glVertex3f(0.0f, -100.0f, 0.0f);
-		glVertex3f(0.0f, 100.0f, 0.0f);
-        
-        glColor3f(0.0f, 0.0f, 1.0f);
-        glMaterialfv (GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
-		
-        glVertex3f(0.0f, 0.0f, -100.0f);
-		glVertex3f(0.0f, 0.0f, 100.0f);
-		
-        glEnd();
-	}
+        float red[] = {1.0f, 0.0f, 0.0f};
+        float green[] = {0.0f, 1.0f, 0.0f};
+        float blue[] = {0.0f, 0.0f, 1.0f};
 
-    for (int i=0; i < world.lights.size(); i++) {
+        glBegin(GL_LINES);
+
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+
+        glVertex3f(-100.0f, 0.0f, 0.0f);
+        glVertex3f(100.0f, 0.0f, 0.0f);
+
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+
+        glVertex3f(0.0f, -100.0f, 0.0f);
+        glVertex3f(0.0f, 100.0f, 0.0f);
+
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+
+        glVertex3f(0.0f, 0.0f, -100.0f);
+        glVertex3f(0.0f, 0.0f, 100.0f);
+
+        glEnd();
+    }
+
+    // Set up lights
+    for (int i = 0; i < world.lights.size(); i++) {
         if (!strcmp(world.lights[i].type, "point")) {
-            float pos[4] = {world.lights[i].posX,
-                            world.lights[i].posY,
-                            world.lights[i].posZ,
-                            1.0};
+            float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
-        }
-        else if (!strcmp(world.lights[i].type, "directional")) {
-            float dir[4] = {world.lights[i].dirX,
-                            world.lights[i].dirY,
-                            world.lights[i].dirZ,
-                                0.0};
-            //printf("DIR %f %f %f", dir[0], dir[1], dir[2]);
-            //printf("LIGHT %d\n", GL_LIGHT0 + i);
+        } else if (!strcmp(world.lights[i].type, "directional")) {
+            float dir[4] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ, 0.0};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
-        }
-        else if (!strcmp(world.lights[i].type, "spotlight")) {
-            float pos[4] = {world.lights[i].posX,
-                            world.lights[i].posY,
-                            world.lights[i].posZ,
-                            1.0};
-            float dir[3] = {world.lights[i].dirX,
-                            world.lights[i].dirY,
-                            world.lights[i].dirZ};
-            float cutoff = world.lights[i].cutoff;
+        } else if (!strcmp(world.lights[i].type, "spotlight")) {
+            float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
+            float dir[3] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
             glLightfv(GL_LIGHT0 + i, GL_SPOT_DIRECTION, dir);
-            glLightf(GL_LIGHT0 + i, GL_SPOT_CUTOFF, cutoff);
+            glLightf(GL_LIGHT0 + i, GL_SPOT_CUTOFF, world.lights[i].cutoff);
         }
     }
 
-	drawfigs();
+    // Draw primitives
+    drawfigs();
 
-	framerate();
-	// End of frame
-	glutSwapBuffers();
+    // Swap buffers
+    glutSwapBuffers();
+
+    // Update frame rate
+    framerate();
 }
-
 
 void processKeys(unsigned char c, int xx, int yy)
 {
@@ -853,10 +847,13 @@ int main(int argc, char **argv)
     glEnable(GL_RESCALE_NORMAL);
     glEnable(GL_TEXTURE_2D);
 
+    float white[4] = {1.0, 1.0, 1.0, 1.0};
     if (world.lights.size() > 0) {
         glEnable(GL_LIGHTING);
         for (int i=0; i<world.lights.size(); i++) {
             glEnable(GL_LIGHT0 + i);
+            glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, white);
+            glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
             //printf("LUZ %d\n", GL_LIGHT0 + i);
         }
         float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -866,8 +863,9 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(processKeys);
 
     // OpenGL settings
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    //glEnableClientState(GL_NORMAL_ARRAY);
 
 	printInfo();
 
