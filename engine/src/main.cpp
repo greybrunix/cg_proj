@@ -294,7 +294,8 @@ void group_read_model(int cur_g, struct prims* tmp_p,
             rgb.b = elem->FloatAttribute("B");
             color.emissive = rgb;
         }
-        if (color_xml->FirstChildElement("shininess")) {
+        elem = color_xml->FirstChildElement("shininess");
+        if (elem) {
             shn = elem->FloatAttribute("value");
             color.shininess = shn;
         }
@@ -616,13 +617,11 @@ void drawfigs(void)
                                 float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
                                 float shininess = color.shininess;
 
-                                /*
                                 printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
                                 printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
                                 printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
                                 printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
                                 printf("SHININESS: %f\n", color.shininess);
-                                */
 
                                 glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
                                 glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
