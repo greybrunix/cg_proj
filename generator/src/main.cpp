@@ -867,7 +867,7 @@ int32_t gen_cylinder(float radius, float height, int32_t slices, char* file)
 
 	fclose(output);
 	return 0;
-}
+}*/
 
 void multMM(float a[4][4], float b[4][4], float res[4][4]) {
 	for (int i = 0; i < 4; i++)
@@ -916,44 +916,141 @@ float puv(float U, float V, float m[4][4]) {
 	return r;
 }
 
+float bu(float U, float V, float m[4][4]) {
+
+	float aux[4];
+	float v[4];
+	float r;
+
+	v[0] = V*V*V;
+	v[1] = V*V;
+	v[2] = V;
+	v[3] = 1;
+
+	multMV(m, v, aux);
+
+	r = 3 * U*U * aux[0] + 2 * U * aux[1] + aux[2];
+
+	return r;
+
+}
+
+float bv(float U, float V, float m[4][4]) {
+
+	float aux[4];
+	float v[4];
+	float r;
+
+	v[0] = 3 * V*V*V;
+	v[1] = V * 2;
+	v[2] = 1;
+	v[3] = 0;
+
+	multMV(m, v, aux);
+
+	r = U*U*U * aux[0] + U*U * aux[1] + U * aux[2] + aux[3];
+
+	return r;
+
+}
+
+void multcr(float* a, float* b, float* res) {
+
+	res[0] = a[1] * b[2] - a[2] * b[1];
+	res[1] = a[2] * b[0] - a[0] * b[2];
+	res[2] = a[0] * b[1] - a[1] * b[0];
+}
+
 int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselation, FILE* output) {
-
+	
 	float x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4;
+	float pu1[3], pu2[3], pu3[3], pu4[3], pv1[3], pv2[3], pv3[3], pv4[3], re1[3], re2[3], re3[3], re4[3];
 	float t = 1.0f / tesselation;
-    std::string coord;
+    	std::string coord;
 
-	for (float i = 0; i < 1; i += t) {
+		for (float i = 0; i < 1; i += t) {
 		for (float j = 0; j < 1; j += t) {
 
-
+		
 			x1 = puv(i, j, px);
+			pu1[0] = bu(i, j, px);
+			pv1[0] = bv(i, j, px);
+
 			x2 = puv(i + t, j, px);
+			pu2[0] = bu(i + t, j, px);
+			pv2[0] = bv(i + t, j, px);
+
 			x3 = puv(i + t, j + t, px);
+			pu3[0] = bu(i + t, j + t, px);
+			pv3[0] = bv(i + t, j + t, px);
+
 			x4 = puv(i, j + t, px);
+			pu4[0] = bu(i , j + t, px);
+			pv4[0] = bv(i , j + t, px);
 
 
 			y1 = puv(i, j, py);
+			pu1[1] = bu(i, j, py);
+			pv1[1] = bv(i, j, py);
+
 			y2 = puv(i + t, j, py);
+			pu2[1] = bu(i+t, j, py);
+			pv2[1] = bv(i+t, j, py);
+
 			y3 = puv(i + t, j + t, py);
+			pu3[1] = bu(i+t, j+t, py);
+			pv3[1] = bv(i+t, j+t, py);
+
 			y4 = puv(i, j + t, py);
+			pu4[1] = bu(i, j+t, py);
+			pv4[1] = bv(i, j+t, py);
+
 
 			z1 = puv(i, j, pz);
+			pu1[2] = bu(i, j, pz);
+			pv1[2] = bv(i, j, pz);
+
 			z2 = puv(i + t, j, pz);
+			pu2[2] = bu(i+t, j, pz);
+			pv2[2] = bv(i, j, pz);
+
 			z3 = puv(i + t, j + t, pz);
+			pu3[2] = bu(i+t, j+t, pz);
+			pv3[2] = bv(i+t, j+t, pz);
+
 			z4 = puv(i, j + t, pz);
+			pu4[2] = bu(i, j+t, pz);
+			pv4[2] = bv(i, j+t, pz);
+
+			multcr(pu1, pv1, re1);
+			normalize(re1);
+			
+			multcr(pu2, pv2, re2);
+			normalize(re2);
+			
+			multcr(pu3, pv3, re3);
+			normalize(re3);
+			
+			multcr(pu4, pv4, re4);
+			normalize(re4);
 
 			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1);
-			write_file(coord, x1, y1, z1, output);
+			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2], j, i, output);
+			
 			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-			write_file(coord, x2, y2, z2, output);
+			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+tesselation, output);
+			
 			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-			write_file(coord, x4, y4, z4, output);
+			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+tesselation,i, output);
+			
 			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-			write_file(coord, x2, y2, z2, output);
+			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+stesslation, output);
+			
 			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3);
-			write_file(coord, x3, y3, z3, output);
+			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j+tesselation,i+tesselation output);
+			
 			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-			write_file(coord, x4, y4, z4, output);
+			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+tesselation,i, output);
 		}
 	}
 	return 0;
@@ -1060,7 +1157,7 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 	fclose(fd);
 	fclose(output);
 	return 0;
-}*/
+}
 int32_t main(int32_t argc, char**argv)
 {
 	int32_t err = 0;
@@ -1142,7 +1239,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      atoi(argv[4]),
 			      argv[5]);
-	}
+	}*/
 	if (!strcmp(argv[1], "patch")) {
 		if (argc != 5) {
 			err = -1;
@@ -1152,7 +1249,7 @@ int32_t main(int32_t argc, char**argv)
 		strcpy(argv[4], tmp);
 		err = gen_bezier(argv[2], atof(argv[3]), argv[4]);
 	}
-    */
+    
 clean:
 	return err;
 }
