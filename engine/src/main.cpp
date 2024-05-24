@@ -511,14 +511,15 @@ int xml_init(char* xml_file)
 			return -3;
 		}
 		world.cam.pos.x = posi->FloatAttribute("x");
-		world.cam.pos.y = posi->FloatAttribute("y");
-		world.cam.pos.z = posi->FloatAttribute("z");
-		world.cam.dist = sqrt(world.cam.pos.x*world.cam.pos.x +
-				      world.cam.pos.y*world.cam.pos.y+
-				      world.cam.pos.z*world.cam.pos.z);
-		world.cam.alfa = asin(world.cam.pos.x / (world.cam.dist * cos(world.cam.beta)));
-		world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
-		lookAt = cam->FirstChildElement("lookAt");
+        world.cam.pos.y = posi->FloatAttribute("y");
+        world.cam.pos.z = posi->FloatAttribute("z");
+        world.cam.dist = sqrt(world.cam.pos.x * world.cam.pos.x +
+                      world.cam.pos.y * world.cam.pos.y +
+                      world.cam.pos.z * world.cam.pos.z);
+        world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
+        world.cam.alfa = atan2(world.cam.pos.x, world.cam.pos.z);
+
+        lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 		return -4;
 		}
@@ -618,11 +619,13 @@ void drawfigs(void)
                                 float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
                                 float shininess = color.shininess;
 
+                                /*
                                 printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
                                 printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
                                 printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
                                 printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
                                 printf("SHININESS: %f\n", color.shininess);
+                                */
 
                                 glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
                                 glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
@@ -698,11 +701,9 @@ void renderScene(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // calculate camera pos
-	/*
     world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
     world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
     world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
-	*/
 
     // set the camera
     glLoadIdentity();
