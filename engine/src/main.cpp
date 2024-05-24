@@ -623,6 +623,20 @@ void drawfigs(void)
                             printf("SHININESS: %f\n", color.shininess);
                             */
 
+                            
+                            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                            glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                            glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                            glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                        } else {
+                            // Apply color of model
+                            float diffuse[] = {200.0f, 200.0f, 200.0f, 1.0f};
+                            float ambient[] = {50.0f, 50.0f, 50.0f, 1.0f};
+                            float specular[] = {0.0f, 0.0f, 0.0f, 1.0f};
+                            float emissive[] = {0.0f, 0.0f, 0.0f, 1.0f};
+                            float shininess = 0.0f;
+
                             glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
                             glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
                             glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -778,10 +792,10 @@ void processKeys(unsigned char c, int xx, int yy)
 		tesselation -= 10;
 		break;
     case 'z':
-        world.cam.dist -= 10;
+        world.cam.dist -= 0.1;
         break;
     case 'x':
-        world.cam.dist += 10;
+        world.cam.dist += 0.1;
     }
 
 
@@ -848,17 +862,17 @@ int main(int argc, char **argv)
     glEnable(GL_TEXTURE_2D);
 
     float white[4] = {1.0, 1.0, 1.0, 1.0};
+    glEnable(GL_LIGHTING);
     if (world.lights.size() > 0) {
-        glEnable(GL_LIGHTING);
         for (int i=0; i<world.lights.size(); i++) {
             glEnable(GL_LIGHT0 + i);
             glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, white);
             glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
             //printf("LUZ %d\n", GL_LIGHT0 + i);
         }
-        float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
     }
+    float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	glutKeyboardFunc(processKeys);
 
