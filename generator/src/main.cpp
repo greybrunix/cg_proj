@@ -59,7 +59,6 @@ void normalize(float a1, float a2, float a3) {
 	}
 }
 
-/*
 int32_t gen_sphere(float radius,
 	int32_t slices,
 	int32_t stacks,
@@ -148,117 +147,6 @@ int32_t gen_sphere(float radius,
 	fclose(output);
 	return 0;
 }
-*/
-/*
-int32_t gen_cone(float radius,
-		 float height,
-		 int32_t slices,
-		 int32_t stacks,
-		 char*file)
-{
-	FILE* output = fopen(file, "w+");
-	char buff[512];
-	std::string coord;
-	int i, j, r = 0;
-	float y = 0;
-	float px, py, pz;
-	float angle = 0;
-	float cur_rad = radius;
-	float angle_diff = 2*M_PI/slices;
-	float xz_diff = radius/stacks;
-	float y_diff = height/stacks;
-    float pnx, pny, pnz;
-
-	for(i=0; i<stacks; i++) {
-		for(j=0; j<slices; j++) {
-			// Bottom face
-			if (i==0) {
-				px = cur_rad*sinf(angle);
-				py = 0.0f;
-				pz = cur_rad*cosf(angle);
-
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = 0.0f;
-				py = 0.0f;
-				pz = 0.0f;
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = cur_rad*sinf(angle+angle_diff);
-				py = 0.0f;
-				pz = cur_rad*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-			}
-
-			if (i==stacks-1) {
-				px = cur_rad*sinf(angle+angle_diff);
-				py = y;
-				pz = cur_rad*cosf(angle+angle_diff); 
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = 0.0f;
-				py = height;
-				pz = 0.0f;
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = cur_rad*sinf(angle);
-				py = y;
-				pz = cur_rad*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-			}
-			else {
-				px = (cur_rad-xz_diff)*sinf(angle+angle_diff);
-				py = y+y_diff;
-				pz = (cur_rad-xz_diff)*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = (cur_rad-xz_diff)*sinf(angle);
-				py = y+y_diff;
-				pz = (cur_rad-xz_diff)*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = cur_rad*sinf(angle+angle_diff);
-				py = y;
-				pz = cur_rad*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = (cur_rad-xz_diff)*sinf(angle);
-				py = y+y_diff;
-				pz = (cur_rad-xz_diff)*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = cur_rad*sinf(angle);
-				py = y;
-				pz = cur_rad*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-
-				px = cur_rad*sinf(angle+angle_diff);
-				py = y;
-				pz = cur_rad*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, output);
-			}
-			angle += angle_diff;
-		}
-		angle = 0;
-		y += y_diff;
-		cur_rad -= xz_diff;
-	}
-	fclose(output);
-	return r;
-}
-*/
 
 int32_t gen_box(float l, int32_t d, char* file)
 {
@@ -684,7 +572,6 @@ int32_t gen_cone(float radius,
 	return r;
 }
 
-/*
 int32_t gen_plane(float full_size,
 	int32_t divs,
 	char* file)
@@ -694,13 +581,13 @@ int32_t gen_plane(float full_size,
 	std::string coord;
 	float x = full_size / 2, z = -x, off = full_size / divs;
 	float px, py = 0.f, pz;
+    float pnx, pny, pnz;
 	int i, j,l, err = 0;
 	float texture = 1.0 / divs;
-	triple n;
-	n.x = 0;
-	n.y = 1;
-	n.z = 0;
 
+    pnx = 0;
+    pny = 1;
+    pnz = 0;
 	for (i = 0; i < divs; i++) {
 		for (j = 0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
@@ -713,27 +600,27 @@ int32_t gen_plane(float full_size,
 			px = x;
 			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, n.x, n.y, n.z,i*texture,(j+1)*texture, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz,i*texture,(j+1)*texture, output);
 			px = x;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, n.x, n.y, n.z, i * texture, j * texture, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, i * texture, j * texture, output);
 			px = x - off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, j * texture, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, l * texture, j * texture, output);
 			px = x - off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, j * texture, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, l * texture, j * texture, output);
 			px = x - off;
 			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, (j+1) * texture, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, l * texture, (j+1) * texture, output);
 			px = x;
 			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, n.x, n.y, n.z, i * texture, (j + 1) * texture, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, i * texture, (j + 1) * texture, output);
 
 			x -= off;
 		}
@@ -744,7 +631,6 @@ int32_t gen_plane(float full_size,
 	fclose(output);
 	return err;
 }
-*/
 
 /*int32_t gen_torus(float inner_radius, float outer_radius,
 		  int32_t slices, int32_t stacks, char* file)
@@ -990,7 +876,6 @@ void multcr(float* a, float* b, float* res) {
 	res[2] = a[0] * b[1] - a[1] * b[0];
 }
 
-/*
 int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselation, FILE* output) {
 	
 	float x1, x2, x3, x4, y1, y2, y3, y4, z1, z2, z3, z4;
@@ -1053,16 +938,16 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			pv4[2] = bv(i, j+t, pz);
 
 			multcr(pu1, pv1, re1);
-			normalize(re1);
+			normalize(re1[0], re1[1], re1[2]);
 			
 			multcr(pu2, pv2, re2);
-			normalize(re2);
+			normalize(re2[0], re2[1], re2[2]);
 			
 			multcr(pu3, pv3, re3);
-			normalize(re3);
+			normalize(re3[0], re3[1], re3[2]);
 			
 			multcr(pu4, pv4, re4);
-			normalize(re4);
+			normalize(re4[0], re4[1], re4[2]);
 
 			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1);
 			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2], j, i, output);
@@ -1188,7 +1073,6 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 	fclose(output);
 	return 0;
 }
-*/
 
 int32_t main(int32_t argc, char**argv)
 {
@@ -1199,7 +1083,6 @@ int32_t main(int32_t argc, char**argv)
 		err = -1;
 		goto clean;
 	}
-    /*
 	if (!strcmp(argv[1], "plane")) {
 		if (argc != 5) {
 			err = -1;
@@ -1211,7 +1094,6 @@ int32_t main(int32_t argc, char**argv)
 				atoi(argv[3]),
 				argv[4]);
 	}
-    */
 	else if (!strcmp(argv[1], "box")) {
 		if (argc != 5) {
 			err = -1;
@@ -1236,7 +1118,6 @@ int32_t main(int32_t argc, char**argv)
 				atoi(argv[5]),
 				argv[6]);
 	}
-    /*
 	else if (!strcmp(argv[1], "sphere")) {
 		if (argc != 6) {
 			err = -1;
@@ -1248,7 +1129,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      atoi(argv[4]),
 			      argv[5]);
-	}*//*
+	}/*
 	else if (!strcmp(argv[1], "torus")) {
 		if (argc != 7) {
 			err = -1;
@@ -1274,6 +1155,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[4]),
 			      argv[5]);
 	}
+    */
 	if (!strcmp(argv[1], "patch")) {
 		if (argc != 5) {
 			err = -1;
@@ -1283,7 +1165,6 @@ int32_t main(int32_t argc, char**argv)
 		strcpy(argv[4], tmp);
 		err = gen_bezier(argv[2], atof(argv[3]), argv[4]);
 	}
-    */
     
 clean:
 	return err;
