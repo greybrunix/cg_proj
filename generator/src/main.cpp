@@ -349,7 +349,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 	for (int i=0; i<d; i++){
 		for (int j=0; j<d; j++) {
 
-			px = x
+			px = x;
 			py = y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
