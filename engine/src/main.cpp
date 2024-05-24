@@ -605,56 +605,57 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-                        if (!world.primitives[k].color.empty()){
-                            // Apply color of model
-                            colour color = world.primitives[k].color.at(g);
+                        if (world.lights.size() > 0){
+                            if (!world.primitives[k].color.empty()){
+                                // Apply color of model
+                                colour color = world.primitives[k].color.at(g);
 
-                            float diffuse[] = {color.diffuse.r/255.0f, color.diffuse.g/255.0f, color.diffuse.b/255.0f, 1.0f};
-                            float ambient[] = {color.ambient.r/255.0f, color.ambient.g/255.0f, color.ambient.b/255.0f, 1.0f};
-                            float specular[] = {color.specular.r/255.0f, color.specular.g/255.0f, color.specular.b/255.0f, 1.0f};
-                            float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
-                            float shininess = color.shininess;
+                                float diffuse[] = {color.diffuse.r/255.0f, color.diffuse.g/255.0f, color.diffuse.b/255.0f, 1.0f};
+                                float ambient[] = {color.ambient.r/255.0f, color.ambient.g/255.0f, color.ambient.b/255.0f, 1.0f};
+                                float specular[] = {color.specular.r/255.0f, color.specular.g/255.0f, color.specular.b/255.0f, 1.0f};
+                                float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
+                                float shininess = color.shininess;
 
-                            /*
-                            printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
-                            printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
-                            printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
-                            printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
-                            printf("SHININESS: %f\n", color.shininess);
-                            */
+                                /*
+                                printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
+                                printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
+                                printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
+                                printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
+                                printf("SHININESS: %f\n", color.shininess);
+                                */
 
-                            
-                            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-                            glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-                            glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-                            glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
-                            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-                        } else {
-                            // Apply color of model
-                            float diffuse[] = {200.0f/255.0f, 200.0f/255.0f, 200.0f/255.0f, 1.0f/255.0f};
-                            float ambient[] = {50.0f/255.0f, 50.0f/255.0f, 50.0f/255.0f, 1.0f/255.0f};
-                            float specular[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
-                            float emissive[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
-                            float shininess = 0.0f/255.0f;
+                                glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                                glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                                glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                                glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                            } else {
+                                // Apply color of model
+                                float diffuse[] = {200.0f/255.0f, 200.0f/255.0f, 200.0f/255.0f, 1.0f/255.0f};
+                                float ambient[] = {50.0f/255.0f, 50.0f/255.0f, 50.0f/255.0f, 1.0f/255.0f};
+                                float specular[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
+                                float emissive[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
+                                float shininess = 0.0f;
 
-                            glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-                            glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-                            glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-                            glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
-                            glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                                glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                                glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                                glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                                glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                            }
                         }
 
                         glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
-                        glEnableClientState(GL_VERTEX_ARRAY);
+                        //glEnableClientState(GL_VERTEX_ARRAY);
 						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 						glVertexPointer(3,GL_FLOAT,0,0);
 
-                        glEnableClientState(GL_NORMAL_ARRAY);
+                        //glEnableClientState(GL_NORMAL_ARRAY);
                         glBindBuffer(GL_ARRAY_BUFFER, prims[i].normals);
                         glNormalPointer(GL_FLOAT, 0, 0);
 
-                        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                        //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                         glBindBuffer(GL_ARRAY_BUFFER, prims[i].texCoord);
                         glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
@@ -664,9 +665,9 @@ void drawfigs(void)
 							       GL_UNSIGNED_INT, // tipo de dados dos índices
 							       0);// parâmetro não utilizado
 
-                        glDisableClientState(GL_VERTEX_ARRAY);
-                        glDisableClientState(GL_NORMAL_ARRAY);
-                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                        //glDisableClientState(GL_VERTEX_ARRAY);
+                        //glDisableClientState(GL_NORMAL_ARRAY);
+                        //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
                         
                         glBindTexture(GL_TEXTURE_2D, 0);
 					}
@@ -860,26 +861,28 @@ int main(int argc, char **argv)
 	glEnable(GL_CULL_FACE);
     glEnable(GL_RESCALE_NORMAL);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_RESCALE_NORMAL);
 
     float white[4] = {1.0, 1.0, 1.0, 1.0};
-    glEnable(GL_LIGHTING);
     if (world.lights.size() > 0) {
+        glEnable(GL_LIGHTING);
         for (int i=0; i<world.lights.size(); i++) {
             glEnable(GL_LIGHT0 + i);
             glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, white);
             glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
             //printf("LUZ %d\n", GL_LIGHT0 + i);
         }
+        float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
     }
-    float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	glutKeyboardFunc(processKeys);
 
     // OpenGL settings
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    //glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	printInfo();
 
