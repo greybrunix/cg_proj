@@ -631,11 +631,11 @@ void drawfigs(void)
                             glMaterialf(GL_FRONT, GL_SHININESS, shininess);
                         } else {
                             // Apply color of model
-                            float diffuse[] = {200.0f, 200.0f, 200.0f, 1.0f};
-                            float ambient[] = {50.0f, 50.0f, 50.0f, 1.0f};
-                            float specular[] = {0.0f, 0.0f, 0.0f, 1.0f};
-                            float emissive[] = {0.0f, 0.0f, 0.0f, 1.0f};
-                            float shininess = 0.0f;
+                            float diffuse[] = {200.0f/255.0f, 200.0f/255.0f, 200.0f/255.0f, 1.0f/255.0f};
+                            float ambient[] = {50.0f/255.0f, 50.0f/255.0f, 50.0f/255.0f, 1.0f/255.0f};
+                            float specular[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
+                            float emissive[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
+                            float shininess = 0.0f/255.0f;
 
                             glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
                             glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
@@ -872,7 +872,7 @@ int main(int argc, char **argv)
         }
     }
     float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	glutKeyboardFunc(processKeys);
 
