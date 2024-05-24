@@ -270,7 +270,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 	float unit = l / d;
 	float diff = l / d;
 	float texture_diff = 1.0f / d;
-	float tx1,tx2;
+	float tx1,tx2,tz1,tz2,x1,x2,y1,y2;
 	float tex = pow(divisions,-1);
 
 	// Bottom and Top Faces
@@ -424,7 +424,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 			py = y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, -ramge, y2, z1, -1, 0, 0, j * texture_diff, i * texture_diff, output);
+			write_file(coord, -range, y2, z1, -1, 0, 0, j * texture_diff, i * texture_diff, output);
 			px = -x;
 			py = y + diff;
 			pz = z + diff;
