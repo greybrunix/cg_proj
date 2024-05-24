@@ -1223,8 +1223,6 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      argv[4]);
 	}
-    /*
-    
 	else if (!strcmp(argv[1], "cone")) {
 		if (argc != 7) {
 			err = -1;
@@ -1238,6 +1236,7 @@ int32_t main(int32_t argc, char**argv)
 				atoi(argv[5]),
 				argv[6]);
 	}
+    /*
 	else if (!strcmp(argv[1], "sphere")) {
 		if (argc != 6) {
 			err = -1;
