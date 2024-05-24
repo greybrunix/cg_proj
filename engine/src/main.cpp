@@ -328,6 +328,7 @@ void lights_read(XMLElement* lights, bool reading = false)
         light.posX = elem->FloatAttribute("posx");
         light.posY = elem->FloatAttribute("posy");
         light.posZ = elem->FloatAttribute("posz");
+        printf("POINT %f %f %f\n", light.posX, light.posY, light.posZ);
     }
     else if (!strcmp("directional", type)) {
         strcpy(light.type, "directional");
@@ -335,8 +336,8 @@ void lights_read(XMLElement* lights, bool reading = false)
         light.dirY = elem->FloatAttribute("diry");
         light.dirZ = elem->FloatAttribute("dirz");
     }
-    else if (!strcmp("spotlight", type)) { // spot ou spotlight???
-        strcpy(light.type, "spotlight");
+    else if (!strcmp("spot", type)) {
+        strcpy(light.type, "spot");
         light.posX = elem->FloatAttribute("posx");
         light.posY = elem->FloatAttribute("posy");
         light.posZ = elem->FloatAttribute("posz");
@@ -347,7 +348,7 @@ void lights_read(XMLElement* lights, bool reading = false)
     }
     world.lights.push_back(light);
     
-    lights_read(lights, true);
+    lights_read(elem, true);
 }
 
 void group_read_models(int cur_parent, int cur_g, XMLElement* models,
@@ -756,7 +757,7 @@ void renderScene(void)
         } else if (!strcmp(world.lights[i].type, "directional")) {
             float dir[4] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ, 0.0};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
-        } else if (!strcmp(world.lights[i].type, "spotlight")) {
+        } else if (!strcmp(world.lights[i].type, "spot")) {
             float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
             float dir[3] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ};
             glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
