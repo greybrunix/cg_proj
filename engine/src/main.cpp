@@ -609,10 +609,10 @@ void drawfigs(void)
                             // Apply color of model
                             colour color = world.primitives[k].color.at(g);
 
-                            float diffuse[] = {color.diffuse.r, color.diffuse.g, color.diffuse.b, 1.0f};
-                            float ambient[] = {color.ambient.r, color.ambient.g, color.ambient.b, 1.0f};
-                            float specular[] = {color.specular.r, color.specular.g, color.specular.b, 1.0f};
-                            float emissive[] = {color.emissive.r, color.emissive.g, color.emissive.b, 1.0f};
+                            float diffuse[] = {color.diffuse.r/255.0f, color.diffuse.g/255.0f, color.diffuse.b/255.0f, 1.0f};
+                            float ambient[] = {color.ambient.r/255.0f, color.ambient.g/255.0f, color.ambient.b/255.0f, 1.0f};
+                            float specular[] = {color.specular.r/255.0f, color.specular.g/255.0f, color.specular.b/255.0f, 1.0f};
+                            float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
                             float shininess = color.shininess;
 
                             /*
@@ -872,7 +872,7 @@ int main(int argc, char **argv)
         }
     }
     float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 
 	glutKeyboardFunc(processKeys);
 
