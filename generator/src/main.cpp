@@ -902,8 +902,8 @@ float puv(float U, float V, float m[4][4]) {
 	float r;
 
 	//Criar a matriz v da
-	v[0] = powf(V, 3);
-	v[1] = powf(V, 2);
+	v[0] = V*V*V;
+	v[1] = V*V;
 	v[2] = V;
 	v[3] = 1;
 
@@ -911,7 +911,7 @@ float puv(float U, float V, float m[4][4]) {
 	multMV(m, v, res);
 
 	// U * m * V
-	r = powf(U, 3) * res[0] + powf(U, 2) * res[1] + U * res[2] + res[3];
+	r = U*U*U * res[0] + U*U * res[1] + U * res[2] + res[3];
 
 	return r;
 }
