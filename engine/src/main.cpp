@@ -697,9 +697,11 @@ void renderScene(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // calculate camera pos
+	/*
     world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
     world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
     world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+	*/
 
     // set the camera
     glLoadIdentity();
@@ -716,7 +718,10 @@ void renderScene(void)
         float red[] = {1.0f, 0.0f, 0.0f};
         float green[] = {0.0f, 1.0f, 0.0f};
         float blue[] = {0.0f, 0.0f, 1.0f};
+	bool is = glIsEnabled(GL_LIGHTING);
 
+	if (is)
+		glDisable(GL_LIGHTING);
         glBegin(GL_LINES);
 
         glColor3f(1.0f, 0.0f, 0.0f);
@@ -737,7 +742,10 @@ void renderScene(void)
         glVertex3f(0.0f, 0.0f, -100.0f);
         glVertex3f(0.0f, 0.0f, 100.0f);
 
+        glColor3f(1.0f, 1.0f, 1.0f);
         glEnd();
+	if (is)
+		glEnable(GL_LIGHTING);
     }
 
     // Set up lights
