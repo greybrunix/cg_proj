@@ -140,7 +140,7 @@ int32_t gen_sphere(float radius,
 	fclose(output);
 	return 0;
 }
-
+/*
 int32_t gen_cone(float radius,
 		 float height,
 		 int32_t slices,
@@ -951,7 +951,7 @@ int32_t main(int32_t argc, char**argv)
 				atoi(argv[4]),
 				atoi(argv[5]),
 				argv[6]);
-	}
+	}*/
 	else if (!strcmp(argv[1], "sphere")) {
 		if (argc != 6) {
 			err = -1;
@@ -963,7 +963,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      atoi(argv[4]),
 			      argv[5]);
-	}
+	}/*
 	else if (!strcmp(argv[1], "torus")) {
 		if (argc != 7) {
 			err = -1;
