@@ -82,7 +82,7 @@ int32_t gen_sphere(float radius,
 					pz = radius * cosf(beta - M_PI_2) * sinf(alpha);//p1n 2
 					pn[2] = cosf(beta - M_PI_2) * sinf(alpha);
 					normalize(pn);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 					write_file(coord, px, py, pz,pn[0],pn[1],pn[2],texture[0],texture[1], output);
 
 					px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);//p3n 0
@@ -92,7 +92,7 @@ int32_t gen_sphere(float radius,
 					pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);//p3n 2
 					pn[2] = cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
 					normalize(pn);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 					write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 					px = radius * cosf(beta - M_PI_2) * cosf(alpha + alpha_diff);//p4n 0
@@ -102,7 +102,7 @@ int32_t gen_sphere(float radius,
 					pz = radius * cosf(beta - M_PI_2) * sinf(alpha + alpha_diff);//p3n 2
 					pn[2] = cosf(beta - M_PI_2) * sinf(alpha + alpha_diff);
 					normalize(pn);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 					write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 				}
 			if (j != stacks - 1) {
@@ -115,7 +115,7 @@ int32_t gen_sphere(float radius,
 				pz = radius * cosf(beta - M_PI_2) * sinf(alpha);//p1n 2
 				pn[2] = cosf(beta - M_PI_2) * sinf(alpha);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha);//p2n 0
@@ -125,7 +125,7 @@ int32_t gen_sphere(float radius,
 				pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha);//p2n 2
 				pn[2]= cosf(beta - M_PI_2 + beta_diff) * sinf(alpha);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);//p3n 0
@@ -135,7 +135,7 @@ int32_t gen_sphere(float radius,
 				pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);//p3n 2
 				pn[2]= cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 			}
 			beta += beta_diff;
@@ -173,19 +173,19 @@ int32_t gen_cone(float radius,
 				py = 0.0f;
 				pz = cur_rad*cosf(angle);
 
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = 0.0f;
 				py = 0.0f;
 				pz = 0.0f;
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = cur_rad*sinf(angle+angle_diff);
 				py = 0.0f;
 				pz = cur_rad*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 			}
 
@@ -193,56 +193,56 @@ int32_t gen_cone(float radius,
 				px = cur_rad*sinf(angle+angle_diff);
 				py = y;
 				pz = cur_rad*cosf(angle+angle_diff); 
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = 0.0f;
 				py = height;
 				pz = 0.0f;
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = cur_rad*sinf(angle);
 				py = y;
 				pz = cur_rad*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 			}
 			else {
 				px = (cur_rad-xz_diff)*sinf(angle+angle_diff);
 				py = y+y_diff;
 				pz = (cur_rad-xz_diff)*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = (cur_rad-xz_diff)*sinf(angle);
 				py = y+y_diff;
 				pz = (cur_rad-xz_diff)*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = cur_rad*sinf(angle+angle_diff);
 				py = y;
 				pz = cur_rad*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = (cur_rad-xz_diff)*sinf(angle);
 				py = y+y_diff;
 				pz = (cur_rad-xz_diff)*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = cur_rad*sinf(angle);
 				py = y;
 				pz = cur_rad*cosf(angle);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 
 				px = cur_rad*sinf(angle+angle_diff);
 				py = y;
 				pz = cur_rad*cosf(angle+angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, output);
 			}
 			angle += angle_diff;
@@ -274,65 +274,65 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 1, 0, 0, 0, output);
 			px = x+diff;
 			py = y;
 			pz = pz+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 1, 0, 0, 0, output);
 			px = x+diff;
 			py= y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 1, 0, 0, 0, output);
 
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 1, 0, 0, 0, output);
 			px = x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 1, 0, 0, 0, output);
 			px = x+diff;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 1, 0, 0, 0, output);
 
 			px = x+diff;
 			py = -y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, -1, 0, 0, 0, output);
 			px = x;
 			py = -y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, -1, 0, 0, 0, output);
 			px = x+diff;
 			py = -y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, -1, 0, 0, 0, output);
 
 			px = x;
 			py = -y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, -1, 0, 0, 0, output);
 			pz = x;
 			py = -y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, -1, 0, 0, 0, output);
 			px = x+diff;
 			py = -y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, -1, 0, 0, 0, output);
 
 			z += diff;
@@ -352,65 +352,65 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, 1, 0, 0, output);
 			px = x+diff;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, 1, 0, 0, output);
 			px = x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, 1, 0, 0, output);
 
 			px = x+diff;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, 1, 0, 0, output);
 			px = x+diff;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, 1, 0, 0, output);
 			px = x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, 1, 0, 0, output);
 
 			px = x;
 			py = y;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, -1, 0, 0, output);
 			px = x+diff;
 			py = y+diff;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, -1, 0, 0, output);
 			px = x+diff;
 			py = y;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, -1, 0, 0, output);
 
 			px = x;
 			py = y;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, -1, 0, 0, output);
 			px = x;
 			py = y+diff;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, -1, 0, 0, output);
 			px = x+diff;
 			py = y+diff;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 0, 0, -1, 0, 0, output);
 
 			y += diff;
@@ -430,65 +430,65 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 1, 0, 0, 0, 0, output);
 			px = x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 1, 0, 0, 0, 0, output);
 			px = x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 1, 0, 0, 0, 0, output);
 
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 1, 0, 0, 0, 0, output);
 			px = x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 1, 0, 0, 0, 0, output);
 			px = x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, 1, 0, 0, 0, 0, output);
 
 			px = -x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, -1, 0, 0, 0, 0, output);
 			px = -x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, -1, 0, 0, 0, 0, output);
 			px = -x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, -1, 0, 0, 0, 0, output);
 
 			px = -x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, -1, 0, 0, 0, 0, output);
 			px = -x;
 			py = y;
 			z = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, -1, 0, 0, 0, 0, output);
 			px = -x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, -1, 0, 0, 0, 0, output);
 
 			y += diff;
@@ -533,19 +533,19 @@ int32_t gen_cone(float radius,
 				py = 0.0f;
 				pz = cur_rad * cosf(angle);
 
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[1], pn[2], pn[3], texture[0], texture[1], output);
 
 				px = 0.0f;
 				py = 0.0f;
 				pz = 0.0f;
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[1], pn[2], pn[3], texture[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
 				py = 0.0f;
 				pz = cur_rad * cosf(angle + angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 			}
 
@@ -562,7 +562,7 @@ int32_t gen_cone(float radius,
 				pz = cur_rad * cosf(angle + angle_diff);
 				pn[2]= cosf(angle + angle_diff);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = 0.0f;
@@ -572,7 +572,7 @@ int32_t gen_cone(float radius,
 				pz = 0.0f;
 				pn[2] = cosf(angle);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, 0, 1, 0, texture[0], texture[1], output);
 
 				px = cur_rad * sinf(angle);
@@ -582,7 +582,7 @@ int32_t gen_cone(float radius,
 				pz = cur_rad * cosf(angle);
 				pn[2]= cosf(angle);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 			}
 			else {
@@ -593,7 +593,7 @@ int32_t gen_cone(float radius,
 				pz = (cur_rad - xz_diff) * cosf(angle + angle_diff);
 				pn[2] = cosf(angle + angle_diff);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = (cur_rad - xz_diff) * sinf(angle);
@@ -603,7 +603,7 @@ int32_t gen_cone(float radius,
 				pz = (cur_rad - xz_diff) * cosf(angle);
 				pn[2] = cosf(angle);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
@@ -613,7 +613,7 @@ int32_t gen_cone(float radius,
 				pz = cur_rad * cosf(angle + angle_diff);
 				pn[2] = cosf(angle + angle_diff);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = (cur_rad - xz_diff) * sinf(angle);
@@ -623,7 +623,7 @@ int32_t gen_cone(float radius,
 				pz = (cur_rad - xz_diff) * cosf(angle);
 				pn[2]= cosf(angle);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = cur_rad * sinf(angle);
@@ -633,7 +633,7 @@ int32_t gen_cone(float radius,
 				pz = cur_rad * cosf(angle);
 				pn[2] = cosf(angle);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
@@ -643,7 +643,7 @@ int32_t gen_cone(float radius,
 				pz = cur_rad * cosf(angle + angle_diff);
 				pn[2] = cosf(angle + angle_diff);
 				normalize(pn);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 				write_file(coord, px, py, pz, pn[0], pn[1], pn[2], texture[0], texture[1], output);
 			}
 			angle += angle_diff;
@@ -683,27 +683,27 @@ int32_t gen_plane(float full_size,
 			}
 			px = x;
 			pz = z + off;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, n.x, n.y, n.z,i*texture,(j+1)*texture, output);
 			px = x;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, n.x, n.y, n.z, i * texture, j * texture, output);
 			px = x - off;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, j * texture, output);
 			px = x - off;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, j * texture, output);
 			px = x - off;
 			pz = z + off;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, n.x, n.y, n.z, l * texture, (j+1) * texture, output);
 			px = x;
 			pz = z + off;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, n.x, n.y, n.z, i * texture, (j + 1) * texture, output);
 
 			x -= off;
@@ -735,38 +735,38 @@ int32_t gen_plane(float full_size,
 			px = (inner_radius + outer_radius * cos(beta -M_PI_2)) * cos(alfa);
 			py = outer_radius * sin(beta - M_PI_2);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
 			py = outer_radius * sin(beta - M_PI_2+ beta_diff);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 )) * cos(alfa+alfa_diff);
 			py =  outer_radius * sin(beta - M_PI_2);
 			pz= (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa+alfa_diff);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
 			py =  outer_radius * sin(beta - M_PI_2 + beta_diff);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa + alfa_diff);
 			py =  outer_radius * sin(beta - M_PI_2 + alfa_diff);
 			pz = (inner_radius +outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa + alfa_diff);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, output);
 
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2)) * cos(alfa + alfa_diff);
 			py = outer_radius * sin(beta - M_PI_2);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa + alfa_diff);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 			write_file(coord, px, py, pz, output);
 
 			beta += beta_diff;
@@ -804,64 +804,64 @@ int32_t gen_cylinder(float radius, float height, int32_t slices, char* file)
 		px = 0.0f;
 		py = 0.0f;
 		pz = 0.0f;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x0;
 		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x1;
 		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 
 		// Generate vertices for the top face
 		px = 0.0f;
 		py = height;
 		pz = 0.0f;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x1;
 		py = height;
 		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x0;
 		py = height;
 		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 
 		// Generate vertices for the side faces
 		px = x0;
 		py = 0.0f;
 		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x0;
 		py = height;
 		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x1;
 		py = 0.0f;
 		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x1;
 		py = 0.0f;
 		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x0;
 		py = height;
 		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 		px = x1;
 		py = height;
 		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pn[0]) + std::to_string(pn[1]) + std::to_string(pn[2]);
 		write_file(coord, px, py, pz, output);
 	}
 
