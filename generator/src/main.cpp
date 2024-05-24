@@ -256,256 +256,6 @@ int32_t gen_cone(float radius,
 }
 */
 
-/*int32_t gen_box(float l, int32_t d, char* file)
-{
-	FILE* output = fopen(file, "w+");
-	char buff[512];
-	std::string coord;
-	int32_t i, j, r = 0;
-	float x = -l / 2;
-	float y = l / 2;
-	float z = -l / 2;
-	float px, py, pz;
-	float diff = l / d;
-	float texture_diff = 1.0f / d;
-
-	// Bottom and Top Faces
-	for (i = 0; i < d; i++) {
-		for (j = 0; j < d; j++) {
-			// Top face (normal: 0, 1, 0)
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 1, 0, j * texture_diff, i * texture_diff, output);
-			px = x + diff;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 1, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = x + diff;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 1, 0, (j + 1) * texture_diff, i * texture_diff, output);
-
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 1, 0, j * texture_diff, i * texture_diff, output);
-			px = x;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 1, 0, j * texture_diff, (i + 1) * texture_diff, output);
-			px = x + diff;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 1, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			// Bottom face (normal: 0, -1, 0)
-			px = x + diff;
-			py = -y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, -1, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = -y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, -1, 0, j * texture_diff, i * texture_diff, output);
-			px = x + diff;
-			py = -y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, -1, 0, (j + 1) * texture_diff, i * texture_diff, output);
-
-			px = x;
-			py = -y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, -1, 0, j * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = -y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, -1, 0, j * texture_diff, i * texture_diff, output);
-			px = x + diff;
-			py = -y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, -1, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			z += diff;
-		}
-		z = -l / 2;
-		x += diff;
-	}
-
-	x = -l / 2;
-	y = -l / 2;
-	z = l / 2;
-
-    // Front and Back faces
-	for (i = 0; i < d; i++) {
-		for (j = 0; j < d; j++) {
-			// Front face (normal: 0, 0, 1)
-			px = x + diff;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, 1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, 1, j * texture_diff, i * texture_diff, output);
-			px = x + diff;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, 1, (j + 1) * texture_diff, i * texture_diff, output);
-
-			px = x;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, 1, j * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, 1, j * texture_diff, i * texture_diff, output);
-			px = x + diff;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, 1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			// Back face (normal: 0, 0, -1)
-			px = x;
-			py = y;
-			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, -1, j * texture_diff, i * texture_diff, output);
-			px = x + diff;
-			py = y + diff;
-			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, -1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = x + diff;
-			py = y;
-			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-            write_file(coord, px, py, pz, 0, 0, -1, (j + 1) * texture_diff, i * texture_diff, output);
-
-			px = x;
-			py = y;
-			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, -1, j * texture_diff, i * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, -1, j * texture_diff, (i + 1) * texture_diff, output);
-			px = x + diff;
-			py = y + diff;
-			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 0, 0, -1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			y += diff;
-		}
-		y = -l / 2;
-		x += diff;
-	}
-
-	z = -l / 2;
-	y = -l / 2;
-	x = l / 2;
-
-	// Right and Left faces
-	for (i = 0; i < d; i++) {
-		for (j = 0; j < d; j++) {
-			// Right face (normal: 1, 0, 0)
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 1, 0, 0, j * texture_diff, i * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 1, 0, 0, (j + 1) * texture_diff, i * texture_diff, output);
-
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 1, 0, 0, j * texture_diff, i * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 1, 0, 0, j * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, 1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			// Left face (normal: -1, 0, 0)
-			px = -x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = -x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, j * texture_diff, i * texture_diff, output);
-			px = -x;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, (j + 1) * texture_diff, i * texture_diff, output);
-            
-			px = -x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, j * texture_diff, i * texture_diff, output);
-			px = -x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = -x;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			y += diff;
-		}
-		y = -l / 2;
-		z += diff;
-	}
-
-	fclose(output);
-	return 0;
-}*/
-
 int32_t gen_box(float l, int32_t d, char* file)
 {
 	FILE* output = fopen(file, "w+");
@@ -513,94 +263,180 @@ int32_t gen_box(float l, int32_t d, char* file)
 	std::string coord;
 	int32_t i, j, r = 0;
 	float x = -l / 2;
-	float y = l / 2;
+	float y = 0;
+	float range = l/2;
 	float z = -l / 2;
 	float px, py, pz;
 	float diff = l / d;
 	float texture_diff = 1.0f / d;
-	float pn[3];
+
 	// Bottom and Top Faces
 	for (i = 0; i < d; i++) {
 		for (j = 0; j < d; j++) {
 			// Top face (normal: 0, 1, 0)
+			x1 = i * unit - range;
+			z1 = j * unit - range;
+			x2 = (i+1) * unit - range;
+			z2 = (j+1) * unit - range;
+           		tx1 = i*tex;
+            		tx2 = (i+1)*tex;
+            		tz1 = j*tex;
+            		tz2 = (j+1)*tex;
 			px = x;
-			py = y;
+			py = range;
 			pz = z;
-			pn[0]=0;
-			pn[1]=1;
-			pn[2]=0;
-			normalize(pn);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, range, z1, 0, 1, 0, tx1, tz1, output);
 			px = x + diff;
-			py = y;
+			py = range;
 			pz = z + diff;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, range, z2, 0, 1, 0, tx2, tz2, output);
 			px = x + diff;
-			py = y;
+			py = range;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, i * texture_diff, output);
+			write_file(coord, x2, range, z1, 0, 1, 0, tx2, tz1, output);
 
 			px = x;
-			py = y;
+			py = range;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, range, z1, 0, 1, 0, tx1, tz1, output);
 			px = x;
 			py = y;
 			pz = z + diff;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x1, range, z2, 0, 1, 0, tx1, tz2, output);
 			px = x + diff;
 			py = y;
 			pz = z + diff;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, range, z2, 0, 1, 0, tx2, tz2, output);
 
-			pn[0]=0;
-			pn[1]=-1;
-			pn[2]=0;
-			normalize(pn);
-			
 			// Bottom face (normal: 0, -1, 0)
 			px = x + diff;
 			py = -y;
 			pz = z + diff;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, -range, z2, 0, -1, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
 			px = x;
 			py = -y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, -range, z1, 0, -1, 0, j * texture_diff, i * texture_diff, output);
 			px = x + diff;
 			py = -y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, i * texture_diff, output);
+			write_file(coord, x2, -range, z1, 0, -1, 0, (j + 1) * texture_diff, i * texture_diff, output);
 
 			px = x;
 			py = -y;
 			pz = z + diff;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x1, -range, z2, 0, -1, 0, j * texture_diff, (i + 1) * texture_diff, output);
 			px = x;
 			py = -y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, -range, z1, 0, -1, 0, j * texture_diff, i * texture_diff, output);
 			px = x + diff;
 			py = -y;
 			pz = z + diff;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, -range, z2, 0, -1, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
 
 			z += diff;
 		}
 		z = -l / 2;
 		x += diff;
+	}
+	z = -l / 2;
+	y = -l / 2;
+	x = l / 2;
+
+	// Right and Left faces
+	for (i = 0; i < d; i++) {
+		for (j = 0; j < d; j++) {
+           		y1 = i * unit - range;
+           		z1 = j * unit - range;
+            		y2 = (i+1) * unit - range;
+            		z2 = (j+1) * unit - range;
+            		tx1 = i*tex;
+            		tx2 = (i+1)*tex;
+            		tz1 = j*tex;
+            		tz2 = (j+1)*tex;
+			// Right face (normal: 1, 0, 0)
+			px = x;
+			py = y;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, range, y1, z1, 1, 0, 0, j * texture_diff, i * texture_diff, output);
+			px = x;
+			py = y + diff;
+			pz = z + diff;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, range, y2, z2, 1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			px = x;
+			py = y;
+			pz = z + diff;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, range, y1, z2, 1, 0, 0, (j + 1) * texture_diff, i * texture_diff, output);
+
+			px = x;
+			py = y;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, range, y1, z1, 1, 0, 0, j * texture_diff, i * texture_diff, output);
+			px = x;
+			py = y + diff;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, range, y2, z1, 1, 0, 0, j * texture_diff, (i + 1) * texture_diff, output);
+			px = x;
+			py = y + diff;
+			pz = z + diff;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, range, y2, z2, 1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+
+			// Left face (normal: -1, 0, 0)
+			px = -x;
+			py = y + diff;
+			pz = z + diff;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, -range, y2, z2, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			px = -x;
+			py = y;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, -range, y1, z1, -1, 0, 0, j * texture_diff, i * texture_diff, output);
+			px = -x;
+			py = y;
+			pz = z + diff;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, -range, y1, z2, -1, 0, 0, (j + 1) * texture_diff, i * texture_diff, output);
+            
+			px = -x;
+			py = y;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, -ramge, y2, z1, -1, 0, 0, j * texture_diff, i * texture_diff, output);
+			px = -x;
+			py = y + diff;
+			pz = z + diff;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, -range, y1, z1, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			px = -x;
+			py = y + diff;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
+			write_file(coord, -range, y2, z2, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+
+			y += diff;
+		}
+		y = -l / 2;
+		z += diff;
 	}
 
 	x = -l / 2;
@@ -610,173 +446,84 @@ int32_t gen_box(float l, int32_t d, char* file)
     // Front and Back faces
 	for (i = 0; i < d; i++) {
 		for (j = 0; j < d; j++) {
-			pn[0]=0;
-			pn[1]=0;
-			pn[2]=1;
-			normalize(pn);
+         		y1 = i * unit - range;
+            		x1 = j * unit - range;
+            		y2 = (i+1) * unit - range;
+            		x2 = (j+1) * unit - range;
+            		tx1 = i*tex;
+            		tx2 = (i+1)*tex;
+            		tz1 = j*tex;
+            		tz2 = (j+1)*tex;
 			// Front face (normal: 0, 0, 1)
 			px = x + diff;
 			py = y + diff;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, y2, range, 0, 0, 1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
 			px = x;
 			py = y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, y1, range, 0, 0, 1, j * texture_diff, i * texture_diff, output);
 			px = x + diff;
 			py = y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, i * texture_diff, output);
+			write_file(coord, x2, y1, range, 0, 0, 1, (j + 1) * texture_diff, i * texture_diff, output);
 
 			px = x;
 			py = y + diff;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x1, y2, range, 0, 0, 1, j * texture_diff, (i + 1) * texture_diff, output);
 			px = x;
 			py = y;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, y1, range, 0, 0, 1, j * texture_diff, i * texture_diff, output);
 			px = x + diff;
 			py = y + diff;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, y2, range, 0, 0, 1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
 
-			pn[0]=0;
-			pn[1]=0;
-			pn[2]=-1;
-			normalize(pn);
-			
 			// Back face (normal: 0, 0, -1)
 			px = x;
 			py = y;
 			pz = -z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, y1, -range, 0, 0, -1, j * texture_diff, i * texture_diff, output);
 			px = x + diff;
 			py = y + diff;
 			pz = -z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, y2, -range, 0, 0, -1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
 			px = x + diff;
 			py = y;
 			pz = -z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-            write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, i * texture_diff, output);
+         		write_file(coord, x2, y1, -range, 0, 0, -1, (j + 1) * texture_diff, i * texture_diff, output);
 
 			px = x;
 			py = y;
 			pz = -z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
+			write_file(coord, x1, y1, -range, 0, 0, -1, j * texture_diff, i * texture_diff, output);
 			px = x;
 			py = y + diff;
 			pz = -z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x1, y2, -range, 0, 0, -1, j * texture_diff, (i + 1) * texture_diff, output);
 			px = x + diff;
 			py = y + diff;
 			pz = -z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
+			write_file(coord, x2, y2, -range, 0, 0, -1, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
 
 			y += diff;
 		}
 		y = -l / 2;
 		x += diff;
-	}
-
-	z = -l / 2;
-	y = -l / 2;
-	x = l / 2;
-
-	// Right and Left faces
-	for (i = 0; i < d; i++) {
-		for (j = 0; j < d; j++) {
-			pn[0]=1;
-			pn[1]=0;
-			pn[2]=0;
-			normalize(pn);
-			// Right face (normal: 1, 0, 0)
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, i * texture_diff, output);
-
-			px = x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, (i + 1) * texture_diff, output);
-			px = x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			pn[0]=-1;
-			pn[1]=0;
-			pn[2]=0;
-			normalize(pn);
-			
-			// Left face (normal: -1, 0, 0)
-			px = -x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = -x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
-			px = -x;
-			py = y;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, i * texture_diff, output);
-            
-			px = -x;
-			py = y;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], j * texture_diff, i * texture_diff, output);
-			px = -x;
-			py = y + diff;
-			pz = z + diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, -1, 0, 0, (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-			px = -x;
-			py = y + diff;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz);
-			write_file(coord, px, py, pz, pn[0], pn[1], pn[2], (j + 1) * texture_diff, (i + 1) * texture_diff, output);
-
-			y += diff;
-		}
-		y = -l / 2;
-		z += diff;
 	}
 
 	fclose(output);
