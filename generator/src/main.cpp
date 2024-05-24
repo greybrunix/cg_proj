@@ -271,6 +271,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 	float diff = l / d;
 	float texture_diff = 1.0f / d;
 	float tx1,tx2;
+	float tex = pow(divisions,-1);
 
 	// Bottom and Top Faces
 	for (i = 0; i < d; i++) {
