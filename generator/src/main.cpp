@@ -50,7 +50,14 @@ void write_file(std::string coord,
 		vi[coord] = i++;
 	}
 }
-
+void normalize(float* a) {
+	float l = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+	if (l != 0) {
+		a[0] = a[0] / l;
+		a[1] = a[1] / l;
+		a[2] = a[2] / l;
+	}
+}
 int32_t gen_sphere(float radius,
 	int32_t slices,
 	int32_t stacks,
@@ -61,7 +68,6 @@ int32_t gen_sphere(float radius,
 	float px, py, pz, alpha_diff = 2 * M_PI / slices,
 		beta_diff = M_PI / stacks, alpha = 0, beta = 0;
 	std::string coord;
-	write_file(coord, px, py, pz, 0, 1, 0, j * texture_diff, i * texture_diff, output);
 	float pn[3];
 	float texture[2];
 	for (int i = 0; i < slices; i++) {
