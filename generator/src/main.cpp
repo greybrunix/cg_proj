@@ -652,57 +652,76 @@ int32_t gen_plane(float full_size,
 	return err;
 }
 
-/*int32_t gen_torus(float inner_radius, float outer_radius,
+int32_t gen_torus(float inner_radius, float outer_radius,
 		  int32_t slices, int32_t stacks, char* file)
 {
 	FILE* output = fopen(file, "w+");
 	float alfa = 0, beta = 0;
 	float alfa_diff = 2 * M_PI / slices;
 	float beta_diff = 2*M_PI / stacks;
-	float px, py, pz;
+	float px, py, pz, pnx, pny, pnz;
 	char buff[512];
 	std::string coord;
 	int32_t rr = 0;
+	
 
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) {
 
 			px = (inner_radius + outer_radius * cos(beta -M_PI_2)) * cos(alfa);
+			pnx= outer_radius * cos(beta -M_PI_2) * cos(alfa);
 			py = outer_radius * sin(beta - M_PI_2);
+			pny= outer_radius * sin(beta - M_PI_2);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa);
+			pnz= outer_radius * cos(beta - M_PI_2) * sin(alfa);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
+			pnx= outer_radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa);
 			py = outer_radius * sin(beta - M_PI_2+ beta_diff);
+			pny= outer_radius * sin(beta - M_PI_2+ beta_diff);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
+			pnz= outer_radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 )) * cos(alfa+alfa_diff);
+			pnx= outer_radius * cos(beta - M_PI_2 ) * cos(alfa+alfa_diff);
 			py =  outer_radius * sin(beta - M_PI_2);
+			pny= outer_radius * sin(beta - M_PI_2);
 			pz= (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa+alfa_diff);
+			pnz= outer_radius * cos(beta - M_PI_2) * sin(alfa+alfa_diff);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
+			pnx= outer_radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa);
 			py =  outer_radius * sin(beta - M_PI_2 + beta_diff);
+			pny= outer_radius * sin(beta - M_PI_2 + beta_diff);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
+			pnz= outer_radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa + alfa_diff);
+			pnx= outer_radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa + alfa_diff);
 			py =  outer_radius * sin(beta - M_PI_2 + alfa_diff);
+			pnz=  outer_radius * sin(beta - M_PI_2 + alfa_diff);
 			pz = (inner_radius +outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa + alfa_diff);
+			pnz = outer_radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa + alfa_diff);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2)) * cos(alfa + alfa_diff);
+			pnx= outer_radius * cos(beta - M_PI_2) * cos(alfa + alfa_diff);
 			py = outer_radius * sin(beta - M_PI_2);
+			pny= outer_radius * sin(beta - M_PI_2);
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa + alfa_diff);
+			pnz = outer_radius * cos(beta - M_PI_2) * sin(alfa + alfa_diff);
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-			write_file(coord, px, py, pz, output);
+			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			beta += beta_diff;
 		}
@@ -713,7 +732,7 @@ int32_t gen_plane(float full_size,
 	fclose(output);
 	return rr;
 }
-
+/*
 int32_t gen_cylinder(float radius, float height, int32_t slices, char* file)
 {
 	FILE* output = fopen(file, "w+");
@@ -969,23 +988,29 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			multcr(pu4, pv4, re4);
 			normalize(re4[0], re4[1], re4[2]);
 
-			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1);
+			//x1 y1 z1
+			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1) + std::to_string(re1[0]) + std::to_string(re1[1]) + std::to_string(re1[2]);
 			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2], j, i, output);
-			
-			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
+
+			//x2 y2 z2
+			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2)+ std::to_string(re2[0]) + std::to_string(re2[1]) + std::to_string(re2[2]);
 			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+tesselation, output);
-			
-			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+tesselation,i, output);
-			
-			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2);
-			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+tesselation, output);
-			
-			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3);
-			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j+tesselation,i+tesselation, output);
-			
-			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4);
-			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+tesselation,i, output);
+
+			//x4 y4 z4
+			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3)+ std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]);
+			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j+tesselation,i, output);
+
+			//x2 y2 z2
+			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3)+ std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]);
+			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j,i+tesselation, output);
+
+			//x3 y3 z3
+			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4)+ std::to_string(re4[0]) + std::to_string(re4[1]) + std::to_string(re4[2]);
+			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+tesselation,i+tesselation, output);
+
+			//x4 y4 z4
+			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1)+ std::to_string(re1[0]) + std::to_string(re1[1]) + std::to_string(re1[2]);
+			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2],j+tesselation,i, output);
 		}
 	}
 	return 0;
