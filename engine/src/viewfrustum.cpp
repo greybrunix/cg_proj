@@ -78,3 +78,10 @@ Frustum fromCamera(const camera cam)
 	cross(v1, v2, frustum.right);
 	return frustum;
 }
+
+bool inFrustum(Frustum frust, float box[8])
+{
+	bool res = false;
+
+	return res;
+}
