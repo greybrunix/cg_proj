@@ -44,7 +44,7 @@ struct prims {
 	int group;
 	char name[64];
     std::map<int, colour> color;
-    std::map<int, char*> texture;
+    std::map<int, std::string> texture;
     std::map<int, unsigned int> texID;
 };
 
@@ -303,12 +303,10 @@ rgb.g = elem->FloatAttribute("G");
     }
 
     if (txt_xml) {
-        char *path = "../../tsts/test_files_phase_4/";
-        char* file = (char*)txt_xml->Attribute("file");
-        file = strcat(path,file);
-				strcpy(file,path);
-        strcpy(tmp_p->texture[cur_g],file);
-        tmp_p->texID[cur_g] = loadTexture(file);
+			std::string path = "../../tsts/test_files_phase_4/",
+				file = path + txt_xml->Attribute("file");
+			tmp_p->texture[cur_g] = file;
+			tmp_p->texID[cur_g] = loadTexture((char*)file.c_str());
     }
 }
 
@@ -876,6 +874,7 @@ int main(int argc, char **argv)
 	res = read_3d_files();
 	if (res < 0)
 		return res;
+
 	float white[4] = {1.0, 1.0, 1.0, 1.0};
 	if (world.lights.size() > 0) {
 		glEnable(GL_LIGHTING);
