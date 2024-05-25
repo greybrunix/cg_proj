@@ -74,8 +74,8 @@ int32_t gen_sphere(float radius,
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) {
 				if (j != 0) {
-					texture[0] = (float)(i+1) / slices;
-					texture[1] = (float)(j+1) / stacks;
+					texture[0] = (float)i / slices;
+					texture[1] = (float)j / stacks;
 					px = radius * cosf(beta - M_PI_2) * cosf(alpha); //p1n 0
 					pnx = cosf(beta - M_PI_2) * cosf(alpha);
 					py = radius * sinf(beta - M_PI_2);//p1n 1
@@ -86,6 +86,8 @@ int32_t gen_sphere(float radius,
 					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 					write_file(coord, px, py, pz,pnx,pny,pnz,texture[0],texture[1], output);
 
+					texture[0] = (float)(i+1) / slices;
+					texture[1] = (float)(j+1) / slices;
 					px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);//p3n 0
 					pnx = cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);
 					py = radius * sinf(beta - M_PI_2 + beta_diff);//p3n 1
@@ -96,6 +98,8 @@ int32_t gen_sphere(float radius,
 					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
+					texture[0] = (float)(i+1) / slices;
+					texture[1] = (float)j / slices;
 					px = radius * cosf(beta - M_PI_2) * cosf(alpha + alpha_diff);//p4n 0
 					pnx= cosf(beta - M_PI_2) * cosf(alpha + alpha_diff);
 					py = radius * sinf(beta - M_PI_2);//p4n 1
@@ -119,6 +123,8 @@ int32_t gen_sphere(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
+				texture[0] = (float)i / slices;
+				texture[1] = (float)(j+1) / stacks;
 				px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha);//p2n 0
 				pnx= cosf(beta - M_PI_2 + beta_diff) * cosf(alpha);
 				py = radius * sinf(beta - M_PI_2 + beta_diff);//p2n 1
@@ -129,6 +135,8 @@ int32_t gen_sphere(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
+				texture[0] = (float)(i+1) / slices;
+				texture[1] = (float)(j+1) / stacks;
 				px = radius * cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);//p3n 0
 				pnx= cosf(beta - M_PI_2 + beta_diff) * cosf(alpha + alpha_diff);
 				py = radius * sinf(beta - M_PI_2 + beta_diff);//p3n 1
