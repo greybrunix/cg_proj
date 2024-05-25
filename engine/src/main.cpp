@@ -44,7 +44,7 @@ struct prims {
 	int group;
 	char name[64];
     std::map<int, colour> color;
-    std::map<int, std::string> texture;
+    std::map<int, char*> texture;
     std::map<int, unsigned int> texID;
 };
 
@@ -106,30 +106,28 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
 		num = strtok(NULL, " ");
 		if (num != NULL) {
 			triple v;
-            triple n;
-            doubles t;
+			triple n;
+			doubles t;
 			v.x = atof(num);
 			num = strtok(NULL, " ");
 			v.y = atof(num);
 			num = strtok(NULL, " ");
 			v.z = atof(num);
 			num = strtok(NULL, " ");
-            if (num != NULL) {
-                n.x = atof(num);
-                num = strtok(NULL, " ");
-                n.y = atof(num);
-                num = strtok(NULL, " ");
-                n.z = atof(num);
-                num = strtok(NULL, " ");
-                t.x = atof(num);
-                num = strtok(NULL, " ");
-                t.z = atof(num);
-                normals->push_back(n);
-                //printf("NORMALS CORD: %f %f\n", n.x, n.y, n.z);
-                //printf("TEXTURE CORD: %f %f\n", t.x, t.z);
-                texCoord->push_back(t);
-            }
-            num = strtok(NULL, " \n");
+			if (num != NULL) {
+				n.x = atof(num);
+				num = strtok(NULL, " ");
+				n.y = atof(num);
+				num = strtok(NULL, " ");
+				n.z = atof(num);
+				num = strtok(NULL, " ");
+				t.x = atof(num);
+				num = strtok(NULL, " ");
+				t.z = atof(num);
+				normals->push_back(n);
+				texCoord->push_back(t);
+			}
+			num = strtok(NULL, " \n");
 			coords->push_back(v);
 			ind->push_back(i);
 		} else {
@@ -157,8 +155,8 @@ int read_3d_files(void)
 			}
 			std::vector<struct triple> coords;
 			std::vector<unsigned int> ind;
-            std::vector<struct triple> normals;
-            std::vector<struct doubles> texCoord;
+			std::vector<struct triple> normals;
+			std::vector<struct doubles> texCoord;
 			read_words(fd, &coords, &ind, &normals,
                        &texCoord);
 
@@ -170,8 +168,8 @@ int read_3d_files(void)
 			// Generate the VBO
 			glGenBuffers(1, &aux.vbo);
 			glGenBuffers(1, &aux.ibo);
-            glGenBuffers(1, &aux.normals);
-            glGenBuffers(1, &aux.texCoord);
+			glGenBuffers(1, &aux.normals);
+			glGenBuffers(1, &aux.texCoord);
 
 			// Bind the VBO
 			glBindBuffer(GL_ARRAY_BUFFER, aux.vbo);
@@ -181,13 +179,13 @@ int read_3d_files(void)
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.ibo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * ind.size(), ind.data(), GL_STATIC_DRAW);
 
-            // Bind the normals
-            glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
+			// Bind the normals
+			glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
 			
-            // Bind the textures
-            glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
+			// Bind the textures
+			glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
 
 			// Store the VBO ID in the vertices vector
 			prims.push_back(aux);
@@ -209,90 +207,83 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 	return r;
 }
 
-int loadTexture(std::string s) {
-    unsigned int t,tw,th;
-    unsigned char *texData;
-    unsigned int texID;
-    
-    // Iniciar o DevIL
-    ilInit();
-    
-    // Colocar a origem da textura no canto inferior esquerdo
-    ilEnable(IL_ORIGIN_SET);
-    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-    
-    // Carregar a textura para memória
-    ilGenImages(1,&t);
-    ilBindImage(t);
-    ilLoadImage((ILstring)s.c_str());
-    tw = ilGetInteger(IL_IMAGE_WIDTH);
-    th = ilGetInteger(IL_IMAGE_HEIGHT);
-    printf("%d %d\n", tw, th);
-    
-    // Assegurar que a textura se encontra em RGBA (Red, Green, Blue, Alpha) com um byte (0 -255) por componente
-    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-    texData = ilGetData();
 
-    // Gerar a textura para a placa gráfica
-    glGenTextures(1,&texID);
+int loadTexture(char*s) {
+	unsigned int t,tw,th;
+	unsigned char *texData;
+	unsigned int texID;
+	// Iniciar o DevIL
+	ilInit();
+	// Colocar a origem da textura no canto inferior esquerdo
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+	// Carregar a textura para memória
+	ilGenImages(1,&t);
+	ilBindImage(t);
+	ilLoadImage((ILstring)s);
+	tw = ilGetInteger(IL_IMAGE_WIDTH);
+	th = ilGetInteger(IL_IMAGE_HEIGHT);
+	// Assegurar que a textura se encontra em RGBA (Red, Green, Blue, Alpha) com um byte (0 -255) por componente
+	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+	texData = ilGetData();
+	// Gerar a textura para a placa gráfica
+	glGenTextures(1,&texID);
+	glBindTexture(GL_TEXTURE_2D,texID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glBindTexture(GL_TEXTURE_2D,texID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    
-    // Upload dos dados de imagem
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-    //glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    printf("texID: %d\n", texID);
-    return texID;
+	// Upload dos dados de imagem
+	if (texData)  { 
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return texID;
 }
 
 void group_read_model(int cur_g, struct prims* tmp_p,
                       XMLElement *color_xml, XMLElement *txt_xml)
 {
-    XMLElement* elem;
-    rgb rgb;
-    colour color;
-    float shn;
-    if (color_xml) {
-        rgb.r = 0;
-        rgb.g = 0;
-        rgb.b = 0;
-        color.specular = rgb;
-        color.emissive = rgb;
-        rgb.r = 200;
-        rgb.g = 200;
-        rgb.b = 200;
-        color.diffuse = rgb;
-        rgb.r = 50;
-        rgb.g = 50;
-        rgb.b = 50;
-        color.ambient = rgb;
-        shn = 0;
-        color.shininess = shn;
-        elem = color_xml->FirstChildElement("diffuse");
-        if (elem) {
-            rgb.r = elem->FloatAttribute("R");
-            rgb.g = elem->FloatAttribute("G");
-            rgb.b = elem->FloatAttribute("B");
-            color.diffuse = rgb;
-        }
-        elem = color_xml->FirstChildElement("ambient");
-        if (elem) {
-            rgb.r = elem->FloatAttribute("R");
-            rgb.g = elem->FloatAttribute("G");
-            rgb.b = elem->FloatAttribute("B");
-            color.ambient = rgb;
-        }
-        elem = color_xml->FirstChildElement("specular");
-        if (elem) {
-            rgb.r = elem->FloatAttribute("R");
-            rgb.g = elem->FloatAttribute("G");
+XMLElement* elem;
+rgb rgb;
+colour color;
+float shn;
+if (color_xml) {
+rgb.r = 0;
+rgb.g = 0;
+rgb.b = 0;
+color.specular = rgb;
+color.emissive = rgb;
+rgb.r = 200;
+rgb.g = 200;
+rgb.b = 200;
+color.diffuse = rgb;
+rgb.r = 50;
+rgb.g = 50;
+rgb.b = 50;
+color.ambient = rgb;
+shn = 0;
+color.shininess = shn;
+elem = color_xml->FirstChildElement("diffuse");
+if (elem) {
+rgb.r = elem->FloatAttribute("R");
+rgb.g = elem->FloatAttribute("G");
+rgb.b = elem->FloatAttribute("B");
+color.diffuse = rgb;
+}
+elem = color_xml->FirstChildElement("ambient");
+if (elem) {
+rgb.r = elem->FloatAttribute("R");
+rgb.g = elem->FloatAttribute("G");
+rgb.b = elem->FloatAttribute("B");
+color.ambient = rgb;
+}
+elem = color_xml->FirstChildElement("specular");
+if (elem) {
+rgb.r = elem->FloatAttribute("R");
+rgb.g = elem->FloatAttribute("G");
             rgb.b = elem->FloatAttribute("B");
             color.specular = rgb;
         }
@@ -312,10 +303,11 @@ void group_read_model(int cur_g, struct prims* tmp_p,
     }
 
     if (txt_xml) {
-        std::string path = "../../tsts/test_files_phase_4/";
-        std::string file = path + txt_xml->Attribute("file");
-        //printf("TEXTURE: %s\n", file.c_str());
-        tmp_p->texture[cur_g] = file;
+        char *path = "../../tsts/test_files_phase_4/";
+        char* file = (char*)txt_xml->Attribute("file");
+        file = strcat(path,file);
+				strcpy(file,path);
+        strcpy(tmp_p->texture[cur_g],file);
         tmp_p->texID[cur_g] = loadTexture(file);
     }
 }
@@ -849,10 +841,6 @@ int main(int argc, char **argv)
 	if (argc < 2) {
 		return 1;
 	}
-	xml_init(argv[1]);
-	if (res < 0) {
-		return res;
-	}
 	draw = true;
 	tesselation = 100.F;
 
@@ -867,9 +855,6 @@ int main(int argc, char **argv)
 	// Init GLEW
 	glewInit();
 
-	res = read_3d_files();
-	if (res < 0)
-		return res;
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
@@ -879,30 +864,37 @@ int main(int argc, char **argv)
 	// Enable depth testing and face culling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-    glEnable(GL_RESCALE_NORMAL);
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_RESCALE_NORMAL);
+	glEnable(GL_RESCALE_NORMAL);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_RESCALE_NORMAL);
 
-    float white[4] = {1.0, 1.0, 1.0, 1.0};
-    if (world.lights.size() > 0) {
-        glEnable(GL_LIGHTING);
-        for (int i=0; i<world.lights.size(); i++) {
-            glEnable(GL_LIGHT0 + i);
-            glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, white);
-            glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
-            //printf("LUZ %d\n", GL_LIGHT0 + i);
-        }
-        float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
-    }
+	xml_init(argv[1]);
+	if (res < 0) {
+		return res;
+	}
+	res = read_3d_files();
+	if (res < 0)
+		return res;
+	float white[4] = {1.0, 1.0, 1.0, 1.0};
+	if (world.lights.size() > 0) {
+		glEnable(GL_LIGHTING);
+		for (int i=0; i<world.lights.size(); i++) {
+			glEnable(GL_LIGHT0 + i);
+			glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, white);
+			glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
+			//printf("LUZ %d\n", GL_LIGHT0 + i);
+		}
+		float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+	}
 
 	glutKeyboardFunc(processKeys);
 
-    // OpenGL settings
+	// OpenGL settings
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 
 	printInfo();
 
