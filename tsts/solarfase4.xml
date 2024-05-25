@@ -6,8 +6,6 @@
     <up x="0" y="1" z="0" /> <!-- optional, use these values as default-->
     <projection fov="45" near="1" far="2000" /> <!-- optional, use these values as default-->
   </camera>
-  <lights>
-      <light type="point" posx="0" posy="0.2" posz="0"/>
   <group>
     <group>
       <transform>
