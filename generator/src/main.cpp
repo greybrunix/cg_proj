@@ -543,7 +543,7 @@ int32_t gen_cone(float radius,
 				py = 0.0f;
 				pz = 0.0f;
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, 0.5f, 0.5f, output);
 
 				px = cur_rad * sinf(angle + angle_diff);
 				py = 0.0f;
@@ -551,12 +551,12 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 			}
+			texture[0] = (float)j / slices;
+			texture[1] = (float)i / stacks;
+			texture2[0] = (float)(j+1) / slices;
+			texture2[1] = (float)(i + 1) / slices;
 
 			if (i == stacks - 1) {
-				texture[0] = (float)j / slices;
-				texture[1] = (float)i / stacks;
-				texture2[0] = (float)(j+1) / slices;
-				texture2[1] = (float)(i + 1) / slices;
 
 				px = cur_rad * sinf(angle + angle_diff);
 				pnx= sinf(angle + angle_diff);
@@ -568,15 +568,16 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
+				// Ponto do topo normal 0 1 0?
 				px = 0.0f;
-				pnx = sinf(angle);
+				pnx = 0.0f;
 				py = height;
 				pny = sinf(atan(radius / height));
 				pz = 0.0f;
-				pnz = cosf(angle);
+				pnz = 0.0f;
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, 0, 1, 0, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
 
 				px = cur_rad * sinf(angle);
 				pnx = sinf(angle);
@@ -586,7 +587,7 @@ int32_t gen_cone(float radius,
 				pnz= cosf(angle);
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 			}
 			else {
 				px = (cur_rad - xz_diff) * sinf(angle + angle_diff);
@@ -607,7 +608,7 @@ int32_t gen_cone(float radius,
 				pnz = cosf(angle);
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
 				pnx = sinf(angle + angle_diff);
@@ -617,7 +618,7 @@ int32_t gen_cone(float radius,
 				pnz = cosf(angle + angle_diff);
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 
 				px = (cur_rad - xz_diff) * sinf(angle);
 				pnx= sinf(angle);
@@ -627,7 +628,7 @@ int32_t gen_cone(float radius,
 				pnz= cosf(angle);
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 
 				px = cur_rad * sinf(angle);
 				pnx = sinf(angle);
@@ -637,7 +638,7 @@ int32_t gen_cone(float radius,
 				pnz = cosf(angle);
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
 				pnx= sinf(angle + angle_diff);
@@ -647,7 +648,7 @@ int32_t gen_cone(float radius,
 				pnz = cosf(angle + angle_diff);
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);
 			}
 			angle += angle_diff;
 		}
