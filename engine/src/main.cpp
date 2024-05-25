@@ -210,37 +210,43 @@ static int not_in_prims_g(const char* f, int* i, int g, int N)
 }
 
 int loadTexture(std::string s) {
+    unsigned int t,tw,th;
+    unsigned char *texData;
+    unsigned int texID;
+    
+    // Iniciar o DevIL
+    ilInit();
+    
+    // Colocar a origem da textura no canto inferior esquerdo
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    
+    // Carregar a textura para memória
+    ilGenImages(1,&t);
+    ilBindImage(t);
+    ilLoadImage((ILstring)s.c_str());
+    tw = ilGetInteger(IL_IMAGE_WIDTH);
+    th = ilGetInteger(IL_IMAGE_HEIGHT);
+    
+    // Assegurar que a textura se encontra em RGBA (Red, Green, Blue, Alpha) com um byte (0 -255) por componente
+    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+    texData = ilGetData();
+    
+    // Gerar a textura para a placa gráfica
+    glGenTextures(1,&texID);
 
-	unsigned int t,tw,th;
-	unsigned char *texData;
-	unsigned int texID;
+    glBindTexture(GL_TEXTURE_2D,texID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	ilInit();
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-	ilGenImages(1,&t);
-	ilBindImage(t);
-	ilLoadImage((ILstring)s.c_str());
-	tw = ilGetInteger(IL_IMAGE_WIDTH);
-	th = ilGetInteger(IL_IMAGE_HEIGHT);
-	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-	texData = ilGetData();
-
-	glGenTextures(1,&texID);
-	
-	glBindTexture(GL_TEXTURE_2D,texID);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_S,		GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_WRAP_T,		GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MAG_FILTER,   	GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,	GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return texID;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    
+    // Upload dos dados de imagem
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return texID;
 }
 
 void group_read_model(int cur_g, struct prims* tmp_p,
@@ -304,6 +310,7 @@ void group_read_model(int cur_g, struct prims* tmp_p,
 
     if (txt_xml) {
         std::string file = txt_xml->Attribute("file");
+        printf("TEXTURE: %s\n", file.c_str());
         tmp_p->texture[cur_g] = file;
         tmp_p->texID[cur_g] = loadTexture(file);
     }
@@ -328,7 +335,6 @@ void lights_read(XMLElement* lights, bool reading = false)
         light.posX = elem->FloatAttribute("posx");
         light.posY = elem->FloatAttribute("posy");
         light.posZ = elem->FloatAttribute("posz");
-        printf("POINT %f %f %f\n", light.posX, light.posY, light.posZ);
     }
     else if (!strcmp("directional", type)) {
         strcpy(light.type, "directional");
