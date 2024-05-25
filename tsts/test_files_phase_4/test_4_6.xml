@@ -41,7 +41,7 @@
 			</transform>
 			<models> 
 				<model file="sphere_1_8_8.3d" > <!-- generator sphere 1 8 8 sphere_1_8_8.3d -->
-					<texture file = "8k_sun.jpg" />
+					<texture file = "earth.jpg" />
 				</model>
 			</models>
 		</group>
