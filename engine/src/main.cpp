@@ -56,8 +56,8 @@ struct trans {
 struct ident_prim {
 	char name[64];
 	GLuint vbo, ibo, 
-           normals, normalsibo,
-           texCoord, texCoordibo,
+           normals,
+           texCoord,
            vertex_count;
 	unsigned int index_count;
 };
@@ -125,6 +125,8 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
                 num = strtok(NULL, " ");
                 t.z = atof(num);
                 normals->push_back(n);
+                //printf("NORMALS CORD: %f %f\n", n.x, n.y, n.z);
+                //printf("TEXTURE CORD: %f %f\n", t.x, t.z);
                 texCoord->push_back(t);
             }
             num = strtok(NULL, " \n");
@@ -169,9 +171,7 @@ int read_3d_files(void)
 			glGenBuffers(1, &aux.vbo);
 			glGenBuffers(1, &aux.ibo);
             glGenBuffers(1, &aux.normals);
-            glGenBuffers(1, &aux.normalsibo);
             glGenBuffers(1, &aux.texCoord);
-            glGenBuffers(1, &aux.texCoordibo);
 
 			// Bind the VBO
 			glBindBuffer(GL_ARRAY_BUFFER, aux.vbo);
@@ -227,11 +227,12 @@ int loadTexture(std::string s) {
     ilLoadImage((ILstring)s.c_str());
     tw = ilGetInteger(IL_IMAGE_WIDTH);
     th = ilGetInteger(IL_IMAGE_HEIGHT);
+    printf("%d %d\n", tw, th);
     
     // Assegurar que a textura se encontra em RGBA (Red, Green, Blue, Alpha) com um byte (0 -255) por componente
     ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
     texData = ilGetData();
-    
+
     // Gerar a textura para a placa gráfica
     glGenTextures(1,&texID);
 
@@ -240,12 +241,14 @@ int loadTexture(std::string s) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     
     // Upload dos dados de imagem
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
+    printf("texID: %d\n", texID);
     return texID;
 }
 
@@ -309,8 +312,9 @@ void group_read_model(int cur_g, struct prims* tmp_p,
     }
 
     if (txt_xml) {
-        std::string file = txt_xml->Attribute("file");
-        printf("TEXTURE: %s\n", file.c_str());
+        std::string path = "../../tsts/test_files_phase_4/";
+        std::string file = path + txt_xml->Attribute("file");
+        //printf("TEXTURE: %s\n", file.c_str());
         tmp_p->texture[cur_g] = file;
         tmp_p->texID[cur_g] = loadTexture(file);
     }
@@ -642,8 +646,8 @@ void drawfigs(void)
                                 // Apply color of model
                                 float diffuse[] = {200.0f/255.0f, 200.0f/255.0f, 200.0f/255.0f, 1.0f/255.0f};
                                 float ambient[] = {50.0f/255.0f, 50.0f/255.0f, 50.0f/255.0f, 1.0f/255.0f};
-                                float specular[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
-                                float emissive[] = {0.0f/255.0f, 0.0f/255.0f, 0.0f/255.0f, 1.0f/255.0f};
+                                float specular[] = {0.0f, 0.0f, 0.0f, 1.0f/255.0f};
+                                float emissive[] = {0.0f, 0.0f, 0.0f, 1.0f/255.0f};
                                 float shininess = 0.0f;
 
                                 glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
@@ -654,6 +658,7 @@ void drawfigs(void)
                             }
                         }
 
+                        //printf("texID: %d\n", world.primitives[k].texID[g]);
                         glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
                         //glEnableClientState(GL_VERTEX_ARRAY);
