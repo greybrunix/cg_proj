@@ -433,7 +433,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
-			finaltexture[1]=j+*texture;
+			finaltexture[1]=j*texture;
 			px = x;
 			py = y+diff;
 			pz = z;
