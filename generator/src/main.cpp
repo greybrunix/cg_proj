@@ -1077,20 +1077,20 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+tesselation, output);
 
 			//x4 y4 z4
-			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3)+ std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]);
-			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j+tesselation,i, output);
-
-			//x2 y2 z2
-			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3)+ std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]);
-			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j,i+tesselation, output);
-
-			//x3 y3 z3
 			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4)+ std::to_string(re4[0]) + std::to_string(re4[1]) + std::to_string(re4[2]);
 			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+tesselation,i+tesselation, output);
 
+			//x2 y2 z2
+			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2)+ std::to_string(re2[0]) + std::to_string(re2[1]) + std::to_string(re2[2]);
+			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j+tesselation,i+tesselation, output);
+
+			//x3 y3 z3
+			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3)+ std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]);
+			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j+tesselation,i, output);
+
 			//x4 y4 z4
 			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1)+ std::to_string(re1[0]) + std::to_string(re1[1]) + std::to_string(re1[2]);
-			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2],j+tesselation,i, output);
+			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2],j,i, output);
 		}
 	}
 	return 0;
