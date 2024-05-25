@@ -53,7 +53,7 @@ if  (WIN32)
 	
 else (WIN32) #Linux and Mac
 
-	set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} Wno-deprecated")
+	set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} Wno-deprecated -g3 -O0")
 
     SET(TARGET_H
         transforms.cpp.h
