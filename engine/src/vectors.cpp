@@ -1,19 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "vectors.hpp"
-static float Q_rsqrt(float number)
-{
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5F;
-	x2 = number * 0.5F;
-	y  = number;
-	i  = * ( long * ) &y;
-	i  = 0x5f3759df - ( i >> 1 );
-	y  = * ( float * ) &i;
-	y  = y * ( threehalfs - ( x2 * y * y ) );
-	return y;
-}
 void cross(const triple& v, const triple& u, triple& r)
 {
 	r.x = v.y*u.z - v.z*u.y;
@@ -49,8 +36,8 @@ void sub(const triple& v, const triple& u, triple& r)
 }
 void normalize(triple& v)
 {
-	float l = Q_rsqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-	scalar(v,l,v);
+	float l = sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+	scalar(v,1.F/l,v);
 }
 
 void mult_mat_vec(float* m, float* v, float* r)

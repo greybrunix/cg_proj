@@ -30,10 +30,10 @@ float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
 bool explorer = true;
-bool vfc = false;
+bool vfc = true;
 unsigned long drawn = 0, total_proc = 0;
+Frustum frustum;
 
-Frustum frustum = Frustum();
 struct rgb {
 	float r, g, b;
 };
@@ -54,7 +54,6 @@ struct prims {
 	int count;
 	int group;
 	char name[64];
-	AABox box;
 	std::map<int, colour> color;
 	std::map<int, std::string> texture;
 	std::map<int, unsigned int> texID;
@@ -68,6 +67,7 @@ struct ident_prim {
 		texCoord,
 		vertex_count;
 	unsigned int index_count;
+	AABox box;
 };
 
 struct light {
@@ -90,17 +90,6 @@ struct {
 
 typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
-
-void multiplyMatrices(const GLfloat* mat1, const GLfloat* mat2, GLfloat* result) {
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			result[i * 4 + j] = mat1[i * 4 + 0] * mat2[0 * 4 + j] +
-				mat1[i * 4 + 1] * mat2[1 * 4 + j] +
-				mat1[i * 4 + 2] * mat2[2 * 4 + j] +
-				mat1[i * 4 + 3] * mat2[3 * 4 + j];
-		}
-	}
-}
 
 
 void read_words(FILE *f, std::vector<struct triple>* coords,
@@ -148,23 +137,38 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
 	}
 }
 
-float absDistanceCenter(const triple& point)
-{
-	return std::fabs(sqrt((0.F-point.x)*(0.F-point.x)+
-			      (0.F-point.y)*(0.F-point.y)+
-			      (0.F-point.z)*(0.F-point.z)));
-}
-triple getBoxInfo(const std::vector<triple> coords)
-{
-	int i; int cm; float cv = 0.F; float curr;
-	for (i=0;i<coords.size();i++) {
-		curr = absDistanceCenter(coords[i]);
-		if (curr > cv) {
-			cm = i;
-			cv = curr;
-		}
-	}
-	return coords[i];
+triple getBoxInfo(const std::vector<triple>& coords) {
+    if (coords.empty()) {
+        // Handle empty coords vector case
+        return {0.F, 0.F, 0.F};
+    }
+
+    // Initialize min and max coordinates to the first point's coordinates
+    triple minCoords = coords[0];
+    triple maxCoords = coords[0];
+
+    // Iterate over all points to find min and max coordinates
+    for (const auto& coord : coords) {
+        if (coord.x < minCoords.x) minCoords.x = coord.x;
+        if (coord.y < minCoords.y) minCoords.y = coord.y;
+        if (coord.z < minCoords.z) minCoords.z = coord.z;
+
+        if (coord.x > maxCoords.x) maxCoords.x = coord.x;
+        if (coord.y > maxCoords.y) maxCoords.y = coord.y;
+        if (coord.z > maxCoords.z) maxCoords.z = coord.z;
+    }
+
+    // Calculate extents
+    triple extents;
+    extents.x = maxCoords.x - minCoords.x;
+    extents.y = maxCoords.y - minCoords.y;
+    extents.z = maxCoords.z - minCoords.z;
+
+    printf("Min: %.3f %.3f %.3f\n", minCoords.x, minCoords.y, minCoords.z);
+    printf("Max: %.3f %.3f %.3f\n", maxCoords.x, maxCoords.y, maxCoords.z);
+    printf("Extents: %.3f %.3f %.3f\n", extents.x, extents.y, extents.z);
+
+    return extents;
 }
 
 int read_3d_files(void)
@@ -222,7 +226,7 @@ int read_3d_files(void)
 			prims.push_back(aux);
 			triple center = {0.F,0.F,0.F};
 			triple extents = getBoxInfo(coords);
-			world.primitives[i].box = AABox(center, extents.x, extents.y, extents.z);
+			prims[i].box = AABox(center, extents.x, extents.y, extents.z);
 
 			fclose(fd);
 		}
@@ -554,6 +558,9 @@ int xml_init(char* xml_file)
 				      world.cam.pos.z * world.cam.pos.z);
 		world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
 		world.cam.alfa = atan2(world.cam.pos.x, world.cam.pos.z);
+		if (world.win.h == 0)
+			world.win.h = 1;
+		world.cam.ratio = world.win.w * 1.F / world.win.h;
 
 		lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
@@ -615,7 +622,9 @@ void changeSize(int w, int h)
 		h = 1;
 
 	// compute window's aspect ratio
-	float ratio = w * 1.0 / h;
+	world.cam.ratio = w * 1.0 / h;
+	world.win.h = h;
+	world.win.w = w;
 
 	// Set the projection matrix as current
 	glMatrixMode(GL_PROJECTION);
@@ -625,10 +634,11 @@ void changeSize(int w, int h)
 	glViewport(0, 0, w, h);
 
 	// Set perspective
-	gluPerspective(world.cam.proj.x, ratio, world.cam.proj.y, world.cam.proj.z);
+	gluPerspective(world.cam.proj.x, world.cam.ratio, world.cam.proj.y, world.cam.proj.z);
 
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
+	frustum = Frustum(world.cam);
 }
 
 void drawfigs(void)
@@ -641,17 +651,7 @@ void drawfigs(void)
 			if (world.transformations[l].group == g) {
 				world.transformations[l].t->do_transformation();
 			}
-		GLfloat modelViewProjectionMatrix[16];
-		GLfloat modelViewMatrix[16];
-		GLfloat projectionMatrix[16];
-		glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
-		glGetFloatv(GL_MODELVIEW_MATRIX, modelViewMatrix);
-		multiplyMatrices(projectionMatrix, modelViewMatrix, modelViewProjectionMatrix);
 		for (k = 0; k < world.primitives.size(); k++) {
-			total_proc++;
-			if (vfc)
-				world.primitives[k].box.transformAABB(modelViewProjectionMatrix);
-			if (!vfc || frustum.BoxInFrustum(world.primitives[k].box) != Frustum::OUTSIDE)
 				if (world.primitives[k].group == g)
 					for (i = 0; i < prims.size(); i++)
 						if (!strcmp(prims[i].name, world.primitives[k].name)) {
@@ -711,11 +711,16 @@ void drawfigs(void)
 							glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
 							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
-							glDrawElements(GL_TRIANGLES,
-								       prims[i].index_count, // número de índices a desenhar
-								       GL_UNSIGNED_INT, // tipo de dados dos índices
-								       0);// parâmetro não utilizado
-							drawn++;
+							total_proc++;
+							if (vfc)
+								prims[i].box.applyMVP();
+							if (!vfc || frustum.BoxInFrustum(prims[i].box) != Frustum::OUTSIDE) {
+								glDrawElements(GL_TRIANGLES,
+												 prims[i].index_count, // número de índices a desenhar
+												 GL_UNSIGNED_INT, // tipo de dados dos índices
+												 0);// parâmetro não utilizado
+								drawn++;
+							}
 
 							//glDisableClientState(GL_VERTEX_ARRAY);
 							//glDisableClientState(GL_NORMAL_ARRAY);
@@ -746,19 +751,27 @@ void renderScene(void)
 {
     // clear buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		float x,y,z;
 
     // calculate camera pos
+    x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+    y = world.cam.dist * sin(world.cam.beta);
+    z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+		/*
     world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
     world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
     world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+		*/
+		
 
     // set the camera
     glLoadIdentity();
-    gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
+    gluLookAt(x, y, z,
 	      world.cam.lookAt.x, world.cam.lookAt.y,
 	      world.cam.lookAt.z,
 	      world.cam.up.x, world.cam.up.y, world.cam.up.z);
 	frustum = Frustum(world.cam);
+	frustum.drawFrustum(frustum);
 
     // Set the polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -871,10 +884,6 @@ void processKeys(unsigned char c, int xx, int yy)
 		break;
 	case 'F':
 		vfc = vfc ? false: true;
-		if (vfc)
-			glDisable(GL_CULL_FACE);
-		else
-			glEnable(GL_CULL_FACE);
 	case '3':
 		explorer = false;
 		break;

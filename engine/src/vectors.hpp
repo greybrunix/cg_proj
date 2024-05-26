@@ -1,9 +1,11 @@
 #ifndef __VEC__
 #define __VEC__
 
-struct triple {
-	float x, y, z;
-	void copy(triple c){
+class triple {
+public:
+	float x = 0.F, y = 0.F, z = 0.F;
+	triple() = default;
+	void copy(const triple& c){
 		x = c.x, y = c.y, z = c.z; 
 	}
 };

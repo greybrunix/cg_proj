@@ -1,11 +1,11 @@
 #ifndef __VFC__
 #define __VFC__
+#include <GL/gl.h>
+#include <GL/glut.h>
 #include "vectors.hpp"
+#include <cstdio>
 #include <cmath>
-#include <cfloat>
-class Transform {
-    int x;
-};
+#define TO_RADIANS(x) x*M_PI/180.F
 typedef struct camera {
 	float dist;
 	float alfa;
@@ -67,111 +67,97 @@ public:
 };
 class AABox {
 public:
-	triple corner;
-	float x,y,z;
-	AABox( triple&corner, float x, float y, float z)
+	triple center;
+	triple extents;
+	AABox( triple&center, float x, float y, float z)
 	{
-		setBox(corner,x,y,z);
+		setBox(center,x,y,z);
 	}
 	AABox(void)
 	{
-		corner.x = 0; corner.y = 0; corner.z = 0;
+		center.x = 0; center.y = 0; center.z = 0;
 
-		x = 1.0f;
-		y = 1.0f;
-		z = 1.0f;
+		extents.x = 1.0f;
+		extents.y = 1.0f;
+		extents.z = 1.0f;
 	}
 	~AABox(){}
 
-	void setBox( triple&corner, float x, float y, float z)
+	void setBox( triple&center,float x, float y, float z)
 	{
-		this->corner.copy(corner);
+		this->center.copy(center);
 
-		if (x < 0.F) {
-			x = -x;
-			this->corner.x -= x;
-		}
-		if (y < 0.F) {
-			y = -y;
-			this->corner.y -= y;
-			}
-		if (z < 0.F) {
-			z = -z;
-			this->corner.z -= z;
-		}
-		this->x = x;
-		this->y = y;
-		this->z = z;
+		extents.x = x;
+		extents.y = y;
+		extents.z = z;
 
 	}
 
 	// for use in frustum computations
 	triple getVertexP(triple&normal)
 	{
-		triple res = corner;
-		if (normal.x > 0)
-			res.x += x;
+		triple res;
+		res.x = (normal.x < 0) ? (center.x - extents.x) : (center.x + extents.x);
+		res.y = (normal.y < 0) ? (center.y - extents.y) : (center.y + extents.y);
+		res.z = (normal.z < 0) ? (center.z - extents.z) : (center.z + extents.z);
 
-		if (normal.y > 0)
-			res.y += y;
-
-		if (normal.z > 0)
-			res.z += z;
-
+		//printf("normal %.3f %.3f %.3f\n", normal.x,normal.y,normal.z);
+		//printf("extents %.3f %.3f %.3f\n", extents.x,extents.y,extents.z);
+		//printf("center %.3f %.3f %.3f\n", center.x,center.y,center.z);
+		//printf("Positive Vertex %.3f %.3f %.3f\n", res.x,res.y,res.z);
 		return(res);
 	}
 	triple getVertexN(triple&normal)
 	{
-		triple res = corner;
+		triple res = center;
+		res.x = (normal.x > 0) ? (center.x - extents.x) : (center.x + extents.x);
+		res.y = (normal.y > 0) ? (center.y - extents.y) : (center.y + extents.y);
+		res.z = (normal.z > 0) ? (center.z - extents.z) : (center.z + extents.z);
 
-		if (normal.x < 0)
-			res.x += x;
-
-		if (normal.y < 0)
-			res.y += y;
-
-		if (normal.z < 0)
-			res.z += z;
-
+		//printf("normal %.3f %.3f %.3f\n", normal.x,normal.y,normal.z);
+		//printf("extents %.3f %.3f %.3f\n", extents.x,extents.y,extents.z);
+		//printf("center %.3f %.3f %.3f\n", center.x,center.y,center.z);
+		//printf("Negative Vertex %.3f %.3f %.3f\n", res.x,res.y,res.z);
 		return(res);
 	}
-	void transformAABB(const GLfloat matrix[16]) {
-		std::vector<triple> corners = getCorners();
-		triple newMin = {FLT_MAX, FLT_MAX, FLT_MAX};
-		triple newMax = {-FLT_MAX, -FLT_MAX, -FLT_MAX};
+	void applyMVP() {
+    GLfloat MVP[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, MVP);
+    GLfloat projectionMatrix[16];
+    glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
 
-		for (const auto& corner : corners) {
-			triple transformedCorner = transformVertex(corner, matrix);
-			newMin.x = std::min(newMin.x, transformedCorner.x);
-			newMin.y = std::min(newMin.y, transformedCorner.y);
-			newMin.z = std::min(newMin.z, transformedCorner.z);
-			newMax.x = std::max(newMax.x, transformedCorner.x);
-			newMax.y = std::max(newMax.y, transformedCorner.y);
-			newMax.z = std::max(newMax.z, transformedCorner.z);
-		}
+    // Combine ModelView and Projection matrices
+    GLfloat MVPMat[16];
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            MVPMat[i * 4 + j] = 0.0f;
+            for (int k = 0; k < 4; ++k) {
+                MVPMat[i * 4 + j] += projectionMatrix[i * 4 + k] * MVP[k * 4 + j];
+            }
+        }
+    }
 
-		this->corner = newMin;
-		this->x = newMax.x - newMin.x;
-		this->y = newMax.y - newMin.y;
-		this->z = newMax.z - newMin.z;
-	}
-private:
-	std::vector<triple> getCorners() {
-		return {
-			{corner.x, corner.y, corner.z}, {corner.x + x, corner.y, corner.z},
-			{corner.x, corner.y + y, corner.z}, {corner.x, corner.y, corner.z + z},
-			{corner.x + x, corner.y + y, corner.z}, {corner.x + x, corner.y, corner.z + z},
-			{corner.x, corner.y + y, corner.z + z}, {corner.x + x, corner.y + y, corner.z + z}
-		};
-	}
+    // Transform center
+    triple newCenter;
+		float center_v[4] = {center.x,center.y,center.z, 1.F};
+		float new_center[4];
+		mult_mat_vec(MVPMat, center_v, new_center);
+		newCenter.x = new_center[0];
+		newCenter.y = new_center[1];
+		newCenter.z = new_center[2];
+		printf("%.3f %.3f %.3f\n", newCenter.x,newCenter.y,newCenter.z);
 
-	triple transformVertex(const triple& vertex, const GLfloat matrix[16]) {
-		triple result;
-		result.x = matrix[0] * vertex.x + matrix[4] * vertex.y + matrix[8] * vertex.z + matrix[12];
-		result.y = matrix[1] * vertex.x + matrix[5] * vertex.y + matrix[9] * vertex.z + matrix[13];
-		result.z = matrix[2] * vertex.x + matrix[6] * vertex.y + matrix[10] * vertex.z + matrix[14];
-		return result;
-	}
+    
+    // Transform extents
+    triple newExtents;
+    newExtents.x = std::fabs(MVPMat[0] * extents.x) + std::fabs(MVPMat[4] * extents.y) + std::fabs(MVPMat[8] * extents.z);
+    newExtents.y = std::fabs(MVPMat[1] * extents.x) + std::fabs(MVPMat[5] * extents.y) + std::fabs(MVPMat[9] * extents.z);
+    newExtents.z = std::fabs(MVPMat[2] * extents.x) + std::fabs(MVPMat[6] * extents.y) + std::fabs(MVPMat[10] * extents.z);
+    
+    // Update center and extents
+    center.copy(newCenter);
+    extents.copy(newExtents);
+}
 };
 
 
@@ -191,9 +177,9 @@ public:
 
 	Frustum() {}
 	Frustum(camera cam) {
-		const float Hfar = 2.F * tanf((cam.proj.x*.5F*M_PI)/180.F) * cam.proj.z,
+		const float Hfar = 2.F * tanf(TO_RADIANS(cam.proj.x*.5F)) * cam.proj.z,
 				Wfar = Hfar * cam.ratio,
-				Hnear = 2.F * tanf((cam.proj.x*.5F*M_PI)/180.F) * cam.proj.y,
+				Hnear = 2.F * tanf(TO_RADIANS(cam.proj.x*.5F)) * cam.proj.y,
 				Wnear = Hnear * cam.ratio;
 		triple HNear_up, WNear_r;
 		triple d, up = cam.up, r;
@@ -216,19 +202,19 @@ public:
 		scalar(d,cam.proj.z, fvc);
 		/* Far Frustum Points*/
 		add(cam.pos, fvc, fc);
-		sub(fc,HFar_up, fbr), add(fbr,WFar_r, fbr);
+		add(fc,HFar_up,ftl),sub(ftl,WFar_r,ftl);
 		add(fc,HFar_up,ftr),add(ftr,WFar_r,ftr);
 		sub(fc, HFar_up, fbl),sub(fbl,WFar_r,fbl);
-		add(fc,HFar_up,ftl),sub(ftl,WFar_r,ftl);
+		sub(fc,HFar_up, fbr), add(fbr,WFar_r, fbr);
 
 		scalar(up, Hnear*0.5F, HNear_up), scalar(r,Wnear*0.5F, WNear_r);
 		scalar(d,cam.proj.y, nvc);
 		/* Near Frustum Points*/
 		add(cam.pos, nvc, nc);
-		sub(nc,HNear_up, nbr), add(nbr,WNear_r, nbr);
+		add(nc,HNear_up,ntl),sub(ntl,WNear_r,ntl);
 		add(nc,HNear_up,ntr),add(ntr,WNear_r,ntr);
 		sub(nc, HNear_up, nbl),sub(nbl,WNear_r,nbl);
-		add(nc,HNear_up,ntl),sub(ntl,WNear_r,ntl);
+		sub(nc,HNear_up, nbr), add(nbr,WNear_r, nbr);
 
 		pl[far] = Plane(ftr,ftl,fbl);
 		pl[near] = Plane(ntl,ntr,nbr);
@@ -241,18 +227,44 @@ public:
 	{
 
 		triple tmp1, tmp2;
-		int result = INSIDE;
+		bool res= INSIDE;
 		for(int i=0; i < 6; i++) {
 			tmp1 = b.getVertexP(pl[i].normal);
 			tmp2 = b.getVertexN(pl[i].normal);
-			if (pl[i].distance(tmp1) < 0)
-				return OUTSIDE;
+			if (pl[i].distance(tmp1) > 0)
+				return  OUTSIDE;
 			else if (pl[i].distance(tmp2) < 0)
-				result =  INTERSECT;
+				res = true;
 		}
-		return(result);
+		return res;
 
  	}
+void drawFrustum(const Frustum& frustum) {
+    // Function to draw a line between two points
+    auto drawLine = [](const triple& p1, const triple& p2) {
+        // Implementation of your line drawing function
+        // For example, you could use OpenGL, DirectX, or a custom graphics library
+        glBegin(GL_LINE);
+        glVertex3f(p1.x, p1.y, p1.z);
+        glVertex3f(p2.x, p2.y, p2.z);
+        glEnd();
+    };
+
+    // Iterate over each plane of the frustum
+    for (int i = 0; i < 6; ++i) {
+        // Get the current plane
+        const Plane& plane = frustum.pl[i];
+
+        // Get three vertices that define the plane
+        const triple& v1 = plane.point;
+        triple v2; // Extend the line for visualization
+				add(v1,plane.normal,v2);
+				scalar(v2,10.F,v2);
+
+        // Draw a line to represent the plane
+        drawLine(v1, v2);
+    }
+}
 
 };
 
