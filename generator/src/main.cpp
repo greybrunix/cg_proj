@@ -674,13 +674,11 @@ int32_t gen_plane(float full_size,
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	std::string coord;
-	float x = -(full_size / 2);
-	float z = -(full_size / 2);
-	float off = full_size / divs;
+	float x = full_size / 2, z = -x, off = full_size / divs;
 	float px, py = 0.f, pz;
     float pnx, pny, pnz;
 	int i, j, l,fix, err = 0;
-	float texture = 1.0f / divs;
+	float texture = 1.0 / divs;
 	float finaltexture[2];
 
     pnx = 0;
@@ -689,76 +687,63 @@ int32_t gen_plane(float full_size,
 	for (i = 0; i < divs; i++) {
 		for (j = 0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
+			fix = divs-i;
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=i*texture;
-			finaltexture[1]=j*texture;
+			finaltexture[0]=fix*texture;
+			finaltexture[1]=(j+1)*texture;
 			px = x;
-			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+			pz = z + off;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=(i+1)*texture;
-			finaltexture[1]=(j+1)*texture;
-			px = x + off;
-			pz = z + off;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+			finaltexture[0]=fix*texture;
+			finaltexture[1]=j*texture;
+			px = x;
+			pz = z;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=(i+1)*texture;
+			finaltexture[0]=(fix-1)*texture;
 			finaltexture[1]=j*texture;
-			px = x + off;
+			px = x - off;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=i*texture;
+			finaltexture[0]=(fix-1)*texture;
 			finaltexture[1]=j*texture;
-			px = x ;
+			px = x - off;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
-			//finaltexture[0]=i*texture;
-			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=i*texture;
+			finaltexture[0]=(fix-1)*texture;
 			finaltexture[1]=(j+1)*texture;
-			px = x ;
-			pz = z + off ;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+			px = x - off;
+			pz = z + off;
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=(i+1)*texture;
+			finaltexture[0]=fix*texture;
 			finaltexture[1]=(j+1)*texture;
-			px = x + off;
+			px = x;
 			pz = z + off;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
-			z += off;
+			x -= off;
 		}
-		z = -(full_size / 2);
-		x += off;
+		x = full_size / 2;
+		z += off;
 	}
 
 	fclose(output);
