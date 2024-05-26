@@ -19,6 +19,7 @@ int global = 0;
 float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
+bool explorer = true;
 
 struct triple {
 	float x, y, z;
@@ -825,6 +826,9 @@ void processKeys(unsigned char c, int xx, int yy)
                 world.primitives[i].texID[j] = loadTexture((char *) world.primitives[i].texture[j].c_str());
             }
         }
+        break;
+    case '3':
+        explorer = false;
         break;
     }
 
