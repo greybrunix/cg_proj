@@ -18,6 +18,7 @@ int cur_mode = GL_LINE, cur_face = GL_FRONT;
 int global = 0;
 float tesselation = 100.F;
 bool draw = true;
+bool mipmapping = false;
 
 struct triple {
 	float x, y, z;
@@ -232,11 +233,16 @@ int loadTexture(char*s) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    if (mipmapping)
+    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    else
+    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	// Upload dos dados de imagem
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    if (mipmapping)
+        glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return texID;
 }
@@ -805,6 +811,15 @@ void processKeys(unsigned char c, int xx, int yy)
         break;
     case 'x':
         world.cam.dist += 0.1;
+        break;
+    case 'm':
+        mipmapping = !mipmapping;
+        for (int i=0; i<world.primitives.size(); i++) {
+            for (int j=0; j<world.primitives[i].texture.size(); j++) {
+                world.primitives[i].texID[j] = loadTexture((char *) world.primitives[i].texture[j].c_str());
+            }
+        }
+        break;
     }
 
 
