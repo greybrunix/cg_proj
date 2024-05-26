@@ -57,7 +57,7 @@
       </transform>
       <models>
 	<model file="sphere_10_20_20.3d" > <!-- Vénus -->
-    <texture file = "8k_venus_surface.jpg" >
+        <texture file = "8k_venus_surface.jpg" />
     </model>
       </models>
     </group>
@@ -240,7 +240,7 @@
             </transform>
 	    <models>
 	      <model file="sphere_10_20_20.3d" > <!-- Saturno-->
-          <texture file = "8k_saturn.jpg" >
+              <texture file = "8k_saturn.jpg" />
     </model>
 	    </models>
             <group>
