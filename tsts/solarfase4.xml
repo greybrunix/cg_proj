@@ -6,6 +6,10 @@
     <up x="0" y="1" z="0" /> <!-- optional, use these values as default-->
     <projection fov="45" near="1" far="2000" /> <!-- optional, use these values as default-->
   </camera>
+	
+  <lights> 
+	<light type="point" posx="0" posy="0.2" posz="0" />
+  </lights>
   <group>
     <group>
       <transform>
@@ -15,7 +19,13 @@
       <models>
 	<model file="sphere_10_20_20.3d" > <!-- Sol -->
         <texture file = "8k_sun.jpg" />
-        <texture file = "8k_mercury.jpg" />
+	<color>
+		<diffuse R="253" G="184" B="19" />
+		<ambient R="0" G="0" B="0" />
+		<specular R="0" G="0" B="0" />
+		<emissive R="60" G="60" B="60" />
+		<shininess value="0" />
+	</color>
     </model>
       </models>
     </group>
