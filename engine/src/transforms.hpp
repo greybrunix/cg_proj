@@ -1,3 +1,5 @@
+#ifndef __TRANSFORMS__
+#define __TRANSFORMS__
 #include <vector>
 /* Classes */
 
@@ -82,3 +84,4 @@ struct trans {
 	int group;
 	transform* t;
 };
+#endif

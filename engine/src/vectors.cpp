@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "viewfrustum.hpp"
 static float Q_rsqrt(float number)
 {
 	long i;
@@ -13,31 +14,41 @@ static float Q_rsqrt(float number)
 	y  = y * ( threehalfs - ( x2 * y * y ) );
 	return y;
 }
-void normalize(float* v)
+void cross(const triple& v, const triple& u, triple& r)
 {
-	float l = Q_rsqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-	v[0] = v[0]*l;
-	v[1] = v[1]*l;
-	v[2] = v[2]*l;
+	r.x = v.y*u.z - v.z*u.y;
+	r.y = v.z*u.x - v.x*u.z;
+	r.z = v.x*u.y - v.y*u.x;
 }
-void cross(const float* v, const float* u, float* r)
+float len(const triple& v)
 {
-	r[0] = v[1]*u[2] - v[2]*u[1];
-	r[1] = v[2]*u[0] - v[0]*u[2];
-	r[2] = v[0]*u[1] - v[1]*u[0];
+	return sqrtf(v.x*v.x + v.y*v.y + v.z*v.z);
 }
-float len(const float* v)
+float dot(const triple&v, const triple&u)
 {
-	return sqrtf(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-}
-float dot(const float*v, const float*u)
-{
-	return (v[0]*u[0] + v[1]*u[1] + v[2]*u[2]);
+	return (v.x*u.x + v.y*u.y + v.z*u.z);
 }
 
-void scalar(const float* v, const float scalar, float* r)
+void scalar(const triple& v, const float scalar, triple& r)
 {
-	r[0] = v[0]*scalar;
-	r[1] = v[1]*scalar;
-	r[2] = v[2]*scalar;
+	r.x = v.x*scalar;
+	r.y = v.y*scalar;
+	r.z = v.z*scalar;
+}
+void add(const triple& v, const triple& u, triple& r)
+{
+	r.x = v.x+u.x;
+	r.y = v.y+u.y;
+	r.z = v.z+u.z;
+}
+void sub(const triple& v, const triple& u, triple& r)
+{
+	r.x = v.x-u.x;
+	r.y = v.y-u.y;
+	r.z = v.z-u.z;
+}
+void normalize(triple& v)
+{
+	float l = Q_rsqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+	scalar(v,l,v);
 }
