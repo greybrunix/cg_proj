@@ -885,6 +885,9 @@ int main(int argc, char **argv)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_RESCALE_NORMAL);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
 
 	xml_init(argv[1]);
 	if (res < 0) {
@@ -901,7 +904,6 @@ int main(int argc, char **argv)
 			glEnable(GL_LIGHT0 + i);
 			glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, white);
 			glLightfv(GL_LIGHT0 + i, GL_SPECULAR, white);
-			//printf("LUZ %d\n", GL_LIGHT0 + i);
 		}
 		float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
@@ -930,4 +932,3 @@ int main(int argc, char **argv)
 
 	return 1;
 }
-
