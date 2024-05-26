@@ -120,44 +120,31 @@ public:
 		//printf("Negative Vertex %.3f %.3f %.3f\n", res.x,res.y,res.z);
 		return(res);
 	}
-	void applyMVP() {
-    GLfloat MVP[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, MVP);
-    GLfloat projectionMatrix[16];
-    glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
-
-    // Combine ModelView and Projection matrices
-    GLfloat MVPMat[16];
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            MVPMat[i * 4 + j] = 0.0f;
-            for (int k = 0; k < 4; ++k) {
-                MVPMat[i * 4 + j] += projectionMatrix[i * 4 + k] * MVP[k * 4 + j];
-            }
-        }
-    }
-
+	void applyMVP(float *matrix) {
     // Transform center
     triple newCenter;
 		float center_v[4] = {center.x,center.y,center.z, 1.F};
 		float new_center[4];
-		mult_mat_vec(MVPMat, center_v, new_center);
-		newCenter.x = new_center[0];
-		newCenter.y = new_center[1];
-		newCenter.z = new_center[2];
-		printf("%.3f %.3f %.3f\n", newCenter.x,newCenter.y,newCenter.z);
+		center.x = matrix[0] * center.x + matrix[1] * center.y +
+			matrix[2] * center.z + matrix[3];
+		center.y = matrix[4] * center.x + matrix[5] * center.y +
+			matrix[6] * center.z + matrix[7];
+		center.z = matrix[8] * center.x + matrix[9] * center.y +
+			matrix[10] * center.z + matrix[11];
 
     
     // Transform extents
     triple newExtents;
-    newExtents.x = std::fabs(MVPMat[0] * extents.x) + std::fabs(MVPMat[4] * extents.y) + std::fabs(MVPMat[8] * extents.z);
-    newExtents.y = std::fabs(MVPMat[1] * extents.x) + std::fabs(MVPMat[5] * extents.y) + std::fabs(MVPMat[9] * extents.z);
-    newExtents.z = std::fabs(MVPMat[2] * extents.x) + std::fabs(MVPMat[6] * extents.y) + std::fabs(MVPMat[10] * extents.z);
+		float extent_v[4] = {extents.x, extents.y, extents.z, 0.F};
+		float new_extents[4];
+		extents.x = matrix[0] * extents.x + matrix[1] * extents.y +
+			matrix[2] * extents.z;
+		extents.y = matrix[4] * extents.x + matrix[5] * extents.y +
+			matrix[6] * extents.z;
+		extents.z = matrix[8] * extents.x + matrix[9] * extents.y +
+			matrix[10] * extents.z;
     
-    // Update center and extents
-    center.copy(newCenter);
-    extents.copy(newExtents);
-}
+	}
 };
 
 

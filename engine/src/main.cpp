@@ -1,3 +1,4 @@
+#include "vectors.hpp"
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -29,6 +30,7 @@ int global = 0;
 float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
+bool explorer = true;
 bool vfc = true;
 unsigned long drawn = 0, total_proc = 0;
 Frustum frustum;
@@ -646,9 +648,15 @@ void drawfigs(void)
 	drawn = total_proc = 0;
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
+		float matrix[16];
+		glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
 			if (world.transformations[l].group == g) {
 				world.transformations[l].t->do_transformation();
+				float m[16];
+				world.transformations[l].t->get_matrix(m);
+				mult_mat_vec(m,
+										 matrix, matrix);
 			}
 		for (k = 0; k < world.primitives.size(); k++) {
 				if (world.primitives[k].group == g)
@@ -712,7 +720,7 @@ void drawfigs(void)
 							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
 							total_proc++;
 							if (vfc)
-								prims[i].box.applyMVP();
+								prims[i].box.applyMVP(matrix);
 							if (!vfc || frustum.BoxInFrustum(prims[i].box) != Frustum::OUTSIDE) {
 								glDrawElements(GL_TRIANGLES,
 												 prims[i].index_count, // número de índices a desenhar
@@ -753,19 +761,18 @@ void renderScene(void)
 		float x,y,z;
 
     // calculate camera pos
-    x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+    /*x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
     y = world.cam.dist * sin(world.cam.beta);
     z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
-		/*
+		*/
     world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
     world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
     world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
-		*/
 		
 
     // set the camera
     glLoadIdentity();
-    gluLookAt(x, y, z,
+    gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
 	      world.cam.lookAt.x, world.cam.lookAt.y,
 	      world.cam.lookAt.z,
 	      world.cam.up.x, world.cam.up.y, world.cam.up.z);
@@ -883,6 +890,9 @@ void processKeys(unsigned char c, int xx, int yy)
 		break;
 	case 'F':
 		vfc = vfc ? false: true;
+	case '3':
+		explorer = false;
+		break;
 	}
 
 

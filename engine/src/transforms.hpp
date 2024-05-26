@@ -22,6 +22,7 @@ extern bool draw;
 extern float tesselation;
 class transform {
 private:
+	float matrix[16];
 	int type,time;
 	bool align;
 	float a,x,y,z;
@@ -35,6 +36,9 @@ public:
 	transform(int t, int ti, bool al)
 	{this->type=t, this->time=ti, this->align=al;}
 	virtual void do_transformation(){}
+	void updateMatrix(float newMatrix[16]){
+		mult_mat_vec(newMatrix, matrix, matrix);
+	}
 	int get_type(){return this->type;}
 	int get_time(){return this->time;}
 	bool is_align(){return this->align;}
@@ -43,6 +47,9 @@ public:
 	float get_y(){return this->y;}
 	float get_z(){return this->z;}
 	void set_angle(float aa) { this->a = aa; }
+	void get_matrix(float* m){
+		m = matrix;
+	}
 	virtual void add_point(triple p) {}
 };
 
@@ -78,10 +85,50 @@ public:
 				this->set_IT(current_time);
 			}
 		}
-		else
+		else {
+			float matrix[16];
+			// Convert angle from degrees to radians
+			float radians = rot_a* M_PI / 180.0f;
+
+			// Normalize the rotation axis
+			float x = get_x(), y = get_y(),
+						z = get_z();
+			float length = sqrt(x * x + y * y + z * z);
+			if (length == 0) return; // Avoid division by zero
+			x /= length;
+			y /= length;
+			z /= length;
+
+			// Calculate trigonometric values
+			float c = cos(radians);
+			float s = sin(radians);
+			float t = 1 - c;
+
+			// Compute the rotation matrix components
+			matrix[0] = t * x * x + c;
+			matrix[1] = t * x * y - s * z;
+			matrix[2] = t * x * z + s * y;
+			matrix[3] = 0;
+
+			matrix[4] = t * x * y + s * z;
+			matrix[5] = t * y * y + c;
+			matrix[6] = t * y * z - s * x;
+			matrix[7] = 0;
+
+			matrix[8] = t * x * z - s * y;
+			matrix[9] = t * y * z + s * x;
+			matrix[10] = t * z * z + c;
+			matrix[11] = 0;
+
+			matrix[12] = 0;
+			matrix[13] = 0;
+			matrix[14] = 0;
+			matrix[15] = 1;
+			updateMatrix(matrix);
 			glRotatef(rot_a, this->get_x(),
 				this->get_y(), this->get_z());
 		this->set_angle(rot_a);
+		}
 	}
 	rotate(int ti, float xx, float yy, float zz)
 		: transform(TRANS_ROT, ti, xx, yy, zz)
@@ -96,7 +143,13 @@ public:
 	scale(float xx, float yy, float zz)
 		: transform(TRANS_SCA, xx, yy, zz){}
 	void do_transformation() override
-	{glScalef(this->get_x(),this->get_y(),this->get_z());}
+	{
+		float matrix[4][4] =  {{get_x(),0.F,0.F,0.F},
+			{0.F,get_y(),0.F,0.F},
+			{0.F,0.F,get_z(),0.F},
+			{0.F,0.F,0.F,1.F}};
+			updateMatrix(&(matrix[0][0]));
+			glScalef(this->get_x(),this->get_y(),this->get_z());}
 };
 
 class translate_static : public transform{
@@ -104,7 +157,14 @@ public:
 	translate_static(float xx, float yy, float zz)
 		: transform(TRANS_TRA, xx, yy, zz){}
 	void do_transformation() override
-	{glTranslatef(this->get_x(),this->get_y(),this->get_z());}
+	{
+		float matrix[4][4] =  {{0.F,0.F,0.F,get_x()},
+			{0.F,0.F,0.F,get_y()},
+			{0.F,0.F,0.F,get_z()},
+			{0.F,0.F,0.F,1.F}};
+		updateMatrix(&(matrix[0][0]));
+		glTranslatef(this->get_x(),this->get_y(),this->get_z());
+	}
 };
 class translate_catmull_rom : public transform{
 private:
@@ -223,6 +283,10 @@ public:
 				}
 				glEnd();
 			}
+			float matrix[4][4] =  {{0.F,0.F,0.F,get_x()},
+				{0.F,0.F,0.F,get_y()},
+				{0.F,0.F,0.F,get_z()},
+				{0.F,0.F,0.F,1.F}};
 			glTranslatef(P.xyz.x, P.xyz.y, P.xyz.z);
 			if (this->is_align()) {
 				normalize(X.xyz);
@@ -237,6 +301,8 @@ public:
 				this->build_rot_matrix(x,y,z,mat);
 				glMultMatrixf(mat);
 			}
+			mult_mat_vec(mat, &matrix[0][0], &matrix[0][0]);
+			updateMatrix(&(matrix[0][0]));
 		}
 		else {
 			// Reset elapsed time and initial time
