@@ -8,7 +8,7 @@
   </camera>
 	
   <lights> 
-	<light type="point" posx="0" posy="0.2" posz="0" />
+	<light type="point" posx="0" posy="0" posz="0" />
   </lights>
   <group>
     <group>
@@ -418,6 +418,7 @@
           </transform>
           <models>
             <model file="bezier_10.3d" /> <!-- Cometa -->
+	    <texture file = "black-stone.jpg" />
           </models>
         </group>
       </group>
