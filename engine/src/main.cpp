@@ -19,6 +19,7 @@ int global = 0;
 float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
+bool explorer = false;
 
 struct triple {
 	float x, y, z;
@@ -712,10 +713,20 @@ void renderScene(void)
 
     // set the camera
     glLoadIdentity();
-    gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
-              world.cam.lookAt.x, world.cam.lookAt.y,
-              world.cam.lookAt.z,
-              world.cam.up.x, world.cam.up.y, world.cam.up.z);
+    if (explorer) {
+        gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
+                  world.cam.lookAt.x, world.cam.lookAt.y,
+                  world.cam.lookAt.z,
+                  world.cam.up.x, world.cam.up.y, world.cam.up.z);
+    } else {
+        world.cam.pos.x = world.cam.lookAt.x + world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
+        world.cam.pos.y = world.cam.lookAt.y + world.cam.dist * sin(world.cam.beta);
+        world.cam.pos.z = world.cam.lookAt.z + world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
+        gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
+                  world.cam.lookAt.x, world.cam.lookAt.y,
+                  world.cam.lookAt.z,
+                  world.cam.up.x, world.cam.up.y, world.cam.up.z);
+    }
 
     // Set the polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -838,6 +849,41 @@ void processKeys(unsigned char c, int xx, int yy)
 }
 
 //void processSpecialKeys(int key, int xx, int yy);
+void processMouseMotion(int x, int y) {
+    static bool wrap = false;
+    static int lastX = x, lastY = y;
+
+    if (wrap) {
+        wrap = false;
+        return;
+    }
+
+    int dx = x - lastX;
+    int dy = y - lastY;
+
+    world.cam.alfa += dx * 0.1;
+    world.cam.beta += dy * 0.1;
+
+    if (world.cam.beta > 89.0f) world.cam.beta = 89.0f;
+    if (world.cam.beta < -89.0f) world.cam.beta = -89.0f;
+
+    lastX = x;
+    lastY = y;
+
+    glutWarpPointer(world.win.w / 2, world.win.h / 2);
+    wrap = true;
+}
+
+void processMouseWheel(int button, int dir, int x, int y) {
+    if (dir > 0) {
+        world.cam.dist -= 0.5f;
+    } else {
+        world.cam.dist += 0.5f;
+    }
+
+    if (world.cam.dist < 2.0f) world.cam.dist = 2.0f;
+    if (world.cam.dist > 50.0f) world.cam.dist = 50.0f;
+}
 
 void printInfo()
 {
@@ -902,6 +948,8 @@ int main(int argc, char **argv)
 	}
 
 	glutKeyboardFunc(processKeys);
+    glutPassiveMotionFunc(processMouseMotion);
+    glutMouseFunc(processMouseWheel);
 
 	// OpenGL settings
 	glEnableClientState(GL_VERTEX_ARRAY);
