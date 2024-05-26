@@ -83,7 +83,7 @@ int32_t gen_sphere(float radius,
 					pz = radius * cosf(beta - M_PI_2) * sinf(alpha);
 					pnz = cosf(beta - M_PI_2) * sinf(alpha);
 					normalize(pnx, pny, pnz);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0],texture[1], output);
 
 					texture[0] = (float)(i+1) / slices;
@@ -95,7 +95,7 @@ int32_t gen_sphere(float radius,
 					pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
 					pnz = cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
 					normalize(pnx, pny, pnz);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
 					texture[0] = (float)i / slices;
@@ -107,7 +107,7 @@ int32_t gen_sphere(float radius,
 					pz = radius * cosf(beta - M_PI_2) * sinf(alpha + alpha_diff);
 					pnz = cosf(beta - M_PI_2) * sinf(alpha + alpha_diff);
 					normalize(pnx, pny, pnz);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 			}
 			if (j != stacks - 1) {
@@ -120,7 +120,7 @@ int32_t gen_sphere(float radius,
 				pz = radius * cosf(beta - M_PI_2) * sinf(alpha);
 				pnz = cosf(beta - M_PI_2) * sinf(alpha);
 				normalize(pnx, pny, pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
 				texture[0] = (float)(i+1) / slices;
@@ -132,7 +132,7 @@ int32_t gen_sphere(float radius,
 				pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha);
 				pnz= cosf(beta - M_PI_2 + beta_diff) * sinf(alpha);
 				normalize(pnx, pny, pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
 				texture[0] = (float)(i+1) / slices;
@@ -144,7 +144,7 @@ int32_t gen_sphere(float radius,
 				pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
 				pnz= cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
 				normalize(pnx, pny, pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 			}
 			beta += beta_diff;
@@ -690,8 +690,7 @@ int32_t gen_plane(float full_size,
 			px = x;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=(i+1)*texture;
@@ -701,8 +700,7 @@ int32_t gen_plane(float full_size,
 			px = x + off;
 			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			//finaltexture[0]=(i+1)*texture;
@@ -712,8 +710,7 @@ int32_t gen_plane(float full_size,
 			px = x + off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=i*texture;
@@ -723,8 +720,7 @@ int32_t gen_plane(float full_size,
 			px = x ;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=i*texture;
@@ -734,8 +730,7 @@ int32_t gen_plane(float full_size,
 			px = x ;
 			pz = z + off ;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//finaltexture[0]=(i+1)*texture;
@@ -745,8 +740,7 @@ int32_t gen_plane(float full_size,
 			px = x + off;
 			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
-                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
-                std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			x += off;
