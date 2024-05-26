@@ -528,6 +528,7 @@ int32_t gen_cone(float radius,
 	float angle = 0;
 	float cur_rad = radius;
 	float angle_diff = 2 * M_PI / slices;
+	float rat = height/radius;
 	float xz_diff = radius / stacks;
 	float y_diff = height / stacks;
 	float pnx, pny, pnz;
@@ -680,8 +681,8 @@ int32_t gen_cone(float radius,
 				
             			h1 = height - (i * y_diff);
             			h2 = height - ((i+1) * y_diff);
-            			r1 = h1 / xz_diff;
-           	 		r2 = h2 / xz_diff;
+            			r1 = h1 / rat;
+           	 		r2 = h2 / razt;
 				
 				x1 = r1 * sin(angle_diff * j);
 				y1 = (i * y_diff);
