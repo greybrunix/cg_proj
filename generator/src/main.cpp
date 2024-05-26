@@ -696,10 +696,10 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=i*texture;
-			finaltexture[1]=j*texture;
-			px = x;
-			pz = z;
+			finaltexture[0]=(i+1)*texture;
+			finaltexture[1]=(j+1)*texture;
+			px = x + off;
+			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
                 std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
                 std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
@@ -729,10 +729,10 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=(i+1)*texture;
-			finaltexture[1]=(j+1)*texture;
-			px = x + off;
-			pz = z + off;
+			finaltexture[0]=i*texture;
+			finaltexture[1]=j*texture;
+			px = x ;
+			pz = z ;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
                 std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
                 std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
