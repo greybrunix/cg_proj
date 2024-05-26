@@ -67,25 +67,14 @@ int32_t gen_sphere(float radius,
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	float px, py, pz, alpha_diff = 2 * M_PI / slices,
-		beta_diff = M_PI / stacks, alpha = 0, beta = M_PI_2;
+		beta_diff = M_PI / stacks, alpha = 0, beta = -M_PI_2;
 	std::string coord;
 	float pnx, pny, pnz;
 	float texture[2];
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) {
 			if (j != stacks - 1) {
-				/*
-				texture[0] = (float)i / slices;
-				texture[1] = (float)j / stacks;
-				px = radius * cosf(M_PI_2 - beta) * sinf(alpha);
-				pnx= cosf(M_PI_2 - beta) * sinf(alpha);
-				py = radius * sinf(M_PI_2 - beta);
-				pny= sinf(M_PI_2 - beta);
-				pz = radius * cosf(M_PI_2 - beta) * cosf(alpha);
-				pnz = cosf(M_PI_2 - beta) * cosf(alpha);
-				normalize(pnx, pny, pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);*/
+				
 				texture[0] = (float)i / slices;
 				texture[1] = (float)j / stacks;
 				px = radius * cosf(M_PI_2 - beta) * sinf(alpha);
@@ -161,7 +150,7 @@ int32_t gen_sphere(float radius,
 			}
 			beta += beta_diff;
 		}
-		beta = M_PI_2;
+		beta = -M_PI_2;
 		alpha += alpha_diff;
 	}
 	fclose(output);
