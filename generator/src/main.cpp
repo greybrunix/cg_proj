@@ -67,7 +67,7 @@ int32_t gen_sphere(float radius,
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	float px, py, pz, alpha_diff = 2 * M_PI / slices,
-		beta_diff = M_PI / stacks, alpha = 0, beta = -M_PI_2;
+		beta_diff = M_PI / stacks, alpha = 0, beta = M_PI;
 	std::string coord;
 	float pnx, pny, pnz;
 	float texture[2];
@@ -150,7 +150,7 @@ int32_t gen_sphere(float radius,
 			}
 			beta += beta_diff;
 		}
-		beta = -M_PI_2;
+		beta = M_PI;
 		alpha += alpha_diff;
 	}
 	fclose(output);
