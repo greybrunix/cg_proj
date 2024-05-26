@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <map>
 #include <vector>
-#include <float.h>
 #include <math.h>
 
 struct pair {
@@ -89,7 +88,7 @@ char* file)
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
                 px = radius * cos(M_PI_2 - beta + beta_diff) * sin(alpha_diff * (i + 1));
-                py = radius * sin(M_PI_2 - beta + beta_diff)
+                py = radius * sin(M_PI_2 - beta + beta_diff);
                 pz = radius * cos(M_PI_2 - beta_diff * (j + 1)) * cos(alpha_diff * (i + 1));
                 pnx = cos(M_PI_2 - beta_diff * (j + 1)) * sin(alpha_diff * (i + 1));
                 pny = sin(M_PI_2 - beta_diff * (j + 1));
