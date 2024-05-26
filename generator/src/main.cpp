@@ -538,7 +538,7 @@ int32_t gen_cone(float radius,
 	for (i = 0; i < stacks; i++) {
 		for (j = 0; j < slices; j++) {
 			// Bottom face
-			if (i == 0 && flag == 0 ) {
+			if ( flag == 0 ) {
 				pnx = 0;
 				pny = -1;
 				pnz = 0;
