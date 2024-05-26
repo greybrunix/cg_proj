@@ -751,7 +751,7 @@ int32_t gen_plane(float full_size,
 
 			x += off;
 		}
-		x = full_size / 2;
+		x = -(full_size / 2);
 		z += off;
 	}
 
