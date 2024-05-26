@@ -535,39 +535,35 @@ int32_t gen_cone(float radius,
 	float texture[2],texture2[2];
 	float x1,x2,x3,x4,y1,y2,y3,y4,z1,z2,z3,z4,r1,r2,h1,h2;
 	int flag=0;
+	for (j = 0; j<slices; j++){
+		// Bottom face
+		pnx = 0;
+		pny = -1;
+		pnz = 0;
+		texture[0] = 0.5f * sinf(angle);
+		texture[1] = 0.5f * cosf(angle);
+
+		px = cur_rad * sinf(angle);
+		py = 0.0f;
+		pz = cur_rad * cosf(angle);
+
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
+		write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+
+		px = 0.0f;
+		py = 0.0f;
+		pz = 0.0f;
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
+		write_file(coord, px, py, pz, pnx, pny, pnz, 0.5f, 0.5f, output);
+
+		px = cur_rad * sinf(angle + angle_diff);
+		py = 0.0f;
+		pz = cur_rad * cosf(angle + angle_diff);
+		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
+		write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+	}
 	for (i = 0; i < stacks; i++) {
 		for (j = 0; j < slices; j++) {
-			// Bottom face
-			if ( flag == 0 ) {
-				pnx = 0;
-				pny = -1;
-				pnz = 0;
-				texture[0] = 0.5f * sinf(angle);
-				texture[1] = 0.5f * cosf(angle);
-
-				px = cur_rad * sinf(angle);
-				py = 0.0f;
-				pz = cur_rad * cosf(angle);
-
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
-
-				px = 0.0f;
-				py = 0.0f;
-				pz = 0.0f;
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, 0.5f, 0.5f, output);
-
-				px = cur_rad * sinf(angle + angle_diff);
-				py = 0.0f;
-				pz = cur_rad * cosf(angle + angle_diff);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
-
-				if( j == slices-1){
-					flag =1;
-				}
-
 				/*texture[0] = (float)j / slices;
 				texture[1] = (float)i / stacks;
 				texture2[0] = (float)(j+1) / slices;
@@ -632,7 +628,7 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);*/
 				
-			}
+			
 
 			//coneAngle = atan(r / h)
 			/*//(cos(coneAngle) * cos(circleAngle), sin(coneAngle), cos(coneAngle) * sin(circleAngle))
@@ -678,7 +674,6 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 			}*/
-			else {
 				texture[0] = (float)j / slices;
 				texture[1] = (float)i / stacks;
 				texture2[0] = (float)(j+1) / slices;
@@ -809,7 +804,7 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);
 				}
-			}
+			
 			angle += angle_diff;
 		}
 		angle = 0;
