@@ -1,7 +1,46 @@
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/glxew.h>
+#endif
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include "transforms.hpp"
 #include "viewfrustum.hpp"
 #include <tinyxml2.h>
 
 using namespace tinyxml2;
+
+struct prims {
+	int count;
+	int group;
+	char name[64];
+};
+
+
+struct ident_prim {
+	char name[64];
+	GLuint vbo, ibo, vertex_count;
+	unsigned int index_count;
+};
+
+struct world {
+	struct {
+	    int h, w, sx, sy;
+		char title[64];
+	} win;
+	camera cam;
+	std::vector<struct trans> transformations;
+	std::vector<struct prims> primitives;
+};
+
+typedef std::vector<struct ident_prim> Primitive_Coords;
+
 
 int timebase, time, frames = 0;
 float fps;
@@ -127,7 +166,7 @@ void group_read_transform(int cur_parent, int cur_g,
 			  bool reading = false)
 {
 	struct trans tmp;
-	std::vector<point> points;
+	std::vector<float*> points;
 	XMLElement* tran = !reading ? transform->FirstChildElement() :
 		transform->NextSiblingElement();
 	XMLElement* points_t;
@@ -331,7 +370,6 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, k, l, g;
-    frustum fr = create_from_camera(world.cam);
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
@@ -343,8 +381,6 @@ void drawfigs(void)
 			if (world.primitives[k].group == g) {
 				for (i = 0; i < prims.size(); i++) {
 					if (!strcmp(prims[i].name, world.primitives[k].name)) {
-                        AABB aabb({{}}); /* TODO FALTA ISTO */
-                        if (aabb.is_in_frustum(fr)) {
                             glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
                             glVertexPointer(3,GL_FLOAT,0,0);
                             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
@@ -352,7 +388,6 @@ void drawfigs(void)
                                        prims[i].index_count, // número de índices a desenhar
                                        GL_UNSIGNED_INT, // tipo de dados dos índices
                                        0);// parâmetro não utilizado
-                        }
 				    }
 			    }
 		    }
@@ -534,4 +569,3 @@ int main(int argc, char **argv)
 
 	return 1;
 }
-

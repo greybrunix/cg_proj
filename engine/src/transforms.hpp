@@ -1,6 +1,4 @@
-#ifndef __GLOBAL_HPP
-#include "global.hpp"
-#endif
+#include <vector>
 /* Classes */
 
 #define TRANS_ROT 0
@@ -9,10 +7,6 @@
 typedef float* point;
 extern bool draw;
 extern float tesselation;
-static float Q_rsqrt(float number);
-void normalize(point v);
-void cross(point v, point u, point r);
-float len(point v);
 class transform {
 private:
 	int type,time;

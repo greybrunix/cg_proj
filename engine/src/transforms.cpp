@@ -1,22 +1,15 @@
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/glxew.h>
+#endif
+#define _USE_MATH_DEFINES
+#include <math.h>
+//#include <cfloat>
 #include "transforms.hpp"
-
-/** IMPORTANTE
- *  ver Fast inverse square root algorithm
- *      ou Quake III Arena Q_rsqrt para mais informacao
- */
-static float Q_rsqrt(float number)
-{
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5F;
-	x2 = number * 0.5F;
-	y  = number;
-	i  = * ( long * ) &y;
-	i  = 0x5f3759df - ( i >> 1 );
-	y  = * ( float * ) &i;
-	y  = y * ( threehalfs - ( x2 * y * y ) );
-	return y;
-}
+#include "vectors.hpp"
 
 transform::transform(int t,float xx, float yy, float zz)
 {this->a=0.f,this->type = t,this->x=xx,this->y=yy,this->z=zz;}
@@ -71,7 +64,7 @@ void rotate::do_transformation()
 	this->set_angle(rot_a);
 }
 rotate::rotate(int ti, float xx, float yy, float zz)
-    : transform(TRANS_ROT, ti, xx, yy, zz)
+: transform(TRANS_ROT, ti, xx, yy, zz)
 {
 	this->previous_elapsed = this->init_time = 0.f;
 }
@@ -88,7 +81,7 @@ void translate_static::do_transformation()
 
 
 translate_catmull_rom::translate_catmull_rom(int time, bool align)
-    : transform(TRANS_TRA, time, align)
+: transform(TRANS_TRA, time, align)
 {
 	this->ps = new std::vector<float*>();
 	this->previous_elapsed = this->init_time = 0.f;
@@ -158,19 +151,16 @@ void translate_catmull_rom::get_catmull_rom_point(float t,
 			 {1.0f, -2.5f,  2.0f, -0.5f},
 			 {-0.5f,  0.0f,  0.5f,  0.0f},
 			 {0.0f,  1.0f,  0.0f,  0.0f}};
-	float h = FLT_EPSILON*1e3F;
+	//float h = FLT_EPSILON*1e3F;
 
 	for (i = 0; i < 4; i++) {
 		P[0] = p0[i]; P[1] = p1[i]; P[2] = p2[i]; P[3] = p3[i];
 		this->mult_mat_vec(&m[0][0], P, A);
 		pos[i] = (t*t*t*A[0] + t*t*A[1] + t*A[2] + A[3]);
-		der[i] = (((t+h)*(t+h)*(t+h)*A[0] + (t+h)*(t+h)*A[1] + (t+h)*A[2] + A[3]) -
+		/*der[i] = (((t+h)*(t+h)*(t+h)*A[0] + (t+h)*(t+h)*A[1] + (t+h)*A[2] + A[3]) -
 			  ((t-h)*(t-h)*(t-h)*A[0] + (t-h)*(t-h)*A[1] + (t-h)*A[2] + A[3]))
-			/ (2 * h);
-		//der[i] = (3*t*t*A[0] + 2*t*t*A[1] + A[2]);
-		/* While simple and a direct implementation of T * A (as learnt in lectures
-		   ) was creating problems with interpolation, using the Central Difference Formula
-		for approximating `dir' is preferable*/
+			  / (2 * h);*/
+		der[i] = (3*t*t*A[0] + 2*t*A[1] + A[2]);
 	}
 }
 
@@ -194,8 +184,8 @@ void translate_catmull_rom::get_catmull_rom_global_point(float gt,
 	this->get_point(p0,indices[0]), this->get_point(p1,indices[1]);
 	this->get_point(p2,indices[2]), this->get_point(p3,indices[3]);
 	this->get_catmull_rom_point(t, p0, p1,
-				    p2, p3,
-				    pos, der);
+								p2, p3,
+								pos, der);
 }
 void translate_catmull_rom::mult_mat_vec(point m, point v, point r)
 {
@@ -207,31 +197,13 @@ void translate_catmull_rom::mult_mat_vec(point m, point v, point r)
 		}
 	}
 }
-void normalize(point v)
-{
-	float l = Q_rsqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-	v[0] = v[0]*l;
-	v[1] = v[1]*l;
-	v[2] = v[2]*l;
-}
 void translate_catmull_rom::build_rot_matrix(point x, point y, point z,
-                                             point r)
+											 point r)
 {
 	r[0] = x[0]; r[1] = x[1]; r[2] = x[2]; r[3] = 0;
 	r[4] = y[0]; r[5] = y[1]; r[6] = y[2]; r[7] = 0;
 	r[8] = z[0]; r[9] = z[1]; r[10] = z[2]; r[11] = 0;
 	r[12] = 0; r[13] = 0; r[14] = 0; r[15] = 1;
-}
-void cross(point v, point u, point r)
-{
-	r[0] = v[1]*u[2] - v[2]*u[1];
-	r[1] = v[2]*u[0] - v[0]*u[2];
-	r[2] = v[0]*u[1] - v[1]*u[0];
-}
-float len(point v)
-{
-	float res = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-	return res;
 }
 void translate_catmull_rom::add_point(float *p)
 {
