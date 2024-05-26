@@ -1,7 +1,6 @@
 #ifndef __VFC__
 #define __VFC__
 #include "vectors.hpp"
-#include <array>
 #include <cmath>
 class Transform {
     int x;
@@ -17,125 +16,205 @@ typedef struct camera {
 	triple proj; /* 60 1 1000*/
 } camera;
 
-struct Plane {
-	triple normal = {0.F,0.F,0.F};
-	float distance = 0.F;
-
-	Plane() = default;
-	Plane(const triple& p1, const triple& norm)
+class Plane  {
+public:
+	triple normal,point;
+	float d;
+	Plane( triple& v1,  triple& v2,  triple& v3)
 	{
-		triple tmp = (triple) norm;
-		normalize(tmp);
-		this->normal.x = tmp.x;
-		this->normal.y = tmp.y;
-		this->normal.z = tmp.z;
-		this->distance = dot(this->normal,p1);
+		set3Points(v1,v2,v3);
 	}
-	float getSignedDistanceToPlane(const triple& point) const
+	Plane(void){}
+	~Plane(){}
+
+	void set3Points( triple& v1,  triple& v2,  triple& v3)
 	{
-		return dot(normal, point) - this->distance;
+		triple aux1, aux2;
+
+		sub(v1, v2, aux1);
+		sub(v3,v2, aux2);
+
+		cross(aux2,aux1,normal);
+
+		normalize(normal);
+		point.copy(v2);
+		d = -dot(normal,point);
+	}
+	void setNormalAndPoint(triple& normal, triple& point)
+	{
+		this->normal.copy(normal);
+		normalize(this->normal);
+		d = -(dot(this->normal, point));
+
+	}
+	void setCoefficients(float a, float b, float c, float d)
+	{
+		// set the normal vector
+		normal.x=a,normal.y=b,normal.z=c;
+		//compute the lenght of the vector
+		float l = len(normal);
+		// normalize the vector
+		normalize(this->normal);
+		// and divide d by th length as well
+		this->d = d/l;
+	}
+	float distance(triple& p)
+	{
+		return (d + dot(normal, p));
+	}
+
+};
+class AABox {
+public:
+	triple corner;
+	float x,y,z;
+	AABox( triple&corner, float x, float y, float z)
+	{
+		setBox(corner,x,y,z);
+	}
+	AABox(void)
+	{
+		corner.x = 0; corner.y = 0; corner.z = 0;
+
+		x = 1.0f;
+		y = 1.0f;
+		z = 1.0f;
+	}
+	~AABox(){}
+
+	void setBox( triple&corner, float x, float y, float z)
+	{
+		this->corner.copy(corner);
+
+		if (x < 0.F) {
+			x = -x;
+			this->corner.x -= x;
+		}
+		if (y < 0.F) {
+			y = -y;
+			this->corner.y -= y;
+			}
+		if (z < 0.F) {
+			z = -z;
+			this->corner.z -= z;
+		}
+		this->x = x;
+		this->y = y;
+		this->z = z;
+
+	}
+
+	// for use in frustum computations
+	triple getVertexP(triple&normal)
+	{
+		triple res = corner;
+		if (normal.x > 0)
+			res.x += x;
+
+		if (normal.y > 0)
+			res.y += y;
+
+		if (normal.z > 0)
+			res.z += z;
+
+		return(res);
+	}
+	triple getVertexN(triple&normal)
+	{
+		triple res = corner;
+
+		if (normal.x < 0)
+			res.x += x;
+
+		if (normal.y < 0)
+			res.y += y;
+
+		if (normal.z < 0)
+			res.z += z;
+
+		return(res);
 	}
 };
+
 
 struct Frustum {
-	Plane top,bot;
-	Plane left,right;
-	Plane near,far;
-};
-struct BoundingVolume
-{
-	virtual bool isOnFrustum(const Frustum& camFrustum, const Transform& transform) const = 0;
-
-	virtual bool isOnOrForwardPlane(const Plane& plane) const = 0;
-
-	bool isOnFrustum(const Frustum& camFrustum) const
-	{
-		return (isOnOrForwardPlane(camFrustum.left) &&
-			isOnOrForwardPlane(camFrustum.right) &&
-			isOnOrForwardPlane(camFrustum.top) &&
-			isOnOrForwardPlane(camFrustum.bot) &&
-			isOnOrForwardPlane(camFrustum.near) &&
-			isOnOrForwardPlane(camFrustum.far));
+public:
+	enum {
+		top = 0,
+		bot,
+		left,
+		right,
+		near,
+		far
 	};
+	enum {OUTSIDE, INTERSECT, INSIDE};
+
+	Plane pl[6];
+
+	Frustum(camera cam) {
+		const float Hfar = 2.F * tanf((cam.proj.x*.5F*M_PI)/180.F) * cam.proj.z,
+				Wfar = Hfar * cam.ratio,
+				Hnear = 2.F * tanf((cam.proj.x*.5F*M_PI)/180.F) * cam.proj.y,
+				Wnear = Hnear * cam.ratio;
+		triple HNear_up, WNear_r;
+		triple d, up = cam.up, r;
+		triple HFar_up,	WFar_r;
+		triple fvc, nvc;
+		triple fc, nc;
+		triple v1,v2,v3;
+		triple fbr, ftr, fbl,ftl,
+			nbr, ntr, nbl, ntl;
+
+
+		/* d, r and real up*/
+		sub(cam.lookAt, cam.pos, d);
+		normalize(d);
+		cross(up, d, r);
+		normalize(r);
+		cross(d,r, up);
+
+		scalar(up, Hfar*0.5F, HFar_up), scalar(r,Wfar*0.5F, WFar_r);
+		scalar(d,cam.proj.z, fvc);		
+		/* Far Frustum Points*/
+		add(cam.pos, fvc, fc);
+		sub(fc,HFar_up, fbr), add(fbr,WFar_r, fbr);
+		add(fc,HFar_up,ftr),add(ftr,WFar_r,ftr);
+		sub(fc, HFar_up, fbl),sub(fbl,WFar_r,fbl);
+		add(fc,HFar_up,ftl),sub(ftl,WFar_r,ftl);
+
+		scalar(up, Hnear*0.5F, HNear_up), scalar(r,Wnear*0.5F, WNear_r);
+		scalar(d,cam.proj.y, nvc);
+		/* Near Frustum Points*/
+		add(cam.pos, nvc, nc);
+		sub(nc,HNear_up, nbr), add(nbr,WNear_r, nbr);
+		add(nc,HNear_up,ntr),add(ntr,WNear_r,ntr);
+		sub(nc, HNear_up, nbl),sub(nbl,WNear_r,nbl);
+		add(nc,HNear_up,ntl),sub(ntl,WNear_r,ntl);
+
+		pl[far] = Plane(ftr,ftl,fbl);
+		pl[near] = Plane(ntl,ntr,nbr);
+		pl[top] = Plane(ntr,ntl,ftl);
+		pl[bot] = Plane(nbl,nbr,fbr);
+		pl[left] = Plane(ntl,nbl,fbl);
+		pl[right] = Plane(nbr,ntr,fbr);
+	}
+	bool BoxInFrustum(AABox& b)
+	{
+
+		triple tmp1, tmp2;
+		int result = INSIDE;
+		for(int i=0; i < 6; i++) {
+			tmp1 = b.getVertexP(pl[i].normal);
+			tmp2 = b.getVertexN(pl[i].normal);
+			if (pl[i].distance(tmp1) < 0)
+				return OUTSIDE;
+			else if (pl[i].distance(tmp2) < 0)
+				result =  INTERSECT;
+		}
+		return(result);
+
+ 	}
+
 };
-struct AABB : public BoundingVolume
-{
-	triple center { 0.f, 0.f, 0.f };
-	triple extents{ 0.f, 0.f, 0.f };
-
-	AABB(const triple& min, const triple&  max)
-		: BoundingVolume{}
-	{
-		add(max,min,this->center);
-		scalar(this->center,0.5F,this->center);
-		sub(max,this->center,this->extents);
-	}
-
-	AABB(const triple& inCenter, float iI, float iJ, float iK)
-		: BoundingVolume{}, extents{ iI, iJ, iK }
-	{
-		this->center.x = inCenter.x;
-		this->center.y = inCenter.y;
-		this->center.z = inCenter.z;
-	}
-
-	std::array<triple, 8> getVertice() const
-	{
-		std::array<triple, 8> vertice;
-		vertice[0] = { center.x - extents.x, center.y - extents.y, center.z - extents.z };
-		vertice[1] = { center.x + extents.x, center.y - extents.y, center.z - extents.z };
-		vertice[2] = { center.x - extents.x, center.y + extents.y, center.z - extents.z };
-		vertice[3] = { center.x + extents.x, center.y + extents.y, center.z - extents.z };
-		vertice[4] = { center.x - extents.x, center.y - extents.y, center.z + extents.z };
-		vertice[5] = { center.x + extents.x, center.y - extents.y, center.z + extents.z };
-		vertice[6] = { center.x - extents.x, center.y + extents.y, center.z + extents.z };
-		vertice[7] = { center.x + extents.x, center.y + extents.y, center.z + extents.z };
-		return vertice;
-	}
-
-	//see https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
-	bool isOnOrForwardPlane(const Plane& plane) const final
-	{
-		// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
-		const float r = extents.x * std::abs(plane.normal.x) +
-			extents.y * std::abs(plane.normal.y) +
-			extents.z * std::abs(plane.normal.z);
-
-		return -r <= plane.getSignedDistanceToPlane(center);
-	}
-
-	bool isOnFrustum(const Frustum& camFrustum, const Transform& transform) const final
-	{
-		//Get global scale thanks to our transform
-		const triple globalCenter{ transform.getModelMatrix() * glm::vec4(center, 1.f) };
-
-		// Scaled orientation
-		const glm::vec3 right = transform.getRight() * extents.x;
-		const glm::vec3 up = transform.getUp() * extents.y;
-		const glm::vec3 forward = transform.getForward() * extents.z;
-
-		const float newIi = std::abs(glm::dot(glm::vec3{ 1.f, 0.f, 0.f }, right)) +
-			std::abs(glm::dot(glm::vec3{ 1.f, 0.f, 0.f }, up)) +
-			std::abs(glm::dot(glm::vec3{ 1.f, 0.f, 0.f }, forward));
-
-		const float newIj = std::abs(glm::dot(glm::vec3{ 0.f, 1.f, 0.f }, right)) +
-			std::abs(glm::dot(glm::vec3{ 0.f, 1.f, 0.f }, up)) +
-			std::abs(glm::dot(glm::vec3{ 0.f, 1.f, 0.f }, forward));
-
-		const float newIk = std::abs(glm::dot(glm::vec3{ 0.f, 0.f, 1.f }, right)) +
-			std::abs(glm::dot(glm::vec3{ 0.f, 0.f, 1.f }, up)) +
-			std::abs(glm::dot(glm::vec3{ 0.f, 0.f, 1.f }, forward));
-
-		const AABB globalAABB(globalCenter, newIi, newIj, newIk);
-
-		return (globalAABB.isOnOrForwardPlane(camFrustum.leftFace) &&
-			globalAABB.isOnOrForwardPlane(camFrustum.rightFace) &&
-			globalAABB.isOnOrForwardPlane(camFrustum.topFace) &&
-			globalAABB.isOnOrForwardPlane(camFrustum.bottomFace) &&
-			globalAABB.isOnOrForwardPlane(camFrustum.nearFace) &&
-			globalAABB.isOnOrForwardPlane(camFrustum.farFace));
-	};
-};
-
 
 #endif

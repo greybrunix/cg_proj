@@ -166,11 +166,10 @@ void group_read_transform(int cur_parent, int cur_g,
 			  bool reading = false)
 {
 	struct trans tmp;
-	std::vector<float*> points;
 	XMLElement* tran = !reading ? transform->FirstChildElement() :
 		transform->NextSiblingElement();
 	XMLElement* points_t;
-	float point_t[4] = {1.F};
+	triple point_t;
 	if (!tran)
 		return;
 	tmp.group = cur_g;
@@ -187,9 +186,9 @@ void group_read_transform(int cur_parent, int cur_g,
 				tran->BoolAttribute("align"));
 			points_t = tran->FirstChildElement();
 			while (points_t) {
-				point_t[0] = points_t->FloatAttribute("x");
-				point_t[1] = points_t->FloatAttribute("y");
-				point_t[2] = points_t->FloatAttribute("z");
+				point_t.x = points_t->FloatAttribute("x");
+				point_t.y = points_t->FloatAttribute("y");
+				point_t.z = points_t->FloatAttribute("z");
 				tmp.t->add_point(point_t);
 				points_t = points_t->NextSiblingElement();
 			}
