@@ -30,80 +30,67 @@ float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
 bool explorer = true;
-Frustum frustum = Frustum();
+
 struct rgb {
-	float r, g, b;
+    float r, g, b;
 };
 
 struct doubles {
-	float x, z;
+    float x, z;
 };
 
 struct colour {
-	rgb diffuse;
-	rgb ambient;
-	rgb specular;
-	rgb emissive;
-	float shininess;
+    rgb diffuse;
+    rgb ambient;
+    rgb specular;
+    rgb emissive;
+    float shininess;
 };
 
 struct prims {
 	int count;
 	int group;
 	char name[64];
-	AABox box;
-	std::map<int, colour> color;
-	std::map<int, std::string> texture;
-	std::map<int, unsigned int> texID;
+    std::map<int, colour> color;
+    std::map<int, std::string> texture;
+    std::map<int, unsigned int> texID;
 };
 
 
 struct ident_prim {
 	char name[64];
-	GLuint vbo, ibo,
-		normals,
-		texCoord,
-		vertex_count;
+	GLuint vbo, ibo, 
+           normals,
+           texCoord,
+           vertex_count;
 	unsigned int index_count;
 };
 
 struct light {
-	char type[64];
-	float posX, posY, posZ,
-		dirX, dirY, dirZ,
-		cutoff;
+    char type[64];
+    float posX, posY, posZ,
+          dirX, dirY, dirZ,
+          cutoff;
 };
 
 struct {
 	struct {
-		int h, w, sx, sy;
+	    int h, w, sx, sy;
 		char title[64];
 	} win;
 	camera cam;
 	std::vector<struct trans> transformations;
 	std::vector<struct prims> primitives;
-	std::vector<struct light> lights;
+    std::vector<struct light> lights;
 } world;
 
 typedef std::vector<struct ident_prim> Primitive_Coords;
 Primitive_Coords prims;
 
-void multiplyMatrices(const GLfloat* mat1, const GLfloat* mat2, GLfloat* result) {
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			result[i * 4 + j] = mat1[i * 4 + 0] * mat2[0 * 4 + j] +
-				mat1[i * 4 + 1] * mat2[1 * 4 + j] +
-				mat1[i * 4 + 2] * mat2[2 * 4 + j] +
-				mat1[i * 4 + 3] * mat2[3 * 4 + j];
-		}
-	}
-}
-
-
-void read_words(FILE *f, std::vector<struct triple>* coords,
-		std::vector<unsigned int>* ind,
-		std::vector<struct triple>* normals,
-		std::vector<struct doubles>* texCoord)
+void read_words(FILE *f, std::vector<struct triple>* coords, 
+                std::vector<unsigned int>* ind, 
+                std::vector<struct triple>* normals, 
+                std::vector<struct doubles>* texCoord)
 {
 	char line[1024];
 	char* num;
@@ -145,25 +132,6 @@ void read_words(FILE *f, std::vector<struct triple>* coords,
 	}
 }
 
-float absDistanceCenter(const triple& point)
-{
-	return std::fabs(sqrt((0.F-point.x)*(0.F-point.x)+
-			      (0.F-point.y)*(0.F-point.y)+
-			      (0.F-point.z)*(0.F-point.z)));
-}
-triple getBoxInfo(const std::vector<triple> coords)
-{
-	int i; int cm; float cv = 0.F; float curr;
-	for (i=0;i<coords.size();i++) {
-		curr = absDistanceCenter(coords[i]);
-		if (curr > cv) {
-			cm = i;
-			cv = curr;
-		}
-	}
-	return coords[i];
-}
-
 int read_3d_files(void)
 {
 	FILE* fd;
@@ -181,12 +149,12 @@ int read_3d_files(void)
 			if (!fd) {
 				return -1;
 			}
-			std::vector<triple> coords;
+			std::vector<struct triple> coords;
 			std::vector<unsigned int> ind;
-			std::vector<triple> normals;
+			std::vector<struct triple> normals;
 			std::vector<struct doubles> texCoord;
 			read_words(fd, &coords, &ind, &normals,
-				   &texCoord);
+                       &texCoord);
 
 			strcpy(aux.name, world.primitives[i].name);
 
@@ -210,16 +178,13 @@ int read_3d_files(void)
 			// Bind the normals
 			glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
-
+			
 			// Bind the textures
 			glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
 
 			// Store the VBO ID in the vertices vector
 			prims.push_back(aux);
-			triple center = {0.F,0.F,0.F};
-			triple extents = getBoxInfo(coords);
-			world.primitives[i].box = AABox(center, extents.x, extents.y, extents.z);
 
 			fclose(fd);
 		}
@@ -264,125 +229,125 @@ int loadTexture(char*s) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if (mipmapping)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	else
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    if (mipmapping)
+    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    else
+    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	// Upload dos dados de imagem
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-	if (mipmapping)
-		glGenerateMipmap(GL_TEXTURE_2D);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+    if (mipmapping)
+        glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return texID;
 }
 
 void group_read_model(int cur_g, struct prims* tmp_p,
-		      XMLElement *color_xml, XMLElement *txt_xml)
+                      XMLElement *color_xml, XMLElement *txt_xml)
 {
-	XMLElement* elem;
-	rgb rgb;
-	colour color;
-	float shn;
-	if (color_xml) {
-		rgb.r = 0;
-		rgb.g = 0;
-		rgb.b = 0;
-		color.specular = rgb;
-		color.emissive = rgb;
-		rgb.r = 200;
-		rgb.g = 200;
-		rgb.b = 200;
-		color.diffuse = rgb;
-		rgb.r = 50;
-		rgb.g = 50;
-		rgb.b = 50;
-		color.ambient = rgb;
-		shn = 0;
-		color.shininess = shn;
-		elem = color_xml->FirstChildElement("diffuse");
-		if (elem) {
-			rgb.r = elem->FloatAttribute("R");
-			rgb.g = elem->FloatAttribute("G");
-			rgb.b = elem->FloatAttribute("B");
-			color.diffuse = rgb;
-		}
-		elem = color_xml->FirstChildElement("ambient");
-		if (elem) {
-			rgb.r = elem->FloatAttribute("R");
-			rgb.g = elem->FloatAttribute("G");
-			rgb.b = elem->FloatAttribute("B");
-			color.ambient = rgb;
-		}
-		elem = color_xml->FirstChildElement("specular");
-		if (elem) {
-			rgb.r = elem->FloatAttribute("R");
-			rgb.g = elem->FloatAttribute("G");
-			rgb.b = elem->FloatAttribute("B");
-			color.specular = rgb;
-		}
-		elem = color_xml->FirstChildElement("emissive");
-		if (elem) {
-			rgb.r = elem->FloatAttribute("R");
-			rgb.g = elem->FloatAttribute("G");
-			rgb.b = elem->FloatAttribute("B");
-			color.emissive = rgb;
-		}
-		elem = color_xml->FirstChildElement("shininess");
-		if (elem) {
-			shn = elem->FloatAttribute("value");
-			color.shininess = shn;
-		}
-		tmp_p->color[cur_g] = color;
-	}
+    XMLElement* elem;
+    rgb rgb;
+    colour color;
+    float shn;
+    if (color_xml) {
+        rgb.r = 0;
+        rgb.g = 0;
+        rgb.b = 0;
+        color.specular = rgb;
+        color.emissive = rgb;
+        rgb.r = 200;
+        rgb.g = 200;
+        rgb.b = 200;
+        color.diffuse = rgb;
+        rgb.r = 50;
+        rgb.g = 50;
+        rgb.b = 50;
+        color.ambient = rgb;
+        shn = 0;
+        color.shininess = shn;
+        elem = color_xml->FirstChildElement("diffuse");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.diffuse = rgb;
+        }
+        elem = color_xml->FirstChildElement("ambient");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.ambient = rgb;
+        }
+        elem = color_xml->FirstChildElement("specular");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.specular = rgb;
+        }
+        elem = color_xml->FirstChildElement("emissive");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.emissive = rgb;
+        }
+        elem = color_xml->FirstChildElement("shininess");
+        if (elem) {
+            shn = elem->FloatAttribute("value");
+            color.shininess = shn;
+        }
+        tmp_p->color[cur_g] = color;
+    }
 
-	if (txt_xml) {
-		std::string path = "../../tsts/test_files_phase_4/",
-			file = path + txt_xml->Attribute("file");
-		tmp_p->texture[cur_g] = file;
-		tmp_p->texID[cur_g] = loadTexture((char*)file.c_str());
-	}
+    if (txt_xml) {
+			std::string path = "../../tsts/test_files_phase_4/",
+				file = path + txt_xml->Attribute("file");
+			tmp_p->texture[cur_g] = file;
+			tmp_p->texID[cur_g] = loadTexture((char*)file.c_str());
+    }
 }
 
 void lights_read(XMLElement* lights, bool reading = false)
 {
 	XMLElement* elem = !reading ? lights->FirstChildElement()
-		: lights->NextSiblingElement();
-	light light;
-	const char* type;
+        : lights->NextSiblingElement();
+    light light;
+    const char* type;
 
-	if (!elem)
-		return;
+    if (!elem)
+        return;
+    
+    type = elem->Attribute("type");
+    if (!type)
+        return;
 
-	type = elem->Attribute("type");
-	if (!type)
-		return;
-
-	if (!strcmp("point", type)) {
-		strcpy(light.type, "point");
-		light.posX = elem->FloatAttribute("posx");
-		light.posY = elem->FloatAttribute("posy");
-		light.posZ = elem->FloatAttribute("posz");
-	}
-	else if (!strcmp("directional", type)) {
-		strcpy(light.type, "directional");
-		light.dirX = elem->FloatAttribute("dirx");
-		light.dirY = elem->FloatAttribute("diry");
-		light.dirZ = elem->FloatAttribute("dirz");
-	}
-	else if (!strcmp("spot", type)) {
-		strcpy(light.type, "spot");
-		light.posX = elem->FloatAttribute("posx");
-		light.posY = elem->FloatAttribute("posy");
-		light.posZ = elem->FloatAttribute("posz");
-		light.dirX = elem->FloatAttribute("dirx");
-		light.dirY = elem->FloatAttribute("diry");
-		light.dirZ = elem->FloatAttribute("dirz");
-		light.cutoff = elem->FloatAttribute("cutoff");
-	}
-	world.lights.push_back(light);
-
-	lights_read(elem, true);
+    if (!strcmp("point", type)) {
+        strcpy(light.type, "point");
+        light.posX = elem->FloatAttribute("posx");
+        light.posY = elem->FloatAttribute("posy");
+        light.posZ = elem->FloatAttribute("posz");
+    }
+    else if (!strcmp("directional", type)) {
+        strcpy(light.type, "directional");
+        light.dirX = elem->FloatAttribute("dirx");
+        light.dirY = elem->FloatAttribute("diry");
+        light.dirZ = elem->FloatAttribute("dirz");
+    }
+    else if (!strcmp("spot", type)) {
+        strcpy(light.type, "spot");
+        light.posX = elem->FloatAttribute("posx");
+        light.posY = elem->FloatAttribute("posy");
+        light.posZ = elem->FloatAttribute("posz");
+        light.dirX = elem->FloatAttribute("dirx");
+        light.dirY = elem->FloatAttribute("diry");
+        light.dirZ = elem->FloatAttribute("dirz");
+        light.cutoff = elem->FloatAttribute("cutoff");
+    }
+    world.lights.push_back(light);
+    
+    lights_read(elem, true);
 }
 
 void group_read_models(int cur_parent, int cur_g, XMLElement* models,
@@ -398,8 +363,8 @@ void group_read_models(int cur_parent, int cur_g, XMLElement* models,
 	if (!mod)
 	    return;
 
-	group_read_model(cur_g, &tmp_p, mod->FirstChildElement("color"),
-			 mod->FirstChildElement("texture"));
+    group_read_model(cur_g, &tmp_p, mod->FirstChildElement("color"),
+                     mod->FirstChildElement("texture"));
 
 	f = mod->Attribute("file");
 	if (not_in_prims_g(f, &j, cur_g, i)) {
@@ -503,7 +468,7 @@ void group_read(int cur_parent, int cur_g, XMLElement* gr,
 		group_read_transform(cur_parent, cur_g, elem);
 	else if (!strcmp(elem->Name(), "group"))
 		group_read(cur_g, global, elem, false, i);
-
+    
 	group_read(cur_parent, cur_g, elem, true, i);
 }
 
@@ -544,15 +509,15 @@ int xml_init(char* xml_file)
 			return -3;
 		}
 		world.cam.pos.x = posi->FloatAttribute("x");
-		world.cam.pos.y = posi->FloatAttribute("y");
-		world.cam.pos.z = posi->FloatAttribute("z");
-		world.cam.dist = sqrt(world.cam.pos.x * world.cam.pos.x +
-				      world.cam.pos.y * world.cam.pos.y +
-				      world.cam.pos.z * world.cam.pos.z);
-		world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
-		world.cam.alfa = atan2(world.cam.pos.x, world.cam.pos.z);
+        world.cam.pos.y = posi->FloatAttribute("y");
+        world.cam.pos.z = posi->FloatAttribute("z");
+        world.cam.dist = sqrt(world.cam.pos.x * world.cam.pos.x +
+                      world.cam.pos.y * world.cam.pos.y +
+                      world.cam.pos.z * world.cam.pos.z);
+        world.cam.beta = asin(world.cam.pos.y / world.cam.dist);
+        world.cam.alfa = atan2(world.cam.pos.x, world.cam.pos.z);
 
-		lookAt = cam->FirstChildElement("lookAt");
+        lookAt = cam->FirstChildElement("lookAt");
 		if (!lookAt) {
 		return -4;
 		}
@@ -581,14 +546,13 @@ int xml_init(char* xml_file)
 			world.cam.proj.y = 1.f; // near
 			world.cam.proj.z = 1000.f; //far
 		}
-		frustum = Frustum(world.cam);
-		lights = world_l->FirstChildElement("lights");
-		if (lights) {
-			lights_read(lights);
-		}
+        lights = world_l->FirstChildElement("lights");
+        if (lights) {
+            lights_read(lights); 
+        }
 		group_R = world_l->FirstChildElement("group");
 		if (group_R) {
-			group_read(-1, 0, group_R);
+            group_read(-1, 0, group_R);
 		}
 	}
 	return i;
@@ -626,7 +590,6 @@ void changeSize(int w, int h)
 
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
-	frustum = Frustum(world.cam);
 }
 
 void drawfigs(void)
@@ -638,84 +601,80 @@ void drawfigs(void)
 			if (world.transformations[l].group == g) {
 				world.transformations[l].t->do_transformation();
 			}
-		GLfloat modelViewProjectionMatrix[16];
-		GLfloat modelViewMatrix[16];
-		GLfloat projectionMatrix[16];
-		glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
-		glGetFloatv(GL_MODELVIEW_MATRIX, modelViewMatrix);
-		multiplyMatrices(projectionMatrix, modelViewMatrix, modelViewProjectionMatrix);
+
 		for (k = 0; k < world.primitives.size(); k++) {
-			world.primitives[k].box.transformAABB(modelViewProjectionMatrix);
-			if (frustum.BoxInFrustum(world.primitives[k].box) != frustum.OUTSIDE)
-				if (world.primitives[k].group == g)
-					for (i = 0; i < prims.size(); i++)
-						if (!strcmp(prims[i].name, world.primitives[k].name)) {
-							if (world.lights.size() > 0){
-								if (!world.primitives[k].color.empty()){
-									// Apply color of model
-									colour color = world.primitives[k].color.at(g);
+			if (world.primitives[k].group == g) {
+				for (i = 0; i < prims.size(); i++) {
+					if (!strcmp(prims[i].name, world.primitives[k].name)) {
+                        if (world.lights.size() > 0){
+                            if (!world.primitives[k].color.empty()){
+                                // Apply color of model
+                                colour color = world.primitives[k].color.at(g);
 
-									float diffuse[] = {color.diffuse.r/255.0f, color.diffuse.g/255.0f, color.diffuse.b/255.0f, 1.0f};
-									float ambient[] = {color.ambient.r/255.0f, color.ambient.g/255.0f, color.ambient.b/255.0f, 1.0f};
-									float specular[] = {color.specular.r/255.0f, color.specular.g/255.0f, color.specular.b/255.0f, 1.0f};
-									float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
-									float shininess = color.shininess;
+                                float diffuse[] = {color.diffuse.r/255.0f, color.diffuse.g/255.0f, color.diffuse.b/255.0f, 1.0f};
+                                float ambient[] = {color.ambient.r/255.0f, color.ambient.g/255.0f, color.ambient.b/255.0f, 1.0f};
+                                float specular[] = {color.specular.r/255.0f, color.specular.g/255.0f, color.specular.b/255.0f, 1.0f};
+                                float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
+                                float shininess = color.shininess;
 
-									/*
-									  printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
-									  printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
-									  printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
-									  printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
-									  printf("SHININESS: %f\n", color.shininess);
-									*/
+                                /*
+                                printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
+                                printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
+                                printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
+                                printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
+                                printf("SHININESS: %f\n", color.shininess);
+                                */
 
-									glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-									glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-									glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-									glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
-									glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-								} else {
-									// Apply color of model
-									float diffuse[] = {200.0f/255.0f, 200.0f/255.0f, 200.0f/255.0f, 1.0f/255.0f};
-									float ambient[] = {50.0f/255.0f, 50.0f/255.0f, 50.0f/255.0f, 1.0f/255.0f};
-									float specular[] = {0.0f, 0.0f, 0.0f, 1.0f/255.0f};
-									float emissive[] = {0.0f, 0.0f, 0.0f, 1.0f/255.0f};
-									float shininess = 0.0f;
+                                glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                                glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                                glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                                glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                            } else {
+                                // Apply color of model
+                                float diffuse[] = {200.0f/255.0f, 200.0f/255.0f, 200.0f/255.0f, 1.0f/255.0f};
+                                float ambient[] = {50.0f/255.0f, 50.0f/255.0f, 50.0f/255.0f, 1.0f/255.0f};
+                                float specular[] = {0.0f, 0.0f, 0.0f, 1.0f/255.0f};
+                                float emissive[] = {0.0f, 0.0f, 0.0f, 1.0f/255.0f};
+                                float shininess = 0.0f;
 
-									glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-									glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-									glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-									glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
-									glMaterialf(GL_FRONT, GL_SHININESS, shininess);
-								}
-							}
+                                glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+                                glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                                glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+                                glMaterialfv(GL_FRONT, GL_EMISSION, emissive);
+                                glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+                            }
+                        }
 
-							//printf("texID: %d\n", world.primitives[k].texID[g]);
-							glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
+                        //printf("texID: %d\n", world.primitives[k].texID[g]);
+                        glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
-							//glEnableClientState(GL_VERTEX_ARRAY);
-							glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
-							glVertexPointer(3,GL_FLOAT,0,0);
+                        //glEnableClientState(GL_VERTEX_ARRAY);
+						glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
+						glVertexPointer(3,GL_FLOAT,0,0);
 
-							//glEnableClientState(GL_NORMAL_ARRAY);
-							glBindBuffer(GL_ARRAY_BUFFER, prims[i].normals);
-							glNormalPointer(GL_FLOAT, 0, 0);
+                        //glEnableClientState(GL_NORMAL_ARRAY);
+                        glBindBuffer(GL_ARRAY_BUFFER, prims[i].normals);
+                        glNormalPointer(GL_FLOAT, 0, 0);
 
-							//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-							glBindBuffer(GL_ARRAY_BUFFER, prims[i].texCoord);
-							glTexCoordPointer(2, GL_FLOAT, 0, 0);
+                        //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                        glBindBuffer(GL_ARRAY_BUFFER, prims[i].texCoord);
+                        glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
-							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
-							glDrawElements(GL_TRIANGLES,
-								       prims[i].index_count, // número de índices a desenhar
-								       GL_UNSIGNED_INT, // tipo de dados dos índices
-								       0);// parâmetro não utilizado
+						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, prims[i].ibo);
+						glDrawElements(GL_TRIANGLES,
+							       prims[i].index_count, // número de índices a desenhar
+							       GL_UNSIGNED_INT, // tipo de dados dos índices
+							       0);// parâmetro não utilizado
 
-							//glDisableClientState(GL_VERTEX_ARRAY);
-							//glDisableClientState(GL_NORMAL_ARRAY);
-							//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-							glBindTexture(GL_TEXTURE_2D, 0);
-						}
+                        //glDisableClientState(GL_VERTEX_ARRAY);
+                        //glDisableClientState(GL_NORMAL_ARRAY);
+                        //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                        
+                        glBindTexture(GL_TEXTURE_2D, 0);
+					}
+				}
+			}
 		}
 		glPopMatrix();
 	}
@@ -748,63 +707,63 @@ void renderScene(void)
     // set the camera
     glLoadIdentity();
     gluLookAt(world.cam.pos.x, world.cam.pos.y, world.cam.pos.z,
-	      world.cam.lookAt.x, world.cam.lookAt.y,
-	      world.cam.lookAt.z,
-	      world.cam.up.x, world.cam.up.y, world.cam.up.z);
+              world.cam.lookAt.x, world.cam.lookAt.y,
+              world.cam.lookAt.z,
+              world.cam.up.x, world.cam.up.y, world.cam.up.z);
 
     // Set the polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Draw coordinate axes
     if (draw) {
-	    float red[] = {1.0f, 0.0f, 0.0f};
-	    float green[] = {0.0f, 1.0f, 0.0f};
-	    float blue[] = {0.0f, 0.0f, 1.0f};
-	    bool is = glIsEnabled(GL_LIGHTING);
+        float red[] = {1.0f, 0.0f, 0.0f};
+        float green[] = {0.0f, 1.0f, 0.0f};
+        float blue[] = {0.0f, 0.0f, 1.0f};
+	bool is = glIsEnabled(GL_LIGHTING);
 
 	if (is)
 		glDisable(GL_LIGHTING);
-	glBegin(GL_LINES);
+        glBegin(GL_LINES);
 
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
 
-	glVertex3f(-100.0f, 0.0f, 0.0f);
-	glVertex3f(100.0f, 0.0f, 0.0f);
+        glVertex3f(-100.0f, 0.0f, 0.0f);
+        glVertex3f(100.0f, 0.0f, 0.0f);
 
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
 
-	glVertex3f(0.0f, -100.0f, 0.0f);
-	glVertex3f(0.0f, 100.0f, 0.0f);
+        glVertex3f(0.0f, -100.0f, 0.0f);
+        glVertex3f(0.0f, 100.0f, 0.0f);
 
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
 
-	glVertex3f(0.0f, 0.0f, -100.0f);
-	glVertex3f(0.0f, 0.0f, 100.0f);
+        glVertex3f(0.0f, 0.0f, -100.0f);
+        glVertex3f(0.0f, 0.0f, 100.0f);
 
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glEnd();
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glEnd();
 	if (is)
 		glEnable(GL_LIGHTING);
     }
 
     // Set up lights
     for (int i = 0; i < world.lights.size(); i++) {
-	    if (!strcmp(world.lights[i].type, "point")) {
-		    float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
-		    glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
-	    } else if (!strcmp(world.lights[i].type, "directional")) {
-		    float dir[4] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ, 0.0};
-		    glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
-	    } else if (!strcmp(world.lights[i].type, "spot")) {
-		    float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
-		    float dir[3] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ};
-		    glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
-		    glLightfv(GL_LIGHT0 + i, GL_SPOT_DIRECTION, dir);
-		    glLightf(GL_LIGHT0 + i, GL_SPOT_CUTOFF, world.lights[i].cutoff);
-	    }
+        if (!strcmp(world.lights[i].type, "point")) {
+            float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
+        } else if (!strcmp(world.lights[i].type, "directional")) {
+            float dir[4] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ, 0.0};
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, dir);
+        } else if (!strcmp(world.lights[i].type, "spot")) {
+            float pos[4] = {world.lights[i].posX, world.lights[i].posY, world.lights[i].posZ, 1.0};
+            float dir[3] = {world.lights[i].dirX, world.lights[i].dirY, world.lights[i].dirZ};
+            glLightfv(GL_LIGHT0 + i, GL_POSITION, pos);
+            glLightfv(GL_LIGHT0 + i, GL_SPOT_DIRECTION, dir);
+            glLightf(GL_LIGHT0 + i, GL_SPOT_CUTOFF, world.lights[i].cutoff);
+        }
     }
 
     // Draw primitives
@@ -841,30 +800,30 @@ void processKeys(unsigned char c, int xx, int yy)
 	case '-':
 		tesselation -= 10;
 		break;
-	case 'z':
-		world.cam.dist -= 0.1;
-		break;
-	case 'x':
-		world.cam.dist += 0.1;
-		break;
-	case 'o':
-		world.cam.dist -= 10;
-		break;
-	case 'p':
-		world.cam.dist += 10;
-		break;
-	case 'm':
-		mipmapping = !mipmapping;
-		for (int i=0; i<world.primitives.size(); i++) {
-			for (int j=0; j<world.primitives[i].texture.size(); j++) {
-				world.primitives[i].texID[j] = loadTexture((char *) world.primitives[i].texture[j].c_str());
-			}
-		}
-		break;
-	case '3':
-		explorer = false;
-		break;
-	}
+    case 'z':
+        world.cam.dist -= 0.1;
+        break;
+    case 'x':
+        world.cam.dist += 0.1;
+        break;
+    case 'o':
+        world.cam.dist -= 10;
+        break;
+    case 'p':
+        world.cam.dist += 10;
+        break;
+    case 'm':
+        mipmapping = !mipmapping;
+        for (int i=0; i<world.primitives.size(); i++) {
+            for (int j=0; j<world.primitives[i].texture.size(); j++) {
+                world.primitives[i].texID[j] = loadTexture((char *) world.primitives[i].texture[j].c_str());
+            }
+        }
+        break;
+    case '3':
+        explorer = false;
+        break;
+    }
 
 
 	if (tesselation <= 0.F) {
@@ -879,7 +838,6 @@ void processKeys(unsigned char c, int xx, int yy)
 	else if (world.cam.beta > 1.5f) {
 		world.cam.beta = 1.5f;
 	}
-	frustum = Frustum(world.cam);
 }
 
 //void processSpecialKeys(int key, int xx, int yy);
@@ -890,12 +848,12 @@ void printInfo()
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version: %s\n", glGetString(GL_VERSION));
 
-	printf("In explorer mode: %s\n%s\n\n",
-	       "z/x change sphere radius",
-	       "\ta/w/s/d move around the sphere");
-	printf("Globally: %s\n%s\n",
-	       "+/- change tesselation level of auxiliary drawings",
-	       "\tl toggles auxiliary drawings");
+    printf("In explorer mode: %s\n%s\n\n",
+           "z/x change sphere radius",
+           "\ta/w/s/d move around the sphere");
+    printf("Globally: %s\n%s\n",
+           "+/- change tesselation level of auxiliary drawings",
+           "\tl toggles auxiliary drawings");
 }
 
 int main(int argc, char **argv)

@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <map>
 #include <vector>
+#include <float.h>
 #include <math.h>
 
 struct pair {
