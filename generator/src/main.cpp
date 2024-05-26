@@ -670,7 +670,7 @@ int32_t gen_plane(float full_size,
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	std::string coord;
-	float x = -full_size / 2, z = x, off = full_size / divs;
+	float x = -(full_size / 2), z = x, off = full_size / divs;
 	float px, py = 0.f, pz;
     float pnx, pny, pnz;
 	int i, j, l,fix, err = 0;
@@ -749,7 +749,7 @@ int32_t gen_plane(float full_size,
                 std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
-			x -= off;
+			x += off;
 		}
 		x = full_size / 2;
 		z += off;
