@@ -19,7 +19,6 @@ int global = 0;
 float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
-bool first_mipmapping = true;
 
 struct triple {
 	float x, y, z;
@@ -242,7 +241,7 @@ int loadTexture(char*s) {
 
 	// Upload dos dados de imagem
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-    if (mipmapping and first_mipmapping)
+    if (mipmapping)
         glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return texID;
@@ -820,8 +819,7 @@ void processKeys(unsigned char c, int xx, int yy)
                 world.primitives[i].texID[j] = loadTexture((char *) world.primitives[i].texture[j].c_str());
             }
         }
-        if (first_mipmapping)
-            first_mipmapping = false;
+        break;
     }
 
 
