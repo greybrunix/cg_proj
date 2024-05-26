@@ -250,44 +250,44 @@ int loadTexture(char*s) {
 void group_read_model(int cur_g, struct prims* tmp_p,
                       XMLElement *color_xml, XMLElement *txt_xml)
 {
-XMLElement* elem;
-rgb rgb;
-colour color;
-float shn;
-if (color_xml) {
-rgb.r = 0;
-rgb.g = 0;
-rgb.b = 0;
-color.specular = rgb;
-color.emissive = rgb;
-rgb.r = 200;
-rgb.g = 200;
-rgb.b = 200;
-color.diffuse = rgb;
-rgb.r = 50;
-rgb.g = 50;
-rgb.b = 50;
-color.ambient = rgb;
-shn = 0;
-color.shininess = shn;
-elem = color_xml->FirstChildElement("diffuse");
-if (elem) {
-rgb.r = elem->FloatAttribute("R");
-rgb.g = elem->FloatAttribute("G");
-rgb.b = elem->FloatAttribute("B");
-color.diffuse = rgb;
-}
-elem = color_xml->FirstChildElement("ambient");
-if (elem) {
-rgb.r = elem->FloatAttribute("R");
-rgb.g = elem->FloatAttribute("G");
-rgb.b = elem->FloatAttribute("B");
-color.ambient = rgb;
-}
-elem = color_xml->FirstChildElement("specular");
-if (elem) {
-rgb.r = elem->FloatAttribute("R");
-rgb.g = elem->FloatAttribute("G");
+    XMLElement* elem;
+    rgb rgb;
+    colour color;
+    float shn;
+    if (color_xml) {
+        rgb.r = 0;
+        rgb.g = 0;
+        rgb.b = 0;
+        color.specular = rgb;
+        color.emissive = rgb;
+        rgb.r = 200;
+        rgb.g = 200;
+        rgb.b = 200;
+        color.diffuse = rgb;
+        rgb.r = 50;
+        rgb.g = 50;
+        rgb.b = 50;
+        color.ambient = rgb;
+        shn = 0;
+        color.shininess = shn;
+        elem = color_xml->FirstChildElement("diffuse");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.diffuse = rgb;
+        }
+        elem = color_xml->FirstChildElement("ambient");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.ambient = rgb;
+        }
+        elem = color_xml->FirstChildElement("specular");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
             rgb.b = elem->FloatAttribute("B");
             color.specular = rgb;
         }
