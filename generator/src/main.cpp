@@ -670,7 +670,7 @@ int32_t gen_plane(float full_size,
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	std::string coord;
-	float x = full_size / 2, z = -x, off = full_size / divs;
+	float x = -full_size / 2, z = x, off = full_size / divs;
 	float px, py = 0.f, pz;
     float pnx, pny, pnz;
 	int i, j, l,fix, err = 0;
@@ -681,12 +681,11 @@ int32_t gen_plane(float full_size,
     pny = 1;
     pnz = 0;
 	for (i = 0; i < divs; i++) {
-		fix = divs-i;
 		for (j = 0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=(fix-1)*texture;
+			finaltexture[0]=i*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			pz = z + off;
@@ -697,7 +696,7 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=(fix-1)*texture;
+			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			px = x;
 			pz = z;
@@ -708,9 +707,9 @@ int32_t gen_plane(float full_size,
 			
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=fix*texture;
+			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
-			px = x - off;
+			px = x + off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
                 std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
@@ -719,9 +718,9 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=fix*texture;
+			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
-			px = x - off;
+			px = x + off;
 			pz = z;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
                 std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
@@ -730,9 +729,9 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=fix*texture;
+			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
-			px = x - off;
+			px = x + off;
 			pz = z + off;
 			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
                 std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
@@ -741,7 +740,7 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=(fix-1)*texture;
+			finaltexture[0]=i*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			pz = z + off;
