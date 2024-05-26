@@ -607,6 +607,10 @@ int32_t gen_cone(float radius,
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 			}
 			else {
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
+				texture2[0] = (float)(j+1) / slices;
+				texture2[1] = (float)(i+1) / stacks;
 				px = (cur_rad - xz_diff) * sinf(angle + angle_diff);
 				pnx = cosf(atan(radius / height)) * sinf(angle + angle_diff);
 				py = y + y_diff;
