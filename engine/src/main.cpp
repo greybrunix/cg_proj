@@ -30,6 +30,7 @@ float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
 bool explorer = true;
+bool vfc = false;
 unsigned long drawn = 0, total_proc = 0;
 
 Frustum frustum = Frustum();
@@ -628,7 +629,6 @@ void changeSize(int w, int h)
 
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
-	frustum = Frustum(world.cam);
 }
 
 void drawfigs(void)
@@ -649,8 +649,9 @@ void drawfigs(void)
 		multiplyMatrices(projectionMatrix, modelViewMatrix, modelViewProjectionMatrix);
 		for (k = 0; k < world.primitives.size(); k++) {
 			total_proc++;
-			world.primitives[k].box.transformAABB(modelViewProjectionMatrix);
-			if (frustum.BoxInFrustum(world.primitives[k].box) != Frustum::OUTSIDE)
+			if (vfc)
+				world.primitives[k].box.transformAABB(modelViewProjectionMatrix);
+			if (!vfc || frustum.BoxInFrustum(world.primitives[k].box) != Frustum::OUTSIDE)
 				if (world.primitives[k].group == g)
 					for (i = 0; i < prims.size(); i++)
 						if (!strcmp(prims[i].name, world.primitives[k].name)) {
@@ -757,6 +758,7 @@ void renderScene(void)
 	      world.cam.lookAt.x, world.cam.lookAt.y,
 	      world.cam.lookAt.z,
 	      world.cam.up.x, world.cam.up.y, world.cam.up.z);
+	frustum = Frustum(world.cam);
 
     // Set the polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -867,6 +869,8 @@ void processKeys(unsigned char c, int xx, int yy)
 			}
 		}
 		break;
+	case 'F':
+		vfc = vfc ? false: true;
 	case '3':
 		explorer = false;
 		break;
