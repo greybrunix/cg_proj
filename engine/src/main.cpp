@@ -812,6 +812,12 @@ void processKeys(unsigned char c, int xx, int yy)
     case 'x':
         world.cam.dist += 0.1;
         break;
+    case 'o':
+        world.cam.dist -= 10;
+        break;
+    case 'p':
+        world.cam.dist += 10;
+        break;
     case 'm':
         mipmapping = !mipmapping;
         for (int i=0; i<world.primitives.size(); i++) {
