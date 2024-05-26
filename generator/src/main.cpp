@@ -670,7 +670,9 @@ int32_t gen_plane(float full_size,
 	FILE* output = fopen(file, "w+");
 	char buff[512];
 	std::string coord;
-	float x = -(full_size / 2), z = x, off = full_size / divs;
+	float x = -(full_size / 2);
+	float z = -(full_size / 2);
+	float off = full_size / divs;
 	float px, py = 0.f, pz;
     float pnx, pny, pnz;
 	int i, j, l,fix, err = 0;
