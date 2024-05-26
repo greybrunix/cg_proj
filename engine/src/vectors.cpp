@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "viewfrustum.hpp"
+#include "vectors.hpp"
 static float Q_rsqrt(float number)
 {
 	long i;
@@ -51,4 +51,15 @@ void normalize(triple& v)
 {
 	float l = Q_rsqrt(v.x*v.x + v.y*v.y + v.z*v.z);
 	scalar(v,l,v);
+}
+
+void mult_mat_vec(float* m, float* v, float* r)
+{
+	int j,k;
+	for (j=0; j<4;++j) {
+		r[j] = 0;
+		for (k=0;k<4;++k) {
+			r[j] += v[k] * m[j*4+k];
+		}
+	}
 }
