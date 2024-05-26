@@ -682,7 +682,7 @@ int32_t gen_cone(float radius,
             			h1 = height - (i * y_diff);
             			h2 = height - ((i+1) * y_diff);
             			r1 = h1 / rat;
-           	 		r2 = h2 / razt;
+           	 		r2 = h2 / rat;
 				
 				x1 = r1 * sin(angle_diff * j);
 				y1 = (i * y_diff);
