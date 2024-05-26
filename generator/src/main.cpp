@@ -75,12 +75,12 @@ char* file)
     for (int i = 0; i < slices; i++) {
         for (int j = 0; j < stacks; j++) {
             if (j != 0) {
-                px = radius * cos(M_PI_2 - beta) * sin(alpha);
-                py = radius * sin(M_PI_2 - beta);
-                pz = radius * cos(M_PI_2 - beta) * cos(alpha);
-                pnx = cos(M_PI_2 - beta) * sin(alpha);
-                pny = sin(M_PI_2 - beta);
-                pnz = cos(M_PI_2 - beta) * cos(alpha);
+                px = radius * cos(beta + M_PI_2 ) * sin(alpha);
+                py = radius * sin(beta + M_PI_2 );
+                pz = radius * cos(M_PI_2 + beta) * cos(alpha);
+                pnx = cos(M_PI_2 + beta) * sin(alpha);
+                pny = sin(M_PI_2 + beta);
+                pnz = cos(M_PI_2 + beta) * cos(alpha);
 
                 normalize(&pnx, &pny, &pnz);
                 texture[0] = (float) i / slices;
@@ -88,12 +88,12 @@ char* file)
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-                px = radius * cos(M_PI_2 - beta + beta_diff) * sin(alpha + alpha_diff);
-                py = radius * sin(M_PI_2 - beta + beta_diff);
-                pz = radius * cos(M_PI_2 - beta + beta_diff) * cos(alpha + alpha_diff);
-                pnx = cos(M_PI_2 - beta + beta_diff) * sin(alpha + alpha_diff);
-                pny = sin(M_PI_2 - beta + beta_diff);
-                pnz = cos(M_PI_2 - beta + beta_diff) * cos(alpha + alpha_diff);
+                px = radius * cos(M_PI_2 + beta + beta_diff) * sin(alpha + alpha_diff);
+                py = radius * sin(M_PI_2 + beta + beta_diff);
+                pz = radius * cos(M_PI_2 + beta + beta_diff) * cos(alpha + alpha_diff);
+                pnx = cos(M_PI_2 + beta + beta_diff) * sin(alpha + alpha_diff);
+                pny = sin(M_PI_2 + beta + beta_diff);
+                pnz = cos(M_PI_2 + beta + beta_diff) * cos(alpha + alpha_diff);
 
                 normalize(&pnx, &pny, &pnz);
                 texture[0] = (float) (i + 1) / slices;
@@ -101,12 +101,12 @@ char* file)
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-                px = radius * cos(M_PI_2 - beta) * sin(alpha + alpha_diff );
-                py = radius * sin(M_PI_2 - beta);
-                pz = radius * cos(M_PI_2 - beta) * cos(alpha + alpha_diff);
-                pnx = cos(M_PI_2 - beta) * sin(alpha + alpha_diff );
-                pny = sin(M_PI_2 - beta);
-                pnz = cos(M_PI_2 - beta) * cos(alpha + alpha_diff);
+                px = radius * cos(M_PI_2 + beta) * sin(alpha + alpha_diff );
+                py = radius * sin(M_PI_2 + beta);
+                pz = radius * cos(M_PI_2 + beta) * cos(alpha + alpha_diff);
+                pnx = cos(M_PI_2 + beta) * sin(alpha + alpha_diff );
+                pny = sin(M_PI_2 + beta);
+                pnz = cos(M_PI_2 + beta) * cos(alpha + alpha_diff);
 
                 normalize(&pnx, &pny, &pnz);
                 texture[0] = (float) (i + 1) / slices;
@@ -115,12 +115,12 @@ char* file)
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
             }
             if (j != stacks - 1) {
-                px = radius * cos(M_PI_2 - beta ) * sin(alpha);
-                py = radius * sin(M_PI_2 - beta );
-                pz = radius * cos(M_PI_2 - beta ) * cos(alpha);
-                pnx = cos(M_PI_2 - beta) * sin(alpha);
-                pny = sin(M_PI_2 - beta);
-                pnz = cos(M_PI_2 - beta) * cos(alpha);
+                px = radius * cos(M_PI_2 + beta ) * sin(alpha);
+                py = radius * sin(M_PI_2 + beta );
+                pz = radius * cos(M_PI_2 + beta ) * cos(alpha);
+                pnx = cos(M_PI_2 + beta) * sin(alpha);
+                pny = sin(M_PI_2 + beta);
+                pnz = cos(M_PI_2 + beta) * cos(alpha);
 
                 normalize(&pnx, &pny, &pnz);
                 texture[0] = (float) i / slices;
@@ -128,12 +128,12 @@ char* file)
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-                px = radius * cos(M_PI_2 - beta + beta_diff) * sin(alpha);
-                py = radius * sin(M_PI_2 - beta + beta_diff);
-                pz = radius * cos(M_PI_2 - beta + beta_diff) * cos(alpha);
-                pnx = cos(M_PI_2 - beta + beta_diff) * sin(alpha);
-                pny = sin(M_PI_2 - beta + beta_diff);
-                pnz = cos(M_PI_2 - beta + beta_diff) * cos(alpha);
+                px = radius * cos(M_PI_2 + beta + beta_diff) * sin(alpha);
+                py = radius * sin(M_PI_2 + beta + beta_diff);
+                pz = radius * cos(M_PI_2 + beta + beta_diff) * cos(alpha);
+                pnx = cos(M_PI_2 + beta + beta_diff) * sin(alpha);
+                pny = sin(M_PI_2 + beta + beta_diff);
+                pnz = cos(M_PI_2 + beta + beta_diff) * cos(alpha);
 
                 normalize(&pnx, &pny, &pnz);
                 texture[0] = (float) i / slices;
@@ -141,12 +141,12 @@ char* file)
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-                px = radius * cos(M_PI_2 - beta + beta_diff) * sin(alpha + alpha_diff);
-                py = radius * sin(M_PI_2 - beta + beta_diff);
-                pz = radius * cos(M_PI_2 - beta + beta_diff) * cos(alpha + alpha_diff);
-                pnx = cos(M_PI_2 - beta + beta_diff) * sin(alpha + alpha_diff);
-                pny = sin(M_PI_2 - beta + beta_diff);
-                pnz = cos(M_PI_2 - beta + beta_diff) * cos(alpha + alpha_diff);
+                px = radius * cos(M_PI_2 + beta + beta_diff) * sin(alpha + alpha_diff);
+                py = radius * sin(M_PI_2 + beta + beta_diff);
+                pz = radius * cos(M_PI_2 + beta + beta_diff) * cos(alpha + alpha_diff);
+                pnx = cos(M_PI_2 + beta + beta_diff) * sin(alpha + alpha_diff);
+                pny = sin(M_PI_2 + beta + beta_diff);
+                pnz = cos(M_PI_2 + beta + beta_diff) * cos(alpha + alpha_diff);
 
                 normalize(&pnx, &pny, &pnz);
                 texture[0] = (float) (i + 1) / slices;
