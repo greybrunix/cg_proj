@@ -29,7 +29,6 @@ int global = 0;
 float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
-bool explorer = true;
 bool vfc = true;
 unsigned long drawn = 0, total_proc = 0;
 Frustum frustum;
@@ -884,9 +883,6 @@ void processKeys(unsigned char c, int xx, int yy)
 		break;
 	case 'F':
 		vfc = vfc ? false: true;
-	case '3':
-		explorer = false;
-		break;
 	}
 
 
