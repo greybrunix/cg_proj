@@ -533,7 +533,7 @@ int32_t gen_cone(float radius,
 	float y_diff = height / stacks;
 	float pnx, pny, pnz;
 	float texture[2],texture2[2];
-	float x1,x2,x3,x4,y1,y2,y3,y4,z1,z2,z3,z4;
+	float x1,x2,x3,x4,y1,y2,y3,y4,z1,z2,z3,z4,r1,r2,h1,h2;
 	for (i = 0; i < stacks; i++) {
 		for (j = 0; j < slices; j++) {
 			// Bottom face
