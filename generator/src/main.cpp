@@ -583,7 +583,7 @@ int32_t gen_cone(float radius,
 				px = cur_rad * sinf(angle + angle_diff);
 				pnx= cosf(atan(radius / height)) * sinf(angle + angle_diff);
 				py = y;
-				pny = cosf(atan(radius / height)) * sinf(atan(radius / height));
+				pny = sinf(atan(radius / height));
 				pz = cur_rad * cosf(angle + angle_diff);
 				pnz= cosf(atan(radius / height)) * cosf(angle + angle_diff);
                 		normalize(&pnx, &pny, &pnz);
@@ -613,61 +613,61 @@ int32_t gen_cone(float radius,
 			}
 			else {
 				px = (cur_rad - xz_diff) * sinf(angle + angle_diff);
-				pnx = sinf(angle + angle_diff);
+				pnx = cosf(atan(radius / height)) * sinf(angle + angle_diff);
 				py = y + y_diff;
 				pny = sinf(atan(radius / height));
 				pz = (cur_rad - xz_diff) * cosf(angle + angle_diff);
-				pnz = cosf(angle + angle_diff);
+				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
 				px = (cur_rad - xz_diff) * sinf(angle);
-				pnx = sinf(angle);
+				pnx = cosf(atan(radius / height)) * sinf(angle);
 				py = y + y_diff;
 				pny = sinf(atan(radius / height));
 				pz = (cur_rad - xz_diff) * cosf(angle);
-				pnz = cosf(angle);
+				pnz = cosf(atan(radius / height)) * cosf(angle);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
-				pnx = sinf(angle + angle_diff);
+				pnx = cosf(atan(radius / height)) * sinf(angle + angle_diff);
 				py = y;
 				pny = sinf(atan(radius / height));
 				pz = cur_rad * cosf(angle + angle_diff);
-				pnz = cosf(angle + angle_diff);
+				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 
 				px = (cur_rad - xz_diff) * sinf(angle);
-				pnx= sinf(angle);
+				pnx= cosf(atan(radius / height)) * sinf(angle);
 				py = y + y_diff;
 				pny = sinf(atan(radius / height));
 				pz = (cur_rad - xz_diff) * cosf(angle);
-				pnz= cosf(angle);
+				pnz= cosf(atan(radius / height)) * cosf(angle);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 
 				px = cur_rad * sinf(angle);
-				pnx = sinf(angle);
+				pnx = cosf(atan(radius / height)) * sinf(angle);
 				py = y;
 				pny = sinf(atan(radius / height));
 				pz = cur_rad * cosf(angle);
-				pnz = cosf(angle);
+				pnz = cosf(atan(radius / height)) * cosf(angle);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
 
 				px = cur_rad * sinf(angle + angle_diff);
-				pnx= sinf(angle + angle_diff);
+				pnx= cosf(atan(radius / height)) * sinf(angle + angle_diff);
 				py = y;
 				pny = sinf(atan(radius / height));
 				pz = cur_rad * cosf(angle + angle_diff);
-				pnz = cosf(angle + angle_diff);
+				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);
