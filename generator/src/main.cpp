@@ -532,6 +532,7 @@ int32_t gen_cone(float radius,
 	float y_diff = height / stacks;
 	float pnx, pny, pnz;
 	float texture[2],texture2[2];
+	float x1,x2,x3,x4,y1,y2,y3,y4,z1,z2,z3,z4;
 	for (i = 0; i < stacks; i++) {
 		for (j = 0; j < slices; j++) {
 			// Bottom face
@@ -560,53 +561,7 @@ int32_t gen_cone(float radius,
 				pz = cur_rad * cosf(angle + angle_diff);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
-			}
 
-			//coneAngle = atan(r / h)
-			//(cos(coneAngle) * cos(circleAngle), sin(coneAngle), cos(coneAngle) * sin(circleAngle))
-			if (i == stacks - 1) {
-				
-				texture[0] = (float)j / slices;
-				texture[1] = (float)i / stacks;
-				px = cur_rad * sinf(angle + angle_diff);
-				pnx= cosf(atan(radius / height)) * sinf(angle + angle_diff);
-				py = y;
-				pny = sinf(atan(radius / height));
-				pz = cur_rad * cosf(angle + angle_diff);
-				pnz= cosf(atan(radius / height)) * cosf(angle + angle_diff);
-                		normalize(&pnx, &pny, &pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
-
-				//texture[0] = (float)j / slices;
-				//texture[1] = (float)i / stacks;
-				
-				texture[0] = 0.5f;
-				texture[1] = 1.0f; // height/height
-				
-				px = 0.0f;
-				pnx = cosf(atan(radius / height));
-				py = height;
-				pny = sinf(atan(radius / height));
-				pz = 0.0f;
-				pnz = cosf(atan(radius / height));
-                		normalize(&pnx, &pny, &pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
-
-				texture[0] = (float)j / slices;
-				texture[1] = (float)i / stacks;
-				px = cur_rad * sinf(angle);
-				pnx = cosf(atan(radius / height)) * sinf(angle);
-				py = y;
-				pny = sinf(atan(radius / height));
-				pz = cur_rad * cosf(angle);
-				pnz= cosf(atan(radius / height)) * cosf(angle);
-               			normalize(&pnx, &pny, &pnz);
-				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
-			}
-			else {
 				texture[0] = (float)j / slices;
 				texture[1] = (float)i / stacks;
 				texture2[0] = (float)(j+1) / slices;
@@ -670,6 +625,184 @@ int32_t gen_cone(float radius,
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture2[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);
+				
+			}
+
+			//coneAngle = atan(r / h)
+			/*//(cos(coneAngle) * cos(circleAngle), sin(coneAngle), cos(coneAngle) * sin(circleAngle))
+			if (i == stacks - 1) {
+				
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
+				px = cur_rad * sinf(angle + angle_diff);
+				pnx= cosf(atan(radius / height)) * sinf(angle + angle_diff);
+				py = y;
+				pny = sinf(atan(radius / height));
+				pz = cur_rad * cosf(angle + angle_diff);
+				pnz= cosf(atan(radius / height)) * cosf(angle + angle_diff);
+                		normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+
+				//texture[0] = (float)j / slices;
+				//texture[1] = (float)i / stacks;
+				
+				texture[0] = 0.5f;
+				texture[1] = 1.0f; // height/height
+				
+				px = 0.0f;
+				pnx = cosf(atan(radius / height));
+				py = height;
+				pny = sinf(atan(radius / height));
+				pz = 0.0f;
+				pnz = cosf(atan(radius / height));
+                		normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
+
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
+				px = cur_rad * sinf(angle);
+				pnx = cosf(atan(radius / height)) * sinf(angle);
+				py = y;
+				pny = sinf(atan(radius / height));
+				pz = cur_rad * cosf(angle);
+				pnz= cosf(atan(radius / height)) * cosf(angle);
+               			normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
+			}*/
+			else {
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
+				texture2[0] = (float)(j+1) / slices;
+				texture2[1] = (float)(i+1) / stacks;
+				
+            			h1 = height - (i * y_diff);
+            			h2 = height - ((i+1) * y_diff);
+            			r1 = h1 / xz_diff;
+           	 		r2 = h2 / xz_diff;
+				
+				x1 = r1 * sin(angle_diff * j);
+				y1 = (i * y_diff);
+				z1 = r1 * cos(angle_diff * j);
+				
+				//px = (cur_rad - xz_diff) * sinf(angle + angle_diff);
+				px = r1 * sin(angle_diff * j);
+				pnx = cosf(atan(radius / height)) * sinf(angle + angle_diff);
+				
+				//py = y + y_diff;
+				py =  y;
+				pny = sinf(atan(radius / height));
+
+				//pz = (cur_rad - xz_diff) * cosf(angle + angle_diff);
+				pz = r1 * cos(angle_diff * j);
+				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
+				normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+
+				x2 = r1 * sin(angle_diff * (j+1));
+				y1 = (i * y_diff);
+				z2 = r1 * cos(angle_diff * (j+1));
+
+				//px = (cur_rad - xz_diff) * sinf(angle);
+				px= r1 * sin(angle_diff * (j+1));
+				pnx = cosf(atan(radius / height)) * sinf(angle);
+				
+				//py = y + y_diff;
+				py = y;
+				pny = sinf(atan(radius / height));
+				
+				//pz = (cur_rad - xz_diff) * cosf(angle);
+				pz = r1 * cos(angle_diff * (j+1));
+				pnz = cosf(atan(radius / height)) * cosf(angle);
+				normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
+
+				x4 = r2 * sin(angle_diff * j);
+				y2 = (i+1) * y_diff;
+				z4 = r2 * cos(angle_diff * j);
+
+				//px = cur_rad * sinf(angle + angle_diff);
+				px = r2 * sin(angle_diff * j);
+				pnx = cosf(atan(radius / height)) * sinf(angle + angle_diff);
+				
+				//py = y;
+				py = y+y_diff;
+				pny = sinf(atan(radius / height));
+				
+				//pz = cur_rad * cosf(angle + angle_diff);
+				pz = r2 * cos(angle_diff * j);
+				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
+				normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
+			
+			if(i!= stacks-1){
+				
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
+				texture2[0] = (float)(j+1) / slices;
+				texture2[1] = (float)(i+1) / stacks;
+
+				x4 = r2 * sin(angle_diff * j);
+				y2 = (i+1) * y_diff;
+				z4 = r2 * cos(angle_diff * j);
+				
+
+				//px = (cur_rad - xz_diff) * sinf(angle);
+				px = r2 * sin(angle_diff * j);
+				pnx= cosf(atan(radius / height)) * sinf(angle);
+				
+				py = y + y_diff;
+				pny = sinf(atan(radius / height));
+				
+				//pz = (cur_rad - xz_diff) * cosf(angle);
+				pz = r2 * cos(angle_diff * j);
+				pnz= cosf(atan(radius / height)) * cosf(angle);
+				normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture2[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
+
+				x2 = r1 * sin(angle_diff * (j+1));
+				y1 = (i * y_diff);
+				z2 = r1 * cos(angle_diff * (j+1));
+				
+
+				//px = cur_rad * sinf(angle);
+				px = r1 * sin(angle_diff * (j+1)); 
+				pnx = cosf(atan(radius / height)) * sinf(angle);
+				
+				py = y;
+				pny = sinf(atan(radius / height));
+				
+				//pz = cur_rad * cosf(angle);
+				pz =  r1 * cos(angle_diff * (j+1));
+				pnz = cosf(atan(radius / height)) * cosf(angle);
+				normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
+
+
+				x3 = r2 * sin(angle_diff * (j+1));
+				y2 = (i+1) * y_diff;
+				z3 = r2 * cos(angle_diff * (j+1));
+
+				//px = cur_rad * sinf(angle + angle_diff);
+				px = r2 * sin(angle_diff * (j+1));
+				pnx= cosf(atan(radius / height)) * sinf(angle + angle_diff);
+				py = y+y_diff;
+				pny = sinf(atan(radius / height));
+				
+				//pz = cur_rad * cosf(angle + angle_diff);
+				pz = r2 * cos(angle_diff * (j+1));
+				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
+				normalize(&pnx, &pny, &pnz);
+				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture2[1]);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);
+				}
 			}
 			angle += angle_diff;
 		}
