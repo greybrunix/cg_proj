@@ -185,7 +185,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			finaltexture[0]=(i+1)*texture;
@@ -193,7 +193,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x+diff;
 			py = y;
 			pz = pz+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			finaltexture[0]=(i+1)*texture;
@@ -201,7 +201,7 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x+diff;
 			py= y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 
@@ -210,21 +210,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x+diff;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//Bottom
@@ -236,21 +236,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x+diff;
 			py = -y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			px = x;
 			py = -y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
 			px = x+diff;
 			py = -y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			finaltexture[0]=i*texture;
@@ -258,21 +258,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = -y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			pz = x;
 			py = -y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x+diff;
 			py = -y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			z += diff;
@@ -298,21 +298,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x+diff;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
 			px = x+diff;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			finaltexture[0]=i*texture;
@@ -320,21 +320,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x+diff;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//Back
@@ -347,21 +347,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x+diff;
 			py = y+diff;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
 			px = x+diff;
 			py = y;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			finaltexture[0]=i*texture;
@@ -369,21 +369,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			py = y+diff;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x+diff;
 			py = y+diff;
 			pz = -z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			y += diff;
@@ -409,21 +409,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
 			px = x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			finaltexture[0]=i*texture;
@@ -431,21 +431,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			//Left
@@ -458,21 +458,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = -x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			px = -x;
 			py = y;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=j*texture;
 			px = -x;
 			py = y;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
 			finaltexture[0]=i*texture;
@@ -480,21 +480,21 @@ int32_t gen_box(float l, int32_t d, char* file)
 			px = -x;
 			py = y+diff;
 			pz = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=i*texture;
 			finaltexture[1]=j*texture;
 			px = -x;
 			py = y;
 			z = z;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			finaltexture[0]=(i+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = -x;
 			py = y+diff;
 			pz = z+diff;
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
 			y += diff;
@@ -559,10 +559,7 @@ int32_t gen_cone(float radius,
 			texture[1] = (float)i / stacks;
 			texture2[0] = (float)(j+1) / slices;
 			texture2[1] = (float)(i + 1) / stacks;
-            printf("%f %f %f %f\n", texture[0], texture[1], texture2[0], texture2[1]);
 
-			//coneAngle = atan(r / h)
-			//(cos(coneAngle) * cos(circleAngle), sin(coneAngle), cos(coneAngle) * sin(circleAngle))
 			if (i == stacks - 1) {
 
 				px = cur_rad * sinf(angle + angle_diff);
@@ -859,96 +856,6 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 	fclose(output);
 	return rr;
 }
-/*
-int32_t gen_cylinder(float radius, float height, int32_t slices, char* file)
-{
-	FILE* output = fopen(file, "w+");
-	if (output == NULL) {
-		perror("Error opening file");
-		return -1;
-	}
-	std::string coord;
-	float angle_diff = 2 * M_PI / slices;
-	float px, py, pz;
-
-	// Generate vertices for the side faces
-	for (int i = 0; i < slices; i++) {
-		float angle = i * angle_diff;
-		float next_angle = (i + 1) * angle_diff;
-
-		float x0 = radius * sinf(angle);
-		float z0 = radius * cosf(angle);
-		float x1 = radius * sinf(next_angle);
-		float z1 = radius * cosf(next_angle);
-
-		// Generate vertices for the bottom face
-		px = 0.0f;
-		py = 0.0f;
-		pz = 0.0f;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x0;
-		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x1;
-		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-
-		// Generate vertices for the top face
-		px = 0.0f;
-		py = height;
-		pz = 0.0f;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x1;
-		py = height;
-		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x0;
-		py = height;
-		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-
-		// Generate vertices for the side faces
-		px = x0;
-		py = 0.0f;
-		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x0;
-		py = height;
-		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x1;
-		py = 0.0f;
-		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x1;
-		py = 0.0f;
-		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x0;
-		py = height;
-		pz = z0;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-		px = x1;
-		py = height;
-		pz = z1;
-		coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
-		write_file(coord, px, py, pz, output);
-	}
-
-	fclose(output);
-	return 0;
-}*/
 
 void multMM(float a[4][4], float b[4][4], float res[4][4]) {
 	for (int i = 0; i < 4; i++)
@@ -1115,22 +1022,34 @@ int32_t bezieraux(float px[4][4], float py[4][4], float pz[4][4], int tesselatio
 			multcr(pu4, pv4, re4);
 			normalize(&re4[0], &re4[1], &re4[2]);
 
-			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1) + std::to_string(re1[0]) + std::to_string(re1[1]) + std::to_string(re1[2]) + std::to_string(j) + std::to_string(i);
+			coord = std::to_string(x1) + std::to_string(y1) + std::to_string(z1) + 
+                std::to_string(re1[0]) + std::to_string(re1[1]) + std::to_string(re1[2]) + 
+                std::to_string(j) + std::to_string(i);
 			write_file(coord, x1, y1, z1, re1[0], re1[1], re1[2], j, i, output);
 			
-			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2) + std::to_string(re2[0]) + std::to_string(re2[1]) + std::to_string(re2[2]) + std::to_string(j) + std::to_string(i+t);
+			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2) + 
+                std::to_string(re2[0]) + std::to_string(re2[1]) + std::to_string(re2[2]) + 
+                std::to_string(j) + std::to_string(i+t);
 			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+t, output);
 			
-			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4) + std::to_string(re4[0]) + std::to_string(re4[1]) + std::to_string(re4[2]) + std::to_string(j+t) + std::to_string(i);
+			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4) + 
+                std::to_string(re4[0]) + std::to_string(re4[1]) + std::to_string(re4[2]) + 
+                std::to_string(j+t) + std::to_string(i);
 			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+t,i, output);
 			
-			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2) + std::to_string(re2[0]) + std::to_string(re2[1]) + std::to_string(re2[2]) + std::to_string(j) + std::to_string(i+t);
+			coord = std::to_string(x2) + std::to_string(y2) + std::to_string(z2) + 
+                std::to_string(re2[0]) + std::to_string(re2[1]) + std::to_string(re2[2]) + 
+                std::to_string(j) + std::to_string(i+t);
 			write_file(coord, x2, y2, z2, re2[0], re2[1], re2[2],j,i+t, output);
 			
-			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3) + std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]) + std::to_string(j+t) + std::to_string(i+t);
+			coord = std::to_string(x3) + std::to_string(y3) + std::to_string(z3) + 
+                std::to_string(re3[0]) + std::to_string(re3[1]) + std::to_string(re3[2]) + 
+                std::to_string(j+t) + std::to_string(i+t);
 			write_file(coord, x3, y3, z3, re3[0], re3[1], re3[2],j+t,i+t, output);
 			
-			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4) + std::to_string(re4[0]) + std::to_string(re4[1]) + std::to_string(re4[2]) + std::to_string(j+t) + std::to_string(i);
+			coord = std::to_string(x4) + std::to_string(y4) + std::to_string(z4) + 
+                std::to_string(re4[0]) + std::to_string(re4[1]) + std::to_string(re4[2]) + 
+                std::to_string(j+t) + std::to_string(i);
 			write_file(coord, x4, y4, z4, re4[0], re4[1], re4[2],j+t,i, output);
 		}
 	}
@@ -1164,10 +1083,8 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 	std::vector<std::vector<int>> indexes;
 
 
-	//printf("%d",strtok(output,"\n");
 	fgets(line, sizeof(line), fd);
 
-	//while (fgets(line, sizeof(line), fd) != NULL) {
 	int npatches = atoi(strtok(line, "\n"));
 
 	// 32 linhas
@@ -1200,24 +1117,14 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 
 	float mataux[4][4];
 
-	// Get the length of the vector
-	//size_t length = indexes.size();
-
-	// Print the length of the vector
-	//std::cout << "Length of the vector: " << length << std::endl;
-	//int testarnpontos = 0;
 	for (std::vector <int> quadrado:indexes) {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 
 				triple point = points[quadrado[i * 4 + j]];
-				//printf("%.3f ", point.x);
-				//printf("%.3f ", point.y);
-				//printf("%.3f\n", point.z);
 				px[j][i] = point.x;
 				py[j][i] = point.y;
 				pz[j][i] = point.z;
-				//testarnpontos++;
 
 			}
 
@@ -1234,7 +1141,6 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 
 		bezieraux(px, py, pz, tesselation, output);
 	}
-	//printf("%d",testarnpontos);
 	fclose(fd);
 	fclose(output);
 	return 0;
@@ -1309,20 +1215,6 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[5]),
 			      argv[6]);
 	}
-    /*
-	else if (!strcmp(argv[1], "cylinder")) {
-		if (argc != 6) {
-			err = -1;
-			goto clean;
-		}
-		strcat(tmp, argv[5]);
-		strcpy(argv[5], tmp);
-		err = gen_cylinder(atof(argv[2]),
-			      atoi(argv[3]),
-			      atoi(argv[4]),
-			      argv[5]);
-	}
-    */
 	if (!strcmp(argv[1], "patch")) {
 		if (argc != 5) {
 			err = -1;
