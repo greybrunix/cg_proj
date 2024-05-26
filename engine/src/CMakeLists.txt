@@ -5,7 +5,7 @@ PROJECT(engine)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-add_executable(${PROJECT_NAME} main.cpp transforms.cpp viewfrustum.cpp)
+add_executable(${PROJECT_NAME} main.cpp transforms.cpp viewfrustum.cpp vectors.cpp)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})

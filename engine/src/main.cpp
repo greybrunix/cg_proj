@@ -1,3 +1,16 @@
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/glxew.h>
+#endif
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include "transforms.hpp"
 #include "viewfrustum.hpp"
 #include <tinyxml2.h>
 #include <cstring>
@@ -10,6 +23,32 @@
 #include <IL/il.h>
 
 using namespace tinyxml2;
+
+struct prims {
+	int count;
+	int group;
+	char name[64];
+};
+
+
+struct ident_prim {
+	char name[64];
+	GLuint vbo, ibo, vertex_count;
+	unsigned int index_count;
+};
+
+struct world {
+	struct {
+	    int h, w, sx, sy;
+		char title[64];
+	} win;
+	camera cam;
+	std::vector<struct trans> transformations;
+	std::vector<struct prims> primitives;
+};
+
+typedef std::vector<struct ident_prim> Primitive_Coords;
+
 
 int timebase, time, frames = 0;
 float fps;
@@ -392,7 +431,7 @@ void group_read_transform(int cur_parent, int cur_g,
 			  bool reading = false)
 {
 	struct trans tmp;
-	std::vector<point> points;
+	std::vector<float*> points;
 	XMLElement* tran = !reading ? transform->FirstChildElement() :
 		transform->NextSiblingElement();
 	XMLElement* points_t;
@@ -601,7 +640,6 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, k, l, g;
-    frustum fr = create_from_camera(world.cam);
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
