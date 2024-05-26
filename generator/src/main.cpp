@@ -775,11 +775,13 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa);
 			pnz= outer_radius * cos(beta - M_PI_2) * sin(alfa);
 			normalize(&pnx,&pny,&pnz);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
+                std::to_string(texture[0]) + std::to_string(texture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
-			texture[0]=(float) (i+1)/stacks;
-			texture[1]=(float) j/slices;
+			texture[0]=(float) i/stacks;
+			texture[1]=(float) (j+1)/slices;
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
 			pnx= outer_radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa);
 			py = outer_radius * sin(beta - M_PI_2+ beta_diff);
@@ -787,11 +789,13 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
 			pnz= outer_radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa);
 			normalize(&pnx,&pny,&pnz);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
+                std::to_string(texture[0]) + std::to_string(texture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
-			texture[0]=(float) i/stacks;
-			texture[1]=(float) (j+1)/slices;
+			texture[0]=(float) (i+1)/stacks;
+			texture[1]=(float) j/slices;
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 )) * cos(alfa+alfa_diff);
 			pnx= outer_radius * cos(beta - M_PI_2 ) * cos(alfa+alfa_diff);
 			py =  outer_radius * sin(beta - M_PI_2);
@@ -799,11 +803,13 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 			pz= (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa+alfa_diff);
 			pnz= outer_radius * cos(beta - M_PI_2) * sin(alfa+alfa_diff);
 			normalize(&pnx,&pny,&pnz);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
+                std::to_string(texture[0]) + std::to_string(texture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
-			texture[0]=(float) (i+1)/stacks;
-			texture[1]=(float) j/slices;
+			texture[0]=(float) i/stacks;
+			texture[1]=(float) (j+1)/slices;
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * cos(alfa);
 			pnx= outer_radius * cos(beta - M_PI_2 + beta_diff) * cos(alfa);
 			py =  outer_radius * sin(beta - M_PI_2 + beta_diff);
@@ -811,7 +817,9 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa);
 			pnz= outer_radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa);
 			normalize(&pnx,&pny,&pnz);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
+                std::to_string(texture[0]) + std::to_string(texture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			texture[0]=(float) (i+1)/stacks;
@@ -823,11 +831,13 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 			pz = (inner_radius +outer_radius * cos(beta - M_PI_2 + beta_diff)) * sin(alfa + alfa_diff);
 			pnz = outer_radius * cos(beta - M_PI_2 + beta_diff) * sin(alfa + alfa_diff);
 			normalize(&pnx,&pny,&pnz);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
+                std::to_string(texture[0]) + std::to_string(texture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
-			texture[0]=(float) i/stacks;
-			texture[1]=(float) (j+1)/slices;
+			texture[0]=(float) (i+1)/stacks;
+			texture[1]=(float) j/slices;
 			px = (inner_radius + outer_radius * cos(beta - M_PI_2)) * cos(alfa + alfa_diff);
 			pnx= outer_radius * cos(beta - M_PI_2) * cos(alfa + alfa_diff);
 			py = outer_radius * sin(beta - M_PI_2);
@@ -835,7 +845,9 @@ int32_t gen_torus(float inner_radius, float outer_radius,
 			pz = (inner_radius + outer_radius * cos(beta - M_PI_2)) * sin(alfa + alfa_diff);
 			pnz = outer_radius * cos(beta - M_PI_2) * sin(alfa + alfa_diff);
 			normalize(&pnx,&pny,&pnz);
-			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz);
+			coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + 
+                std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) +
+                std::to_string(texture[0]) + std::to_string(texture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz, 0, 0, output);
 
 			beta += beta_diff;
@@ -1283,7 +1295,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[3]),
 			      atoi(argv[4]),
 			      argv[5]);
-	}/*
+	}
 	else if (!strcmp(argv[1], "torus")) {
 		if (argc != 7) {
 			err = -1;
@@ -1297,6 +1309,7 @@ int32_t main(int32_t argc, char**argv)
 			      atoi(argv[5]),
 			      argv[6]);
 	}
+    /*
 	else if (!strcmp(argv[1], "cylinder")) {
 		if (argc != 6) {
 			err = -1;
