@@ -561,15 +561,13 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 			}
-			texture[0] = (float)j / slices;
-			texture[1] = (float)i / stacks;
-			texture2[0] = (float)(j+1) / slices;
-			texture2[1] = (float)(i + 1) / slices;
 
 			//coneAngle = atan(r / h)
 			//(cos(coneAngle) * cos(circleAngle), sin(coneAngle), cos(coneAngle) * sin(circleAngle))
 			if (i == stacks - 1) {
-
+				
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
 				px = cur_rad * sinf(angle + angle_diff);
 				pnx= cosf(atan(radius / height)) * sinf(angle + angle_diff);
 				py = y;
@@ -580,7 +578,12 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-				// Ponto do topo normal 0 1 0?
+				//texture[0] = (float)j / slices;
+				//texture[1] = (float)i / stacks;
+				
+				texture[0] = 0.5f;
+				texture[1] = 1.0f; // height/height
+				
 				px = 0.0f;
 				pnx = cosf(atan(radius / height));
 				py = height;
@@ -589,8 +592,10 @@ int32_t gen_cone(float radius,
 				pnz = cosf(atan(radius / height));
                 		normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture2[1], output);
 
+				texture[0] = (float)j / slices;
+				texture[1] = (float)i / stacks;
 				px = cur_rad * sinf(angle);
 				pnx = cosf(atan(radius / height)) * sinf(angle);
 				py = y;
