@@ -73,43 +73,6 @@ int32_t gen_sphere(float radius,
 	float texture[2];
 	for (int i = 0; i < slices; i++) {
 		for (int j = 0; j < stacks; j++) {
-			if (j != 0) {
-					texture[0] = (float)i / slices;
-					texture[1] = (float)j / stacks;
-					px = radius * cosf(M_PI_2 - beta) * sinf(alpha); 
-					pnx = cosf(M_PI_2 - beta) * sinf(alpha); 
-					py = radius * sinf(M_PI_2 - beta);
-					pny = sinf(M_PI_2 - beta);
-					pz = radius * cosf(M_PI_2 - beta) * cosf(alpha);
-					pnz = cosf(M_PI_2 - beta) * cosf(alpha);
-					normalize(pnx, pny, pnz);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
-					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0],texture[1], output);
-
-					texture[0] = (float)(i+1) / slices;
-					texture[1] = (float)(j+1) / slices;
-					px = radius * cosf(M_PI_2 - beta + beta_diff) * sinf(alpha + alpha_diff);
-					pnx = cosf(M_PI_2 - beta + beta_diff) * sinf(alpha + alpha_diff);
-					py = radius * sinf(M_PI_2 - beta + beta_diff);
-					pny = sinf(M_PI_2 - beta + beta_diff);
-					pz = radius * cosf(M_PI_2 - beta + beta_diff) * cosf(alpha + alpha_diff);
-					pnz = cosf(M_PI_2 - beta + beta_diff) * cosf(alpha + alpha_diff);
-					normalize(pnx, pny, pnz);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
-					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
-
-					texture[0] = (float)(i+1) / slices;
-					texture[1] = (float)j / slices;
-					px = radius * cosf(M_PI_2 - beta) * sinf(alpha + alpha_diff);
-					pnx= cosf(M_PI_2 - beta) * sinf(alpha + alpha_diff);
-					py = radius * sinf(M_PI_2 - beta);
-					pny = sinf(M_PI_2 - beta);
-					pz = radius * cosf(M_PI_2 - beta) * cosf(alpha + alpha_diff);
-					pnz = cosf(M_PI_2 - beta) * cosf(alpha + alpha_diff);
-					normalize(pnx, pny, pnz);
-					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
-					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
-			}
 			if (j != stacks - 1) {
 				texture[0] = (float)i / slices;
 				texture[1] = (float)j / stacks;
@@ -146,6 +109,43 @@ int32_t gen_sphere(float radius,
 				normalize(pnx, pny, pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+			}
+			if (j != 0) {
+					texture[0] = (float)i / slices;
+					texture[1] = (float)j / stacks;
+					px = radius * cosf(M_PI_2 - beta) * sinf(alpha); 
+					pnx = cosf(M_PI_2 - beta) * sinf(alpha); 
+					py = radius * sinf(M_PI_2 - beta);
+					pny = sinf(M_PI_2 - beta);
+					pz = radius * cosf(M_PI_2 - beta) * cosf(alpha);
+					pnz = cosf(M_PI_2 - beta) * cosf(alpha);
+					normalize(pnx, pny, pnz);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0],texture[1], output);
+
+					texture[0] = (float)(i+1) / slices;
+					texture[1] = (float)(j+1) / slices;
+					px = radius * cosf(M_PI_2 - beta + beta_diff) * sinf(alpha + alpha_diff);
+					pnx = cosf(M_PI_2 - beta + beta_diff) * sinf(alpha + alpha_diff);
+					py = radius * sinf(M_PI_2 - beta + beta_diff);
+					pny = sinf(M_PI_2 - beta + beta_diff);
+					pz = radius * cosf(M_PI_2 - beta + beta_diff) * cosf(alpha + alpha_diff);
+					pnz = cosf(M_PI_2 - beta + beta_diff) * cosf(alpha + alpha_diff);
+					normalize(pnx, pny, pnz);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
+
+					texture[0] = (float)(i+1) / slices;
+					texture[1] = (float)j / slices;
+					px = radius * cosf(M_PI_2 - beta) * sinf(alpha + alpha_diff);
+					pnx= cosf(M_PI_2 - beta) * sinf(alpha + alpha_diff);
+					py = radius * sinf(M_PI_2 - beta);
+					pny = sinf(M_PI_2 - beta);
+					pz = radius * cosf(M_PI_2 - beta) * cosf(alpha + alpha_diff);
+					pnz = cosf(M_PI_2 - beta) * cosf(alpha + alpha_diff);
+					normalize(pnx, pny, pnz);
+					coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
+					write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 			}
 			beta += beta_diff;
 		}
