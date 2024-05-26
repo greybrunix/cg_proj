@@ -11,8 +11,8 @@ Frustum fromCamera(const camera cam)
 	const float Hnear = 2.F * tanf((cam.proj.x*.5F*M_PI)/180.F) * cam.proj.y;
 	const float Wnear = Hnear * cam.ratio;
 	float d[3] = {cam.lookAt.x - cam.pos.x,
-			cam.lookAt.y - cam.pos.y,
-			cam.lookAt.z - cam.pos.z};
+		cam.lookAt.y - cam.pos.y,
+		cam.lookAt.z - cam.pos.z};
 	float up[3] = {cam.up.x, cam.up.y, cam.up.z};
 	float r[3];
 	normalize(d);

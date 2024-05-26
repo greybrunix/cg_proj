@@ -1,9 +1,15 @@
+#ifndef __VEC__
+#define __VEC__
+
 struct triple {
 	float x, y, z;
 };
 
-float dot(const float* v, const float* u);
-float len(const float* v);
-void normalize(float *v);
-void scalar(const float* v, const float scalar, float* r);
-void cross(const float* v, const float* u, float* r);
+float dot(const triple& v, const triple& u);
+float len(const triple& v);
+void normalize(triple& v);
+void scalar(const triple& v, const float scalar, triple& r);
+void cross(const triple& v, const triple& u, triple& r);
+void add(const triple& v, const triple& u, triple& r);
+void sub(const triple& v, const triple& u, triple& r);
+#endif
