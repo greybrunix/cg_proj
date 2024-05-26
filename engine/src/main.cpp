@@ -871,6 +871,10 @@ void processKeys(unsigned char c, int xx, int yy)
 		break;
 	case 'F':
 		vfc = vfc ? false: true;
+		if (vfc)
+			glDisable(GL_CULL_FACE);
+		else
+			glEnable(GL_CULL_FACE);
 	case '3':
 		explorer = false;
 		break;
