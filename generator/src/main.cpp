@@ -534,10 +534,11 @@ int32_t gen_cone(float radius,
 	float pnx, pny, pnz;
 	float texture[2],texture2[2];
 	float x1,x2,x3,x4,y1,y2,y3,y4,z1,z2,z3,z4,r1,r2,h1,h2;
+	int flag=0;
 	for (i = 0; i < stacks; i++) {
 		for (j = 0; j < slices; j++) {
 			// Bottom face
-			if (i == 0) {
+			if (i == 0 && flag == 0 ) {
 				pnx = 0;
 				pny = -1;
 				pnz = 0;
@@ -563,7 +564,11 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-				texture[0] = (float)j / slices;
+				if( j == slices-1){
+					flag =1;
+				}
+
+				/*texture[0] = (float)j / slices;
 				texture[1] = (float)i / stacks;
 				texture2[0] = (float)(j+1) / slices;
 				texture2[1] = (float)(i+1) / stacks;
@@ -625,7 +630,7 @@ int32_t gen_cone(float radius,
 				pnz = cosf(atan(radius / height)) * cosf(angle + angle_diff);
 				normalize(&pnx, &pny, &pnz);
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture2[0]) + std::to_string(texture2[1]);
-				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);
+				write_file(coord, px, py, pz, pnx, pny, pnz, texture2[0], texture2[1], output);*/
 				
 			}
 
