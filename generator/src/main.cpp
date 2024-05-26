@@ -82,8 +82,8 @@ char* file)
                 pz = radius * cosf(beta - M_PI_2) * sinf(alpha);
                 pnz = cosf(beta - M_PI_2) * sinf(alpha);
                 normalize(&pnx, &pny, &pnz);
-                texture[0] = std::asin(pnx)/M_PI + 0.5;
-                texture[1] = std::asin(pny)/M_PI + 0.5;
+                texture[0] = std::atan2(pnx, pnz) / (2*M_PI) + 0.5;
+                texture[1] = pny * 0.5 + 0.5;
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0],texture[1], output);
 
@@ -94,8 +94,8 @@ char* file)
                 pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
                 pnz = cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
                 normalize(&pnx, &pny, &pnz);
-                texture[0] = std::asin(pnx)/M_PI + 0.5;
-                texture[1] = std::asin(pny)/M_PI + 0.5;
+                texture[0] = std::atan2(pnx, pnz) / (2*M_PI) + 0.5;
+                texture[1] = pny * 0.5 + 0.5;
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
@@ -106,8 +106,8 @@ char* file)
                 pz = radius * cosf(beta - M_PI_2) * sinf(alpha + alpha_diff);
                 pnz = cosf(beta - M_PI_2) * sinf(alpha + alpha_diff);
                 normalize(&pnx, &pny, &pnz);
-                texture[0] = std::asin(pnx)/M_PI + 0.5;
-                texture[1] = std::asin(pny)/M_PI + 0.5;
+                texture[0] = std::atan2(pnx, pnz) / (2*M_PI) + 0.5;
+                texture[1] = pny * 0.5 + 0.5;
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
             }
@@ -119,8 +119,8 @@ char* file)
                 pz = radius * cosf(beta - M_PI_2) * sinf(alpha);
                 pnz = cosf(beta - M_PI_2) * sinf(alpha);
                 normalize(&pnx, &pny, &pnz);
-                texture[0] = std::asin(pnx)/M_PI + 0.5;
-                texture[1] = std::asin(pny)/M_PI + 0.5;
+                texture[0] = std::atan2(pnx, pnz) / (2*M_PI) + 0.5;
+                texture[1] = pny * 0.5 + 0.5;
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
@@ -131,8 +131,8 @@ char* file)
                 pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha);
                 pnz= cosf(beta - M_PI_2 + beta_diff) * sinf(alpha);
                 normalize(&pnx, &pny, &pnz);
-                texture[0] = std::asin(pnx)/M_PI + 0.5;
-                texture[1] = std::asin(pny)/M_PI + 0.5;
+                texture[0] = std::atan2(pnx, pnz) / (2*M_PI) + 0.5;
+                texture[1] = pny * 0.5 + 0.5;
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
@@ -143,8 +143,8 @@ char* file)
                 pz = radius * cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
                 pnz= cosf(beta - M_PI_2 + beta_diff) * sinf(alpha + alpha_diff);
                 normalize(&pnx, &pny, &pnz);
-                texture[0] = std::asin(pnx)/M_PI + 0.5;
-                texture[1] = std::asin(pny)/M_PI + 0.5;
+                texture[0] = std::atan2(pnx, pnz) / (2*M_PI) + 0.5;
+                texture[1] = pny * 0.5 + 0.5;
                 coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz) + std::to_string(texture[0]) + std::to_string(texture[1]);
                 write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
             }
