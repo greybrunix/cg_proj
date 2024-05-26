@@ -2,6 +2,7 @@
 #define __VFC__
 #include "vectors.hpp"
 #include <cmath>
+#include <cfloat>
 class Transform {
     int x;
 };
@@ -134,6 +135,43 @@ public:
 
 		return(res);
 	}
+	void transformAABB(const GLfloat matrix[16]) {
+		std::vector<triple> corners = getCorners();
+		triple newMin = {FLT_MAX, FLT_MAX, FLT_MAX};
+		triple newMax = {-FLT_MAX, -FLT_MAX, -FLT_MAX};
+
+		for (const auto& corner : corners) {
+			triple transformedCorner = transformVertex(corner, matrix);
+			newMin.x = std::min(newMin.x, transformedCorner.x);
+			newMin.y = std::min(newMin.y, transformedCorner.y);
+			newMin.z = std::min(newMin.z, transformedCorner.z);
+			newMax.x = std::max(newMax.x, transformedCorner.x);
+			newMax.y = std::max(newMax.y, transformedCorner.y);
+			newMax.z = std::max(newMax.z, transformedCorner.z);
+		}
+
+		this->corner = newMin;
+		this->x = newMax.x - newMin.x;
+		this->y = newMax.y - newMin.y;
+		this->z = newMax.z - newMin.z;
+	}
+private:
+	std::vector<triple> getCorners() {
+		return {
+			{corner.x, corner.y, corner.z}, {corner.x + x, corner.y, corner.z},
+			{corner.x, corner.y + y, corner.z}, {corner.x, corner.y, corner.z + z},
+			{corner.x + x, corner.y + y, corner.z}, {corner.x + x, corner.y, corner.z + z},
+			{corner.x, corner.y + y, corner.z + z}, {corner.x + x, corner.y + y, corner.z + z}
+		};
+	}
+
+	triple transformVertex(const triple& vertex, const GLfloat matrix[16]) {
+		triple result;
+		result.x = matrix[0] * vertex.x + matrix[4] * vertex.y + matrix[8] * vertex.z + matrix[12];
+		result.y = matrix[1] * vertex.x + matrix[5] * vertex.y + matrix[9] * vertex.z + matrix[13];
+		result.z = matrix[2] * vertex.x + matrix[6] * vertex.y + matrix[10] * vertex.z + matrix[14];
+		return result;
+	}
 };
 
 
@@ -151,6 +189,7 @@ public:
 
 	Plane pl[6];
 
+	Frustum() {}
 	Frustum(camera cam) {
 		const float Hfar = 2.F * tanf((cam.proj.x*.5F*M_PI)/180.F) * cam.proj.z,
 				Wfar = Hfar * cam.ratio,
@@ -174,7 +213,7 @@ public:
 		cross(d,r, up);
 
 		scalar(up, Hfar*0.5F, HFar_up), scalar(r,Wfar*0.5F, WFar_r);
-		scalar(d,cam.proj.z, fvc);		
+		scalar(d,cam.proj.z, fvc);
 		/* Far Frustum Points*/
 		add(cam.pos, fvc, fc);
 		sub(fc,HFar_up, fbr), add(fbr,WFar_r, fbr);
