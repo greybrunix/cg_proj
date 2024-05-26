@@ -251,44 +251,44 @@ int loadTexture(char*s) {
 void group_read_model(int cur_g, struct prims* tmp_p,
                       XMLElement *color_xml, XMLElement *txt_xml)
 {
-XMLElement* elem;
-rgb rgb;
-colour color;
-float shn;
-if (color_xml) {
-rgb.r = 0;
-rgb.g = 0;
-rgb.b = 0;
-color.specular = rgb;
-color.emissive = rgb;
-rgb.r = 200;
-rgb.g = 200;
-rgb.b = 200;
-color.diffuse = rgb;
-rgb.r = 50;
-rgb.g = 50;
-rgb.b = 50;
-color.ambient = rgb;
-shn = 0;
-color.shininess = shn;
-elem = color_xml->FirstChildElement("diffuse");
-if (elem) {
-rgb.r = elem->FloatAttribute("R");
-rgb.g = elem->FloatAttribute("G");
-rgb.b = elem->FloatAttribute("B");
-color.diffuse = rgb;
-}
-elem = color_xml->FirstChildElement("ambient");
-if (elem) {
-rgb.r = elem->FloatAttribute("R");
-rgb.g = elem->FloatAttribute("G");
-rgb.b = elem->FloatAttribute("B");
-color.ambient = rgb;
-}
-elem = color_xml->FirstChildElement("specular");
-if (elem) {
-rgb.r = elem->FloatAttribute("R");
-rgb.g = elem->FloatAttribute("G");
+    XMLElement* elem;
+    rgb rgb;
+    colour color;
+    float shn;
+    if (color_xml) {
+        rgb.r = 0;
+        rgb.g = 0;
+        rgb.b = 0;
+        color.specular = rgb;
+        color.emissive = rgb;
+        rgb.r = 200;
+        rgb.g = 200;
+        rgb.b = 200;
+        color.diffuse = rgb;
+        rgb.r = 50;
+        rgb.g = 50;
+        rgb.b = 50;
+        color.ambient = rgb;
+        shn = 0;
+        color.shininess = shn;
+        elem = color_xml->FirstChildElement("diffuse");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.diffuse = rgb;
+        }
+        elem = color_xml->FirstChildElement("ambient");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
+            rgb.b = elem->FloatAttribute("B");
+            color.ambient = rgb;
+        }
+        elem = color_xml->FirstChildElement("specular");
+        if (elem) {
+            rgb.r = elem->FloatAttribute("R");
+            rgb.g = elem->FloatAttribute("G");
             rgb.b = elem->FloatAttribute("B");
             color.specular = rgb;
         }
@@ -851,7 +851,7 @@ void processKeys(unsigned char c, int xx, int yy)
 //void processSpecialKeys(int key, int xx, int yy);
 void processMouseMotion(int x, int y) {
     static bool wrap = false;
-    static int lastX = x, lastY = y;
+    static int lastX = world.win.w / 2, lastY = world.win.h / 2;
 
     if (wrap) {
         wrap = false;
@@ -861,28 +861,29 @@ void processMouseMotion(int x, int y) {
     int dx = x - lastX;
     int dy = y - lastY;
 
-    world.cam.alfa += dx * 0.1;
-    world.cam.beta += dy * 0.1;
+    world.cam.alfa += dx * 0.01;
+    world.cam.beta += dy * 0.01;
 
     if (world.cam.beta > 89.0f) world.cam.beta = 89.0f;
     if (world.cam.beta < -89.0f) world.cam.beta = -89.0f;
 
-    lastX = x;
-    lastY = y;
+    lastX = world.win.w / 2;
+    lastY = world.win.h / 2;
 
     glutWarpPointer(world.win.w / 2, world.win.h / 2);
     wrap = true;
 }
 
-void processMouseWheel(int button, int dir, int x, int y) {
-    if (dir > 0) {
-        world.cam.dist -= 0.5f;
-    } else {
-        world.cam.dist += 0.5f;
+void processMouse(int button, int state, int x, int y) {
+    if (state == GLUT_DOWN) {
+        if (button == 3) { // Scroll up
+            world.cam.dist -= 0.5f;
+            if (world.cam.dist < 2.0f) world.cam.dist = 2.0f;
+        } else if (button == 4) { // Scroll down
+            world.cam.dist += 0.5f;
+            if (world.cam.dist > 50.0f) world.cam.dist = 50.0f;
+        }
     }
-
-    if (world.cam.dist < 2.0f) world.cam.dist = 2.0f;
-    if (world.cam.dist > 50.0f) world.cam.dist = 50.0f;
 }
 
 void printInfo()
@@ -949,7 +950,7 @@ int main(int argc, char **argv)
 
 	glutKeyboardFunc(processKeys);
     glutPassiveMotionFunc(processMouseMotion);
-    glutMouseFunc(processMouseWheel);
+    glutMouseFunc(processMouse);
 
 	// OpenGL settings
 	glEnableClientState(GL_VERTEX_ARRAY);
