@@ -885,9 +885,6 @@ int main(int argc, char **argv)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_RESCALE_NORMAL);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquation(GL_FUNC_ADD);
 
 	xml_init(argv[1]);
 	if (res < 0) {
