@@ -30,6 +30,8 @@ float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
 bool explorer = true;
+unsigned long drawn = 0, total_proc = 0;
+
 Frustum frustum = Frustum();
 struct rgb {
 	float r, g, b;
@@ -632,6 +634,7 @@ void changeSize(int w, int h)
 void drawfigs(void)
 {
 	int i, k, l, g;
+	drawn = total_proc = 0;
 	for (g = 0; g < global; g++) {
 		glPushMatrix();
 		for (l = 0; l < world.transformations.size(); l++) /* trans*/
@@ -645,8 +648,9 @@ void drawfigs(void)
 		glGetFloatv(GL_MODELVIEW_MATRIX, modelViewMatrix);
 		multiplyMatrices(projectionMatrix, modelViewMatrix, modelViewProjectionMatrix);
 		for (k = 0; k < world.primitives.size(); k++) {
+			total_proc++;
 			world.primitives[k].box.transformAABB(modelViewProjectionMatrix);
-			if (frustum.BoxInFrustum(world.primitives[k].box) != frustum.OUTSIDE)
+			if (frustum.BoxInFrustum(world.primitives[k].box) != Frustum::OUTSIDE)
 				if (world.primitives[k].group == g)
 					for (i = 0; i < prims.size(); i++)
 						if (!strcmp(prims[i].name, world.primitives[k].name)) {
@@ -710,6 +714,7 @@ void drawfigs(void)
 								       prims[i].index_count, // número de índices a desenhar
 								       GL_UNSIGNED_INT, // tipo de dados dos índices
 								       0);// parâmetro não utilizado
+							drawn++;
 
 							//glDisableClientState(GL_VERTEX_ARRAY);
 							//glDisableClientState(GL_NORMAL_ARRAY);
@@ -730,7 +735,8 @@ void framerate()
 		double fps = frames * 1000.0 / (time - timebase);
 		timebase = time;
 		frames = 0;
-		sprintf(fps_c, "%s-%d", world.win.title, (int)fps);
+		sprintf(fps_c, "%s-FPS:%d-TOTAL %lu-DRAWN %lu", world.win.title, (int)fps,
+						total_proc, drawn);
 		glutSetWindowTitle(fps_c);
 	}
 }
