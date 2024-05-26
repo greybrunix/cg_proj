@@ -674,7 +674,7 @@ int32_t gen_plane(float full_size,
 	float px, py = 0.f, pz;
     float pnx, pny, pnz;
 	int i, j, l,fix, err = 0;
-	float texture = 1.0 / divs;
+	float texture = 1.0f / divs;
 	float finaltexture[2];
 
     pnx = 0;
@@ -683,7 +683,7 @@ int32_t gen_plane(float full_size,
 	for (i = 0; i < divs; i++) {
 		for (j = 0; j < divs; j++) {
 			//curr.x = x = i * div_len - div_len + off;
-			fix = divs-i;
+			fix = (divs-1)-i;
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=j*texture;
 			finaltexture[0]=fix*texture;
@@ -708,7 +708,7 @@ int32_t gen_plane(float full_size,
 			
 			//finaltexture[0]=(i+1)*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=(fix-1)*texture;
+			finaltexture[0]=(fix+1)*texture;
 			finaltexture[1]=j*texture;
 			px = x - off;
 			pz = z;
@@ -719,7 +719,7 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=j*texture;
-			finaltexture[0]=(fix-1)*texture;
+			finaltexture[0]=(fix+1)*texture;
 			finaltexture[1]=j*texture;
 			px = x - off;
 			pz = z;
@@ -730,7 +730,7 @@ int32_t gen_plane(float full_size,
 
 			//finaltexture[0]=i*texture;
 			//finaltexture[1]=(j+1)*texture;
-			finaltexture[0]=(fix-1)*texture;
+			finaltexture[0]=(fix+1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x - off;
 			pz = z + off;
