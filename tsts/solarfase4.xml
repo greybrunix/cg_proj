@@ -78,7 +78,7 @@
       </transform>
       <models>
 	<model file="sphere_10_20_20.3d" > <!-- Terra -->
-    <texture file = "8k_earth.jpg" />
+    <texture file = "8k_earth_daymap.jpg" />
     </model>
       </models>
       <group>
