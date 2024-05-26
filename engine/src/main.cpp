@@ -861,11 +861,15 @@ void processMouseMotion(int x, int y) {
     int dx = x - lastX;
     int dy = y - lastY;
 
-    world.cam.alfa += dx * 0.01;
-    world.cam.beta += dy * 0.01;
+    world.cam.alfa += dx * 0.001;
+    world.cam.beta += dy * 0.001;
 
-    if (world.cam.beta > 89.0f) world.cam.beta = 89.0f;
-    if (world.cam.beta < -89.0f) world.cam.beta = -89.0f;
+	if (world.cam.beta < -1.5f) {
+		world.cam.beta = -1.5f;
+	}
+	else if (world.cam.beta > 1.5f) {
+		world.cam.beta = 1.5f;
+	}
 
     lastX = world.win.w / 2;
     lastY = world.win.h / 2;
