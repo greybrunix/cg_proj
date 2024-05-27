@@ -178,7 +178,6 @@ int read_3d_files(void)
 		}
 		if (!flag) {
 			fd = fopen(world.primitives[i].name, "r");
-			printf("%s %d\n", world.primitives[i].name, !fd);
 			if (!fd) {
 				return -1;
 			}
