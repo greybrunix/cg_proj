@@ -149,7 +149,7 @@
     	  <scale x="0.4" y="0.4" z="0.4" />
     	</transform>
 	<models>
-	  <model file="sphere_10_20_20.3d" /> <!-- Fobos -->
+	  <model file="sphere_10_20_20.3d" > <!-- Fobos -->
 	  <texture file = "4k_eris_fictional.jpg" />
 	</models>
       </group>
@@ -169,7 +169,7 @@
     	  <scale x="0.2" y="0.2" z="0.2" />
     	</transform>
 	<models>
-	  <model file="sphere_10_20_20.3d" /> <!-- Deimos -->
+	  <model file="sphere_10_20_20.3d" > <!-- Deimos -->
 	  <texture file = "4k_haumea_fictional.jpg" />
 	</models>
       </group>
@@ -211,7 +211,7 @@
     	  <scale x="0.1" y="0.1" z="0.1" />
     	</transform>
 	<models>
-	  <model file="sphere_10_20_20.3d" /> <!--  Métis -->
+	  <model file="sphere_10_20_20.3d" > <!--  Métis -->
 	  <texture file = "4k_haumea_fictional.jpg" />
 	</models>
       </group>
@@ -232,7 +232,7 @@
     	  <scale x="0.07" y="0.07" z="0.07" />
     	</transform>
 	<models>
-	  <model file="sphere_10_20_20.3d" /> <!-- Adrasteia -->
+	  <model file="sphere_10_20_20.3d" > <!-- Adrasteia -->
 	  <texture file = "4k_haumea_fictional.jpg" />
 	</models>
       </group>
@@ -273,7 +273,7 @@
     		<scale x="0.1" y="0.1" z="0.1" />
     	      </transform>
 	      <models>
-		<model file="sphere_10_20_20.3d" /> <!--  S/2009 S 1 -->
+		<model file="sphere_10_20_20.3d" > <!--  S/2009 S 1 -->
 		<texture file = "4k_makemake_fictional.jpg" />
 	      </models>
 	    </group>
@@ -294,7 +294,7 @@
                     <scale x="0.3" y="0.3" z="0.3" />
               </transform>
               <models>
-                <model file="sphere_10_20_20.3d" /> <!-- Pã -->
+                <model file="sphere_10_20_20.3d" > <!-- Pã -->
 		<texture file = "4k_haumea_fictional.jpg" />
               </models>
 	    </group>
@@ -345,7 +345,7 @@
     	      <scale x="0.4" y="0.4" z="0.4" />
     	    </transform>
 	    <models>
-	      <model file="sphere_10_20_20.3d" /> <!--  Cordélia -->
+	      <model file="sphere_10_20_20.3d" > <!--  Cordélia -->
 	      <texture file = "4k_eris_fictional.jpg" />
 	    </models>
 	  </group>
@@ -366,7 +366,7 @@
               <scale x="0.1" y="0.1" z="0.1" />
             </transform>
             <models>
-              <model file="sphere_10_20_20.3d" /> <!-- Ofélia -->
+              <model file="sphere_10_20_20.3d" > <!-- Ofélia -->
 	      <texture file = "4k_ceres_fictional.jpg" />
             </models>
           </group>
@@ -408,7 +408,7 @@
               <scale x="0.3" y="0.3" z="0.3" />
             </transform>
             <models>
-              <model file="sphere_10_20_20.3d" /> <!-- Náiade -->
+              <model file="sphere_10_20_20.3d" > <!-- Náiade -->
 	      <texture file = "giao.jpg" />
             </models>
           </group>
@@ -426,7 +426,7 @@
             <scale x="2" y="2" z="2" />
           </transform>
           <models>
-            <model file="bezier_10.3d" /> <!-- Cometa -->
+            <model file="bezier_10.3d" > <!-- Cometa -->
 	    <texture file = "black-stone.jpg" />
           </models>
         </group>
