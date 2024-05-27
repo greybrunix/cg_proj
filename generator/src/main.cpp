@@ -11,21 +11,12 @@
 #include <float.h>
 #include <math.h>
 
-struct pair {
-	float x,z;
-};
 struct triple {
 	float x,y,z;
 };
 
-
 std::map<std::string, unsigned int> vi;
 unsigned int i = 0;
-
-// Formato linha: 
-// indice posx posy posz norx nory norz texx texy texz
-// OU 
-// indice
 
 void write_file(std::string coord,
 	float x,
@@ -572,7 +563,6 @@ int32_t gen_cone(float radius,
 				coord = std::to_string(px) + std::to_string(py) + std::to_string(pz) + std::to_string(pnx) + std::to_string(pny) + std::to_string(pnz)+ std::to_string(texture[0]) + std::to_string(texture[1]);
 				write_file(coord, px, py, pz, pnx, pny, pnz, texture[0], texture[1], output);
 
-				// Ponto do topo normal 0 1 0?
 				px = 0.0f;
 				pnx = cosf(atan(radius / height));
 				py = height;
@@ -1060,7 +1050,6 @@ int32_t gen_bezier(char* patch, float tesselation, char* out) {
 
 	FILE* fd = fopen(patch, "r");
 	FILE* output = fopen(out, "w+");
-	//printf("%.3f",tesselation);
 	if (output == NULL) {
 		perror("Error opening file");
 		return -1;
