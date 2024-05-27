@@ -151,6 +151,7 @@
 	<models>
 	  <model file="sphere_10_20_20.3d" > <!-- Fobos -->
 	  <texture file = "4k_eris_fictional.jpg" />
+	</model>
 	</models>
       </group>
       <group>
@@ -171,6 +172,7 @@
 	<models>
 	  <model file="sphere_10_20_20.3d" > <!-- Deimos -->
 	  <texture file = "4k_haumea_fictional.jpg" />
+	</model>
 	</models>
       </group>
     </group>
@@ -213,6 +215,7 @@
 	<models>
 	  <model file="sphere_10_20_20.3d" > <!--  Métis -->
 	  <texture file = "4k_haumea_fictional.jpg" />
+	</model>
 	</models>
       </group>
       <group>
@@ -234,6 +237,7 @@
 	<models>
 	  <model file="sphere_10_20_20.3d" > <!-- Adrasteia -->
 	  <texture file = "4k_haumea_fictional.jpg" />
+	</model>
 	</models>
       </group>
         </group>
@@ -275,6 +279,7 @@
 	      <models>
 		<model file="sphere_10_20_20.3d" > <!--  S/2009 S 1 -->
 		<texture file = "4k_makemake_fictional.jpg" />
+	</model>
 	      </models>
 	    </group>
             <group>
@@ -296,6 +301,7 @@
               <models>
                 <model file="sphere_10_20_20.3d" > <!-- Pã -->
 		<texture file = "4k_haumea_fictional.jpg" />
+	</model>
               </models>
 	    </group>
 	    <group>
@@ -347,6 +353,7 @@
 	    <models>
 	      <model file="sphere_10_20_20.3d" > <!--  Cordélia -->
 	      <texture file = "4k_eris_fictional.jpg" />
+			</model>
 	    </models>
 	  </group>
           <group>
@@ -368,6 +375,7 @@
             <models>
               <model file="sphere_10_20_20.3d" > <!-- Ofélia -->
 	      <texture file = "4k_ceres_fictional.jpg" />
+			</model>
             </models>
           </group>
         </group>
@@ -410,6 +418,7 @@
             <models>
               <model file="sphere_10_20_20.3d" > <!-- Náiade -->
 	      <texture file = "giao.jpg" />
+			</model>
             </models>
           </group>
         </group>
@@ -428,8 +437,8 @@
           <models>
             <model file="bezier_10.3d" > <!-- Cometa -->
 	    <texture file = "black-stone.jpg" />
+		</model>
           </models>
         </group>
       </group>
 </world>
-
