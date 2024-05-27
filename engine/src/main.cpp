@@ -182,6 +182,7 @@ int read_3d_files(void)
 		}
 		if (!flag) {
 			fd = fopen(world.primitives[i].name, "r");
+			printf("%s %d\n", world.primitives[i].name, !fd);
 			if (!fd) {
 				return -1;
 			}
@@ -197,29 +198,23 @@ int read_3d_files(void)
 			aux.vertex_count = coords.size();
 			aux.index_count = ind.size();
 
-			// Generate the VBO
 			glGenBuffers(1, &aux.vbo);
 			glGenBuffers(1, &aux.ibo);
 			glGenBuffers(1, &aux.normals);
 			glGenBuffers(1, &aux.texCoord);
 
-			// Bind the VBO
 			glBindBuffer(GL_ARRAY_BUFFER, aux.vbo);
 			glBufferData(GL_ARRAY_BUFFER, coords.size() * sizeof(triple), coords.data(), GL_STATIC_DRAW);
 
-			// Bind the IBO
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.ibo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * ind.size(), ind.data(), GL_STATIC_DRAW);
 
-			// Bind the normals
 			glBindBuffer(GL_ARRAY_BUFFER, aux.normals);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(triple) * normals.size() , normals.data(), GL_STATIC_DRAW);
 
-			// Bind the textures
 			glBindBuffer(GL_ARRAY_BUFFER, aux.texCoord);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(doubles) * texCoord.size() , texCoord.data(), GL_STATIC_DRAW);
 
-			// Store the VBO ID in the vertices vector
 			prims.push_back(aux);
 			triple center = {0.F,0.F,0.F};
 			triple extents = getBoxInfo(coords);
