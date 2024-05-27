@@ -310,7 +310,7 @@
 		<scale x="-2" y="-2" z="-2" />
 	      </transform>
 	      <models>
-		<model file="torus_0.5_10_30_30.3d" > <!-- Anel de Saturno -->
+		<model file="torus_13_0.05_30_30.3d" > <!-- Anel de Saturno -->
         <texture file = "saturnringcolor.jpg" />
     </model>
 	      </models>
