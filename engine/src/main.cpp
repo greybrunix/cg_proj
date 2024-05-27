@@ -21,8 +21,6 @@
 
 using namespace tinyxml2;
 
-
-
 int timebase, time, frames = 0;
 float fps;
 int cur_mode = GL_LINE, cur_face = GL_FRONT;
@@ -30,7 +28,6 @@ int global = 0;
 float tesselation = 100.F;
 bool draw = true;
 bool mipmapping = false;
-bool explorer = true;
 bool vfc = true;
 unsigned long drawn = 0, total_proc = 0;
 Frustum frustum;
@@ -59,7 +56,6 @@ struct prims {
 	std::map<int, std::string> texture;
 	std::map<int, unsigned int> texID;
 };
-
 
 struct ident_prim {
 	char name[64];
@@ -664,14 +660,6 @@ void drawfigs(void)
 									float emissive[] = {color.emissive.r/255.0f, color.emissive.g/255.0f, color.emissive.b/255.0f, 1.0f};
 									float shininess = color.shininess;
 
-									/*
-									  printf("DIFFUSE: %f %f %f\n", color.diffuse.r, color.diffuse.g, color.diffuse.b);
-									  printf("AMBIENT: %f %f %f\n", color.ambient.r, color.ambient.g, color.ambient.b);
-									  printf("SPECULAR: %f %f %f\n", color.specular.r, color.specular.g, color.specular.b);
-									  printf("EMISSIVE: %f %f %f\n", color.emissive.r, color.emissive.g, color.emissive.b);
-									  printf("SHININESS: %f\n", color.shininess);
-									*/
-
 									glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 									glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 									glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
@@ -693,18 +681,14 @@ void drawfigs(void)
 								}
 							}
 
-							//printf("texID: %d\n", world.primitives[k].texID[g]);
 							glBindTexture(GL_TEXTURE_2D, world.primitives[k].texID[g]);
 
-							//glEnableClientState(GL_VERTEX_ARRAY);
 							glBindBuffer(GL_ARRAY_BUFFER, prims[i].vbo);
 							glVertexPointer(3,GL_FLOAT,0,0);
 
-							//glEnableClientState(GL_NORMAL_ARRAY);
 							glBindBuffer(GL_ARRAY_BUFFER, prims[i].normals);
 							glNormalPointer(GL_FLOAT, 0, 0);
 
-							//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 							glBindBuffer(GL_ARRAY_BUFFER, prims[i].texCoord);
 							glTexCoordPointer(2, GL_FLOAT, 0, 0);
 
@@ -720,9 +704,6 @@ void drawfigs(void)
 								drawn++;
 							}
 
-							//glDisableClientState(GL_VERTEX_ARRAY);
-							//glDisableClientState(GL_NORMAL_ARRAY);
-							//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 							glBindTexture(GL_TEXTURE_2D, 0);
 						}
 		}
@@ -749,17 +730,11 @@ void renderScene(void)
 {
     // clear buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		float x,y,z;
 
     // calculate camera pos
-    /*x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
-    y = world.cam.dist * sin(world.cam.beta);
-    z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
-		*/
     world.cam.pos.x = world.cam.dist * cos(world.cam.beta) * sin(world.cam.alfa);
     world.cam.pos.y = world.cam.dist * sin(world.cam.beta);
     world.cam.pos.z = world.cam.dist * cos(world.cam.beta) * cos(world.cam.alfa);
-		
 
     // set the camera
     glLoadIdentity();
@@ -880,9 +855,6 @@ void processKeys(unsigned char c, int xx, int yy)
 		break;
 	case 'F':
 		vfc = vfc ? false: true;
-	case '3':
-		explorer = false;
-		break;
 	}
 
 
@@ -900,8 +872,6 @@ void processKeys(unsigned char c, int xx, int yy)
 	}
 	frustum = Frustum(world.cam);
 }
-
-//void processSpecialKeys(int key, int xx, int yy);
 
 void printInfo()
 {
@@ -936,7 +906,6 @@ int main(int argc, char **argv)
 
 	// Init GLEW
 	glewInit();
-
 
 	// Required callback registry
 	glutDisplayFunc(renderScene);
