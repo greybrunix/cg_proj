@@ -374,7 +374,7 @@
             </transform>
             <models>
               <model file="sphere_10_20_20.3d" > <!-- Ofélia -->
-	      <texture file = "4k_ceres_fictional.jpg" />
+	      <texture file = "giao.jpg" />
 			</model>
             </models>
           </group>
@@ -417,7 +417,7 @@
             </transform>
             <models>
               <model file="sphere_10_20_20.3d" > <!-- Náiade -->
-	      <texture file = "giao.jpg" />
+	      <texture file = "4k_ceres_fictional.jpg" />
 			</model>
             </models>
           </group>
