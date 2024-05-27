@@ -23,13 +23,6 @@ public:
 	float d;
 	Plane( triple& v1,  triple& v2,  triple& v3)
 	{
-		set3Points(v1,v2,v3);
-	}
-	Plane(void){}
-	~Plane(){}
-
-	void set3Points( triple& v1,  triple& v2,  triple& v3)
-	{
 		triple aux1, aux2;
 
 		sub(v1, v2, aux1);
@@ -41,6 +34,9 @@ public:
 		point.copy(v2);
 		d = -dot(normal,point);
 	}
+	Plane(void){}
+	~Plane(){}
+
 	void setNormalAndPoint(triple& normal, triple& point)
 	{
 		this->normal.copy(normal);
