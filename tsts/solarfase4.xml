@@ -156,7 +156,7 @@
       </group>
       <group>
     	<transform>
-          <translate time = "30" align="False">
+          <translate time = "15" align="False">
             <point x="20" y="0" z="20"/>
             <point x="0" y="0" z="26"/>
             <point x="-20" y="0" z="20"/>
