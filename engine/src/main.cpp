@@ -165,10 +165,6 @@ triple getBoxInfo(const std::vector<triple>& coords) {
     extents.y = maxCoords.y - minCoords.y;
     extents.z = maxCoords.z - minCoords.z;
 
-    printf("Min: %.3f %.3f %.3f\n", minCoords.x, minCoords.y, minCoords.z);
-    printf("Max: %.3f %.3f %.3f\n", maxCoords.x, maxCoords.y, maxCoords.z);
-    printf("Extents: %.3f %.3f %.3f\n", extents.x, extents.y, extents.z);
-
     return extents;
 }
 
@@ -776,8 +772,7 @@ void renderScene(void)
 	      world.cam.lookAt.x, world.cam.lookAt.y,
 	      world.cam.lookAt.z,
 	      world.cam.up.x, world.cam.up.y, world.cam.up.z);
-	frustum = Frustum(world.cam);
-	frustum.drawFrustum(frustum);
+		frustum = Frustum(world.cam);
 
     // Set the polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

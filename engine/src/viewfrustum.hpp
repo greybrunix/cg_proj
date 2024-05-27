@@ -226,32 +226,6 @@ public:
 		return res;
 
  	}
-void drawFrustum(const Frustum& frustum) {
-    // Function to draw a line between two points
-    auto drawLine = [](const triple& p1, const triple& p2) {
-        // Implementation of your line drawing function
-        // For example, you could use OpenGL, DirectX, or a custom graphics library
-        glBegin(GL_LINE);
-        glVertex3f(p1.x, p1.y, p1.z);
-        glVertex3f(p2.x, p2.y, p2.z);
-        glEnd();
-    };
-
-    // Iterate over each plane of the frustum
-    for (int i = 0; i < 6; ++i) {
-        // Get the current plane
-        const Plane& plane = frustum.pl[i];
-
-        // Get three vertices that define the plane
-        const triple& v1 = plane.point;
-        triple v2; // Extend the line for visualization
-				add(v1,plane.normal,v2);
-				scalar(v2,10.F,v2);
-
-        // Draw a line to represent the plane
-        drawLine(v1, v2);
-    }
-}
 
 };
 
