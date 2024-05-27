@@ -681,7 +681,7 @@ int32_t gen_plane(float full_size,
     pnx = 0;
     pny = 1;
     pnz = 0;
-	for (i = 0; i < divs; i++) {
+	for (i = 1; i < divs+1; i++) {
 		for (j = 0; j < divs; j++) {
 			finaltexture[0]=i*texture;
 			finaltexture[1]=(j+1)*texture;
@@ -701,7 +701,7 @@ int32_t gen_plane(float full_size,
                 std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 			
-			finaltexture[0]=(i-1)*texture;
+            finaltexture[0]=(i-1)*texture;
 			finaltexture[1]=j*texture;
 			px = x - off;
 			pz = z;
@@ -710,7 +710,7 @@ int32_t gen_plane(float full_size,
                 std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
-			finaltexture[0]=(i-1)*texture;
+            finaltexture[0]=(i-1)*texture;
 			finaltexture[1]=j*texture;
 			px = x - off;
 			pz = z;
@@ -719,7 +719,7 @@ int32_t gen_plane(float full_size,
                 std::to_string(finaltexture[0]) + std::to_string(finaltexture[1]);
 			write_file(coord, px, py, pz, pnx, pny, pnz,finaltexture[0],finaltexture[1], output);
 
-			finaltexture[0]=(i-1)*texture;
+            finaltexture[0]=(i-1)*texture;
 			finaltexture[1]=(j+1)*texture;
 			px = x - off;
 			pz = z + off;
