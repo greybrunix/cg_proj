@@ -89,7 +89,6 @@ public:
 
 	}
 
-	// for use in frustum computations
 	triple getVertexP(triple&normal)
 	{
 		triple res;
@@ -97,10 +96,6 @@ public:
 		res.y = (normal.y < 0) ? (center.y - extents.y) : (center.y + extents.y);
 		res.z = (normal.z < 0) ? (center.z - extents.z) : (center.z + extents.z);
 
-		//printf("normal %.3f %.3f %.3f\n", normal.x,normal.y,normal.z);
-		//printf("extents %.3f %.3f %.3f\n", extents.x,extents.y,extents.z);
-		//printf("center %.3f %.3f %.3f\n", center.x,center.y,center.z);
-		//printf("Positive Vertex %.3f %.3f %.3f\n", res.x,res.y,res.z);
 		return(res);
 	}
 	triple getVertexN(triple&normal)
@@ -110,10 +105,6 @@ public:
 		res.y = (normal.y > 0) ? (center.y - extents.y) : (center.y + extents.y);
 		res.z = (normal.z > 0) ? (center.z - extents.z) : (center.z + extents.z);
 
-		//printf("normal %.3f %.3f %.3f\n", normal.x,normal.y,normal.z);
-		//printf("extents %.3f %.3f %.3f\n", extents.x,extents.y,extents.z);
-		//printf("center %.3f %.3f %.3f\n", center.x,center.y,center.z);
-		//printf("Negative Vertex %.3f %.3f %.3f\n", res.x,res.y,res.z);
 		return(res);
 	}
 	void applyMVP(float *matrix) {
@@ -217,7 +208,7 @@ public:
 			if (pl[i].distance(tmp1) > 0)
 				return  OUTSIDE;
 			else if (pl[i].distance(tmp2) < 0)
-				res = true;
+				return INTERSECT;
 		}
 		return res;
 
